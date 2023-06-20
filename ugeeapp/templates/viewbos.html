@@ -1,0 +1,195 @@
+{% extends 'public/base.html' %}
+
+
+
+{% block content %}
+
+<div class="container">
+	<div class="row align-items-center justify-content-center">
+		<div class="col-md-12">
+								<div class="login100-form-logo text-center">
+									
+									<div class="text-center" style="color:white;background: #179cd7;">View BOS Entries </div>
+								</div>
+		</div>
+		<div class="col-md-12 " style="backgound: red;">
+			<div class="row align-items-center justify-content-center">
+				<div class="col-md-10">
+					<form id="viewBosForm" style="margin-top:20px" method="POST" action="/viewbos?type=form">
+						{{ form.csrf_token }}
+						<div class="row">
+							<div class="col-md-12">
+								<span class="login100-form-logo">
+									<i class="fas fa-landscape"></i>
+									<span style="color:black;background: white;">{{resp}}</span>
+								</span>
+							</div>
+						</div>
+						<div class="row">
+							<div class="col-md-4">
+                        		<div class='form-group'>
+                        			{{form.bos_type.label()}}
+                        			{{form.bos_type(class='form-control')}}
+                        		</div>
+                    		</div>
+                    		<div class="col-md-4">
+                        		<div class='form-group'>
+                        			{{form.start.label()}}
+                        			{{form.start(class='form-control')}}
+                        		</div>
+                    		</div>
+                    		<div class="col-md-4">
+                        		<div class='form-group'>
+                        			{{form.end.label()}}
+                        			{{form.end(class='form-control')}}
+                        		</div>
+                    		</div>
+                		</div>                		
+						
+						<div class="row align-items-center justify-content-center">                   		                  		
+                    		<div class="col-md-4">                    
+                        		<div class='form-group'>
+                            		{{form.submit(class="btn btn-info")}} 
+                        		</div>
+                    		</div>
+						</div>
+					</form>
+				</div>
+				
+			</div>
+		</div>
+		
+	</div>
+	{% if enteries %}
+	<div class="row text-center">
+                    
+                    <div class="col-md-12">
+                        <hr/><h3 style="background:#179cd7">{{bos}} BOS Enteries</h3><hr/>
+                        
+                        <div class="table-responsive">
+                            <table class="table table-bordered table-striped">
+                                <thead>
+                                    <tr>
+                                     	<th scope="col">Actions</th>
+                                     	<th scope="col">Date</th>
+                                        <th scope="col">Compliance</th>
+                                        <th scope="col">Observer</th>
+                                        <th scope="col">Dept</th>
+                                        <th scope="col">Shift</th>
+                                        <th scope="col">BOS type</th>
+                                        <th scope="col">Team on Duty</th>
+                                        <th scope="col">Line</th>
+                                        <th scope="col">Outage(s)</th>
+                                                                                
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                {% for  entry in enteries %}
+                                    <tr>
+
+                                                <td>
+                                                   {% if entry.comment %}
+                                                   		{%if bos =="SAFETY" %}
+                                                   		<div class="btn btn-sm" data-comment="{{convert_tostring(entry.comment)}}"  style="font-size: 11px;color: #179cd7;" onclick="getComment('{{entry.sid}}',this,'{{entry.observer}}')">View Comment</div>
+                                                   		{% elif bos =="QUALITY" %}
+                                                   		<div class="btn btn-sm" data-comment="{{convert_tostring(entry.comment)}}"  style="font-size: 11px;color: #179cd7;" onclick="getComment('{{entry.qid}}',this,'{{entry.observer}}')">View Comment</div>
+                                                   		{% elif bos =="OGC" %}
+                                                   		<div class="btn btn-sm" data-comment="{{convert_tostring(entry.comment)}}" style="font-size: 11px;color: #179cd7;" onclick="getComment('{{entry.ogcid}}',this,'{{entry.observer}}')">View Comment</div>
+                                                   		{% else %}
+                                                   		{% endif %}
+
+                                                   {% endif %}
+                                                   {%if bos =="SAFETY" %}
+                                                   		<div class="btn btn-sm"  style="font-size: 11px;color: #179cd7;" onclick="deleteX('{{entry.sid}}','{{bos}}')">DELETE</div>
+                                                   		{% elif bos =="QUALITY" %}
+                                                   		<div class="btn btn-sm"  style="font-size: 11px;color: #179cd7;" onclick="deleteX('{{entry.qid}}','{{bos}}')">DELETE</div>
+                                                   		{% elif bos =="OGC" %}
+                                                   		<div class="btn btn-sm"  style="font-size: 11px;color: #179cd7;" onclick="deleteX('{{entry.ogcid}}','{{bos}}')">DELETE</div>
+                                                   		{% else %}
+                                                   		{% endif %}
+                                                </td>
+                                                <td>{{entry.regdate}}</td>
+                                                <td>
+                                                	{% if entry.percent<100 %}
+                                                		<span class="alert alert-danger"> {{entry.percent}}% </span>
+                                                	{% else%}
+                                                		<span class="alert alert-success"> {{entry.percent}}% </span>
+                                                	{% endif %}		
+                                            	</td>
+                                                <td>{{entry.observer}}</td>
+                                                <td>
+                                                {%if entry.department==1%}
+                                                PSG
+                                                {%elif entry.department==2 %}
+                                                MSG
+                                                {%elif entry.department==3 %}
+                                                QA
+                                                {%elif entry.department==4 %}
+                                                WHSE
+                                                {%endif%}
+                                            	</td>
+                                                <td>{{entry.shift}}</td>
+                                                <td>{{entry.bos_type}}</td>
+                                                <td>{{entry.team}}</td>
+                                                <td>{{entry.line}}</td>
+                                                <td>
+                                                	{% if entry.percent<100 %}
+                                                		{% if bos =="OGC" %}
+                                                			{% for x in entry.outages | from_json %}
+                                                			<div class="alert alert-info" style="text-align: left;">
+                                                			<span style="font-size: 11px;color: #000;">Section : {{x.section}} </span><br> 
+                                                			<span style="font-size: 11px;color: #000;">Inspection Point : {{x.inspection_point}} </span><br>
+                                                			<span style="font-size: 11px;color: #000;">Value : {{x.value}}</span>
+                                                			</div>
+                                                			{% endfor %}
+                                                		{% else%}
+                                                			{% for x in entry.outages | from_json %}
+                                                			<div class="alert alert-info" style="text-align: left;"> 
+                                                			<span style="font-size: 11px;color: #000;">Point : {{x.title}} </span><br>
+                                                			<span style="font-size: 11px;color: #000;">Value : {{x.value}}</span>
+                                                			</div>
+                                                			{% endfor %}
+                                                			
+                                                		{% endif %}
+                                                		
+                                                	{% endif %}
+                                                </td>                                
+                                        
+                                        
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>                        
+                    </div>
+                </div>
+	
+    {% endif %}            
+</div>
+
+{% endblock %}
+
+{% block tail %}
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@9"></script>
+<script type="text/javascript">
+
+
+function getComment(id,selectr,user){
+		var comment=$(selectr).attr('data-comment');
+		var commt=''
+		commt +='<div class="alert alert-info">'+comment.toString()+'</div>'
+		commt +='<div style="font-style: italic;color: #000; margin-left:40px;">--'+user+'</div>'
+		
+		$("#ajaxlargeModalBody").html(commt);
+		$("#ajaxlarge").modal('show');
+
+};
+
+
+
+
+
+</script>
+
+{% endblock %}
+

@@ -1,0 +1,429 @@
+{% extends 'public/base.html' %}
+
+
+
+{% block content %}
+
+<div class="container">
+	<div class="row align-items-center justify-content-center">
+		<div class="col-md-12">
+			<div class="login100-form-logo align-items-center justify-content-center">
+									
+				<div class="text-center" style="color:white;background: #179cd7;">
+					WELCOME TO MY e_LEARNING
+				</div>
+			</div>
+		</div><hr>
+		<div class="col-md-12">
+		<div class="col-md-12" style="margin-bottom:10px">
+            <img src="/static/documents/e_learning/page_images/hazard_survey.PNG" height="200px" width="100%">
+        </div>			
+		</div>
+		<div class="col-md-12 " style="backgound: red;">
+			<div class="row">
+				<div class="col-md-10">
+					<form id="" style="margin-top:20px" method="POST" action="">		
+						
+						<div class="row align-items-center justify-content-center v1">
+							<div class="col-md-12">
+                        		<div class='form-group'>
+                        			<div>INSTRUCTIONS:</div>
+                        		
+                        			<p>Before you proceed with this quiz, ensure you</p>
+                        			<ol>                        				
+                        				<li>Download the course outline by clicking on the link provided in your skills matrix page</li>
+                        				<li>Open the outline from your device</li>
+                        				<li>Study the outline thoroughly</li>
+                        				<li>Then return here to attempt this quiz.</li>
+                        				<li>You are expected to score at least <span style="color:#179cd7;">{{pass_mark}}%</span> to pass this course.</li>
+                        			</ol>
+
+                        		</div>
+                    		</div>
+                    		<div class="col-md-4">
+                        		<div class='form-group'>
+                        			<button type="button" class="btn btn-secondary" onclick="getView1()">Start Quiz</button>
+                        		</div>
+                    		</div>            		
+                		</div>
+                		<div class="row align-items-center justify-content-center v2" style="display:none;">
+							<div class="col-md-12">
+                        		<div class='form-group'>
+                        			1.	Another name for Hazard survey is Hazard Audit?
+                        		</div>
+                    		</div>
+                    		<div class="col-md-12">
+                        		<div class='form-group'>
+                        			<input type="radio" style="margin-right: 10px; margin-left: 20px;" name="q1" class="" id="q11" value=1 onchange="getView2()">a.	True <br>
+
+                        			<input type="radio" style="margin-right: 10px; margin-left: 20px;" name="q1" class="" id="q12" value=0 onchange="getView2()">b.	False
+                        			                        			
+                        		</div>
+                    		</div>
+                    		              		
+                		</div> 
+                		<div class="row align-items-center justify-content-center v3" style="display:none;">
+							<div class="col-md-12">
+                        		<div class='form-group'>
+                        			2.	Identify the members of a hazard survey team in the options below (Select all that apply)
+                        		</div>
+                    		</div>
+                    		<div class="col-md-12">
+                        		<div class='form-group'>
+                        			<input type="checkbox" style="margin-right: 10px; margin-left: 20px;" name="q2" class="" id="q21" value=0.5>a.	Manager <br>
+
+                        			<input type="checkbox" style="margin-right: 10px;margin-left: 20px;" name="q2" class="" id="q22" value=0.5>b. Technicians <br>
+
+                        			<input type="checkbox" style="margin-right: 10px;margin-left: 20px;" name="q2" class="" id="q23" value=0>c. Security Team
+                        			
+                        		</div>
+                    		</div>
+                    		<div class="col-md-4">
+                        		<div class='form-group'>
+                        			<button type="button" class="btn btn-success" onclick="getView3()">submit</button>
+                        		</div>
+                    		</div>        		
+                		</div>
+                		<div class="row align-items-center justify-content-center v4" style="display:none;">
+							<div class="col-md-12">
+                        		<div class='form-group'>
+                        			3.	Spills can cause --------------------------------hazard?
+                        		</div>
+                    		</div>
+                    		<div class="col-md-12">
+                        		<div class='form-group'>
+                        			<input type="radio" style="margin-right: 10px; margin-left: 20px;" name="q3" class="" id="q31" value=1 onchange="getView4()"> a. Slip <br>
+
+                        			<input type="radio" style="margin-right: 10px; margin-left: 20px;" name="q3" class="" id="q32" value=0 onchange="getView4()"> b. Bump <br>
+                        			<input type="radio" style="margin-right: 10px; margin-left: 20px;" name="q3" class="" id="q33" value=0 onchange="getView4()"> c. Cut <br>
+                        			<input type="radio" style="margin-right: 10px; margin-left: 20px;" name="q3" class="" id="q34" value=0 onchange="getView4()"> d. Electrical
+
+                        		</div>
+                    		</div> 
+                		</div>
+                		<div class="row align-items-center justify-content-center v5" style="display:none;">
+							<div class="col-md-12">
+                        		<div class='form-group'>
+                        			4.	Cords stretched across walkways without proper guards can cause -------------hazard?
+                        		</div>
+                    		</div>
+                    		<div class="col-md-12">
+                        		<div class='form-group'>
+                        			<input type="radio" style="margin-right: 10px; margin-left: 20px;" name="q4" class="" id="q41" value=0 onchange="getView5()">a. Cut <br>
+                        			
+                        			<input type="radio" style="margin-right: 10px;margin-left: 20px;" name="q4" class="" id="q42" value=1 onchange="getView5()">b. Fall <br>
+
+                        			<input type="radio" style="margin-right: 10px;margin-left: 20px;" name="q4" class="" id="q43" value=0 onchange="getView5()">c. Bump <br>
+
+                        			<input type="radio" style="margin-right: 10px;margin-left: 20px;" name="q4" class="" id="q42" value=0 onchange="getView5()"> d. Strain
+                        			
+                        		</div>
+                    		</div>                    		              		
+                		</div>
+                		<div class="row align-items-center justify-content-center v6" style="display:none;">
+							<div class="col-md-12">
+                        		<div class='form-group'>
+                        			5.	To avoid strain Hazard you Lift with back, not with legs. True or False? 
+                        		</div>
+                    		</div>
+                    		<div class="col-md-12">
+                        		<div class='form-group'>
+                        			<input type="radio" style="margin-right: 10px; margin-left: 20px;" name="q5" class="" id="q51" value=0 onchange="getView6()">a. True <br>
+
+                        			<input type="radio" style="margin-right: 10px;margin-left: 20px;" name="q5" class="" id="q52" value=1 onchange="getView6()">b. False
+                        		</div>
+                    		</div>
+                    		<div class="col-md-4">
+                        		<div class='form-group'>
+                        			<button type="button" class="btn btn-success" onclick="getResult('{{qid}}','{{pass_mark}}','{{tid}}')">Get Result</button>
+                        		</div>
+                    		</div>                    		              		
+                		</div>              		       		
+						
+					</form>
+				</div>
+				
+			</div>
+			
+		</div>
+		
+	</div>
+	          
+</div>
+
+{% endblock %}
+
+{% block tail %}
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@9"></script>
+<script type="text/javascript">
+
+
+function getView1()
+{
+	$('.v1').fadeOut('slow');
+	$('.v2').fadeIn('slow');
+}
+
+function getView2()
+{
+	$('.v2').fadeOut('slow');
+	var ans = $("input[type='radio'][name='q1']:checked").val(); //document.querySelector('input[name="component"]:checked').value;
+
+	if (ans == 1)
+	{
+		Swal.fire({
+                   	icon: 'success',
+                    title: 'Correct!',                                         
+                }).then(function(){
+			                
+							$('.v3').fadeIn('slow');
+
+			            })
+	} else
+	{
+		Swal.fire({
+                   	icon: 'error',
+                    title: 'Wrong Answer!',                                         
+                }).then(function(){
+			                
+							$('.v3').fadeIn('slow');
+
+			            })
+	}
+	
+}
+
+function getView3()
+{
+	var checked = document.querySelectorAll('input[name="q2"]:checked');
+	var count = document.querySelectorAll('input[name="q2"]:checked').length;
+
+	if (count == 0)
+	{
+		alert('Please choose at least one option.');
+		return false;
+	}
+
+	$('.v3').fadeOut('slow');
+
+	var ans = 0;
+
+	for (var x = 0; x < count; x++)
+	{
+		ans += parseFloat(checked[x].value);
+	}		
+	
+
+	if (ans == 1)
+	{
+		Swal.fire({
+                   	icon: 'success',
+                    title: 'Correct!',                                         
+                }).then(function(){
+			                
+							$('.v4').fadeIn('slow');
+
+			            })
+	} else
+	{
+		Swal.fire({
+                   	icon: 'error',
+                    title: 'Wrong Answer!',                                         
+                }).then(function(){
+			                
+							$('.v4').fadeIn('slow');
+
+			            })
+	}
+
+	
+}
+
+function getView4()
+{
+	$('.v4').fadeOut('slow');
+	var ans = $("input[type='radio'][name='q3']:checked").val(); //document.querySelector('input[name="component"]:checked').value;
+
+	if (ans == 1)
+	{
+		Swal.fire({
+                   	icon: 'success',
+                    title: 'Correct!',                                         
+                }).then(function(){
+			                
+							$('.v5').fadeIn('slow');
+
+			            })
+	} else
+	{
+		Swal.fire({
+                   	icon: 'error',
+                    title: 'Wrong Answer!',                                         
+                }).then(function(){
+			                
+							$('.v5').fadeIn('slow');
+
+			            })
+	}
+	
+}
+
+
+function getView5()
+{
+	$('.v5').fadeOut('slow');
+	var ans = $("input[type='radio'][name='q4']:checked").val(); 
+
+	if (ans == 1)
+	{
+		Swal.fire({
+                   	icon: 'success',
+                    title: 'Correct!',                                         
+                }).then(function(){
+			                
+							$('.v6').fadeIn('slow');
+
+			            })
+	} else
+	{
+		Swal.fire({
+                   	icon: 'error',
+                    title: 'Wrong Answer!',                                         
+                }).then(function(){
+			                
+							$('.v6').fadeIn('slow');
+
+			            })
+	}
+
+
+}
+function getView6()
+{
+
+	var ans = $("input[type='radio'][name='q5']:checked").val(); //document.querySelector('input[name="component"]:checked').value;
+
+	if (ans == 1)
+	{
+		Swal.fire({
+                   	icon: 'success',
+                    title: 'Correct!',                                         
+                })
+	} else
+	{
+		Swal.fire({
+                   	icon: 'error',
+                    title: 'Wrong Answer!',                                         
+                })
+	}
+	return false;
+	//$('.v5').fadeOut('slow');
+	//$('.v6').fadeIn('slow');
+}
+
+function getResult(id,mark,tid)
+{	
+	//check if the last question has been amswered//
+	check = $("input[type='radio'][name='q5']").is(':checked');
+	if (!check){alert('Please choose an option.'); return false;}
+
+	triggerProcessing();
+setTimeout(function(){
+	//compute result
+	var ans1 = $("input[type='radio'][name='q1']:checked").val(); 
+	var ans2 = getCheckboxValue('q2',1);
+	var ans3 = $("input[type='radio'][name='q3']:checked").val();
+	var ans4 = $("input[type='radio'][name='q4']:checked").val();
+	var ans5 = $("input[type='radio'][name='q5']:checked").val();
+
+	var ans = parseInt(ans1) + parseInt(ans2) + parseInt(ans3) + parseInt(ans4) + parseInt(ans5);
+	var percent = (ans / 5) * 100;
+	percent = percent.toFixed(2);
+
+	//alert('You are doing well');
+	//save result to database
+	const update = {
+						score:parseInt(percent),
+						quizid:id,
+						tid:tid,
+					};
+
+    const options = {
+                    	method: 'POST',
+                    	headers: {'Content-Type': 'application/json',},
+                    	body: JSON.stringify(update),
+                };
+
+	fetch(`/e_learning?action=${'POST-RESULT'}`, options)
+                    .then(function (response) {
+                            return response.json();
+                        }).then(function (text) {
+                                
+             if (percent >= parseInt(mark))
+				{
+					Swal.fire({
+			                   	icon: 'success',
+			                    title: 'Congratulations!',
+			                    html: "<div class='alert alert-success'>You scored "+percent+"% <br>You have successfully completed this Course.</div>",
+			                                                             
+			                }).then(function(){
+
+			                	setTimeout(function(){
+			                		location.reload()
+			                	},1000);
+
+			                })
+				} else
+				{
+					Swal.fire({
+			                   	icon: 'error',
+			                    title: 'Sorry!',
+			                    html: "<div class='alert alert-danger'>You scored "+percent+"% <br>You did not meet the pass mark for this Course. Please go through the material again and attempt the quiz once more.</div>",
+			                                                             
+			                }).then(function(){
+
+			                	setTimeout(function(){
+			                		location.reload()
+			                	},1000);
+
+			                })
+				}
+
+				        })
+
+},3000);	
+
+	
+}
+
+function getCheckboxValue(name,base)
+{
+	var checked = document.querySelectorAll('input[name="'+name+'"]:checked');
+	var count = document.querySelectorAll('input[name="'+name+'"]:checked').length;
+
+	if (count == 0)
+	{
+		return parseInt(0);
+	}
+
+	var ans = 0;
+
+	for (var x = 0; x < count; x++)
+	{
+		ans += parseFloat(checked[x].value);
+	}
+
+	if (ans < base)
+	{
+		return parseInt(0);
+	} else
+	{
+		return parseInt(1);
+	}
+
+}
+</script>
+
+{% endblock %}
+

@@ -1,0 +1,33 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <h1>{% block title %} Welcome to FlaskBlog {% endblock %}</h1>
+    <div style="background-color: green; color: #fff;"></div>
+    <div class='count_mode' style="background-color: yellow; color: #000;text-align: center;"></div>
+    <hr>
+    <div style="background-color: green; color: #fff;"></div>
+    <div class='sop_mode' style="background-color: goldenrod; color: #000;text-align: center;"></div>
+    <div class='stop_mode' style="bakground-color: goldenrod; color: #000;text-align: center;"></div>
+{% endblock %}
+
+{% block tail %}
+ <script>
+    var count = 1;
+    var mach="U";
+    setInterval(
+        function(){
+            fetch(`/update?c=${mach}`)
+                    .then(function (response) {
+                            return response.json();
+                        }).then(function (text) {
+                                //$('.count_mode').html(text.message);
+                                $('.stop_mode').html(text.stop);
+
+                            });
+        }, 
+        1000
+    ); // Every 1 second.
+
+ </script>
+
+{% endblock %}

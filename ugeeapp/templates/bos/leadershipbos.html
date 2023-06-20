@@ -1,0 +1,101 @@
+{% extends 'public/base.html' %}
+
+
+
+{% block content %}
+
+<div class="container">
+	<div class="row align-items-center justify-content-center">
+		<div class="col-md-12">
+								<div class="login100-form-logo text-center">
+									
+									<div class="text-center" style="color:white;background: #179cd7;">LEADERSHIP OBSERVATION FORM</div>
+								</div>
+		</div>
+		<div class="col-md-12 " style="backgound: red;">
+			<div class="row align-items-center justify-content-center">
+				<div class="col-md-10">
+					<form id="viewBosForm" style="margin-top:20px" method="POST" action="">
+						{{ form.csrf_token }}
+						<div class="row">
+							<div class="col-md-12">
+								<span class="login100-form-logo">
+									<i class="fas fa-landscape"></i>
+									<span style="color:black;background: white;">SELECT FROM THE OPTIONS BELOW</span>
+								</span>
+							</div>
+						</div>
+						<div class="row">
+							<div class="col-md-4">
+                        		<div class='form-group'>
+                        			{{form.bos_type.label()}}
+                        			{{form.bos_type(class='form-control bostype', onchange='getSelectOptions(this)')}}
+                        		</div>
+                    		</div>
+                    		<div class="col-md-4">
+                        		<div class='form-group'>
+                        			{{form.department.label()}}
+                        			{{form.department(class='form-control department')}}
+                        		</div>
+                    		</div>                    		
+                		</div>                		
+						
+						<div class="row align-items-center justify-content-center">                   		                  		
+                    		<div class="col-md-4">                    
+                        		<div class='form-group'>
+                            		<button class="btn btn-info" type="button" onclick="getForm()"> Get Form</button> 
+                        		</div>
+                    		</div>
+						</div>
+					</form>
+				</div>
+				
+			</div>
+		</div>
+		
+	</div>
+	{% if enteries %}
+	
+	
+    {% endif %}            
+</div>
+
+{% endblock %}
+
+{% block tail %}
+
+<script type="text/javascript">
+
+
+function getForm(){
+		var form=$(".bostype").find(":selected").val();
+		var department=$(".department").find(":selected").val();
+		if (form=="OGC" && department=="WHSE"){
+
+			alert("WHSE OGC form is not available yet.");
+
+			return false;
+		}
+
+		
+
+		location.href="/bos?type="+form+"&department="+department;
+};
+
+
+function getSelectOptions(data){
+	var form=$(data).find(":selected").val();
+
+	if (form=='SAFETY'){
+		$('.department').html('<option value="MSG">MSG</option><option value="PSG">PSG</option><option value="QA">Lab Safety BOS</option><option value="WHSE">WHSE FP</option><option value="WHSERPM">WHSE RPM</option><option value="UTILITY">UTILITY</option>')
+	}else if (form=='OGC'){
+		$('.department').html('<option value="MSG">MSG</option><option value="PSG">PSG</option>')
+	}else{
+		$('.department').html('<option value="MSG">MSG</option><option value="PSG">PSG</option><option value="QA">Lab Q-BOS</option><option value="WHSE">WHSE</option>')	
+	}
+}
+
+</script>
+
+{% endblock %}
+

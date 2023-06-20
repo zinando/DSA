@@ -1,0 +1,424 @@
+{% extends 'public/base.html' %}
+
+
+
+{% block content %}
+
+
+<div class="row">
+
+                        
+                        <!-- Earnings (Monthly) Card Example -->
+                        <div class="col-xl-4 col-md-4 mb-4">
+
+                            <div class="card border-left-success shadow" style="margin-left: 10px;">
+                                <div class="card-body"> 
+                                    <div class="row no-gutters align-items-center">
+                                        <div class="col mr-2" style="border-left: 20px;">
+                                            <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
+                                                Machine Stats (Current Shift):</div>
+
+                                            <div class="live-stat" style="color:#000;">
+                                                <span style="float:left;">Unpl Stops/DT</span>
+                                                <span style="float:right;">3/104 mins</span>
+                                            </div><br>
+
+                                            <div class="live-stat" style="color:#000">
+                                                <span style="float:left;">Pln Stops/DT</span>
+                                                <span style="float:right;">5/304 mins</span>
+                                            </div><br>                  
+
+                                            <div class="live-stat" style="color:#000">
+                                                <span style="float:left;">UpTime</span>
+                                                <span style="float:right;">1242 mins</span>
+                                            </div><br>
+
+                                            <div class="live-stat" style="color:#000">
+                                                <span style="float:left;">Est. PR</span>
+                                                <span style="float:right;">74.9%</span>
+                                            </div><br>
+
+                                        </div>
+                                    </div>
+                                </div> 
+                            </div>
+                        </div> 
+
+                        <!-- Earnings (Monthly) Card Example -->
+                        <div class="col-xl-8 col-md-8 mb-4">
+                            <div class="card border-left-info shadow h-100 py-2">
+                                <div class="card-body">
+                                    <div class="row no-gutters align-items-center">
+                                        <div class="col mr-2" style="borde-right: 20px;">
+                                            <div class="text-xs font-weight-bold text-info text-uppercase mb-1">Actions
+                                            </div>
+                                            <div class="row no-gutters align-items-center">
+                                                <div class="col-auto">
+                                                  <a href="/ml_w?shift=current" class="curr_Button-a">
+                                                  <button style="margin:0px 10px 0px 0px" type="button" class="btn btn-info curr_Button">
+                                                    <i class="fas fa-anchor"></i>
+                                                  </button></a>
+                                                </div>
+                                                <div class="col-auto">
+                                                  <a href="/ml_w?shift=previous" class="prev_Button-a">
+                                                  <button style="margin:0px 10px 0px 0px" type="button" class="btn btn-info prev_Button">
+                                                    <i class="fas fa-history"></i>
+                                                  </button></a>
+                                                </div>
+
+                                                <div class="col-auto">      <button style="margin:0px 10px 0px 0px" type="button" class="btn btn-info user_defined" data-toggle="collapse" data-target="#get_user_defined">
+                                                    <i class="fas fa-clock"></i>
+                                                  </button>
+                                                </div>
+
+                                                <div class="col-auto">
+                                                    <button type="button" class="btn btn-info stopButt" data-toggle="collapse" data-target="#insertStop">
+                                                    <span class="table-up"><i class="fas fa-long-arrow-alt-up" aria-hidden="true"></i></span>
+                                            <span class="table-down"><i class="fas fa-long-arrow-alt-down" aria-hidden="true"></i></span>
+                                                    </button>
+                                                </div>
+                                                <div class="col-auto">
+                                                  <button style="margin:0px 10px" type="button" class="btn btn-info" onclick="mergeTwoStops('W')">
+                                                    <i class="fas fa-hourglass-2"></i>
+                                                  </button>
+                                                </div>
+                                                
+                                            </div>
+                                        </div>
+                                      <!--  <div class="col-auto"><a data-target="#" data-toggle="modal" href="" class="indigo-text ">
+                                            <span class="table-up"><i class="fas fa-long-arrow-alt-up" aria-hidden="true"></i></span>
+                                            <span class="table-down"><i class="fas fa-long-arrow-alt-down" aria-hidden="true"></i></span>
+                                          </a>
+                                        </div> 
+
+                                        <div class="col mr-2" style="border-left: 20px;">
+                                            <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
+                                                Machine Stats (Current Shift):</div>
+                                            <div style="color:#000"><span style="float:left;"></span>Unpl Stops/DownTime<span style="float:right;">3/243 mins</span></div>
+                                            <div style="color:#000"><span style="float:left;"></span>Planned Stops/DownTime<span style="float:right;">5/105 mins</span></div>
+                                            <div style="color:#000"><span style="float:left;"></span>UpTime<span style="float:right;">1242 mins</span></div>
+                                            <div style="color:#000"><span style="float:left;"></span>Est. PR<span style="float:right;">74.9%</span></div>
+                                        </div>-->                                        
+                                    
+                                    </div>
+                                    <div class="row no-gutters align-items-center"><div class="col-md-12"><hr style="border: 2px solid #486DDA" /></div></div>
+                                    <div class="col-md-6">
+                                            <a href="/ml_u?shift=current"><button class="btn btn-success u-butt" type="button">U</button></a>
+                                            <a href="/ml_v?shift=current" style="margin: 0px 10px;"><button class="btn btn-success v-butt" type="button">V</button></a>
+                                            <a href="/ml_w?shift=current"><button class="btn btn-success w-butt" type="button">W</button></a>
+                                        </div>
+                                    <!-- collapsible for inserting stop event -->
+                                    <div class="row stop_insert_div" id="insertStop" style="display: none;">
+                            <div class="col-md-12" id="ajaxBody">
+                                <div  id="res"  align="center"></div>
+                                <form id="stopInsert" style="margin-top:20px" method="POST" action="/insertstopevent">
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                        <div class="form-group">
+                                            <div>Start</div>                
+                                            <div class='input-group date' id='startDate'>
+                                                <input class="form-control start_date" name="dateTimePicker1" style="z-index: 1100 !important;" />
+                                                <span class="input-group-addon">
+                                                    <span class="glyphicon glyphicon-calendar"></span>
+                                                </span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <div>End</div>                
+                                            <div class='input-group date' id='endDate'>
+                                                <input class="form-control end_date" name="dateTimePicker2" style="z-index: 1100 !important;" />
+                                                <span class="input-group-addon">
+                                                    <span class="glyphicon glyphicon-calendar"></span>
+                                                </span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <div>Fault:</div>                
+                                                <div class='input-group' id='stoperror'>
+                                                    <select class="form-control" name="stop_error" id="stop_error"></select>                                                    
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <div>Stop Classification:</div>                
+                                                <div class='input-group' id='stopclass'>
+                                                    <select class="form-control" name="stop_class" id="stop_class" onblur="fetchReason(this,'stop_trans','stop_trans')"></select>                                                    
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <div>Transformation:</div>                
+                                                <div class='input-group' id='stoptrans'>
+                                                    <select class="form-control" name="stop_trans" id="stop_trans" onblur="fetchReason(this,'stop_comp','stop_comp')"></select>                                                    
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <div>Component:</div>                
+                                                <div class='input-group' id='stopcomp'>
+                                                    <select class="form-control" name="stop_comp" id="stop_comp" onblur="fetchReason(this,'stop_mode','stop_mode')"></select>                                                    
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <div>Failure Mode</div>                
+                                                <div class='input-group' id='stopmode'>
+                                                    <select class="form-control" name="stop_mode" id="stop_mode" onblur="showBrkdwn(this,'-2')"></select>                                                    
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <div>Consequence:</div>                
+                                                <div class='input-group' id='stopconc'>
+                                                    <select class="form-control brkdwn" name="stop_conc" id="stop_conc"><option class="brkdwn-2" style="disply:none" value="0"></option><option class="brkdwn-2" value="1" style="disply:none">Breakdown</option></select>                                                    
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-12">
+                                            <div class="form-group">
+                                                <div>Comment:</div>                
+                                                <div class='input-group' id='stopcomment'>
+                                                    <textarea class="form-control" id="stop_comment" rows="2" cols="50"></textarea>                                                    
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-2">
+                                            <div class="form-group">                                                                
+                                                <div class='input-group' id=''>
+                                                    <input class="btn btn-info insertButt" type="button" name="Submit" onclick="insertStop('W','/ml_w')" value="Insert" />                                                    
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                    </div>
+      
+                                </form>            
+                            </div>
+                        </div>
+<div class="row" id="get_user_defined" style="display: none;">
+    <div class="col-md-12" id="ajaxBody">
+        <div  id="res"  align="center"></div>
+        <form id="" style="margin-top:20px" method="POST" action="">
+            <div class="row">
+                <div class="col-md-3">
+                    <div class="form-group">
+                        <div>Start Date</div>                
+                        <div class='input-group date' id='startDate'>
+                            <input type="text" class="form-control start_date2" name="dateTimePicker11" style="z-index: 1100 !important;" />
+                                <span class="input-group-addon">
+                                    <span class="glyphicon glyphicon-calendar">
+                                        
+                                    </span>
+                                </span>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="form-group">
+                        <div>Start Time</div>                
+                        <div class='input-group date'>
+                            <select class="form-control" id='startTime'></select>                                
+                        </div>
+                    </div>
+                </div>                
+                <div class="col-md-3">
+                    <div class="form-group">
+                        <div>End</div>                
+                        <div class='input-group date' id='endDate'>
+                            <input class="form-control end_date2" name="dateTimePicker12" style="z-index: 1100 !important;" />
+                                <span class="input-group-addon">
+                                    <span class="glyphicon glyphicon-calendar">
+                                        
+                                    </span>
+                                </span>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="form-group">
+                        <div>End Time</div>                
+                        <div class='input-group date'>
+                            <select class="form-control" id='endTime'></select>                                
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row" style="margin-bottom:70px">
+                <div class="form-group">
+                    
+                    <button type="button" style="margin-left:15px" class="btn btn-danger" onclick="fetchUserDefined('/ml_w')">Go</button>
+                    
+                </div>
+            </div>
+
+        </form>
+    </div>
+</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Earnings (Monthly) Card Example 
+                        <div class="col-xl-4 col-md-4 mb-4">
+                            <div class="card border-left-primary shadow h-100 py-2">
+                                <div class="card-body">
+                                    <div class="row no-gutters align-items-center">
+                                        <div class="col mr-2">
+                                            <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
+                                                Machine Stats (Current Shift):</div>
+                                            <div style="color:#000"><span style="float:left;"></span>Unpl Stops/DownTime<span style="float:right;">3/243 mins</span></div>
+                                            <div style="color:#000"><span style="float:left;"></span>Planned Stops/DownTime<span style="float:right;">5/105 mins</span></div>
+                                            <div style="color:#000"><span style="float:left;"></span>UpTime<span style="float:right;">1242 mins</span></div>
+                                            <div style="color:#000"><span style="float:left;"></span>Est. PR<span style="float:right;">74.9%</span></div>
+                                        </div>                                        
+                                    </div>
+                                </div>
+                            </div>
+                        </div>  -->
+
+                        <!-- Pending Requests Card Example 
+                        <div class="col-xl-3 col-md-3 mb-4">
+                            <div class="card border-left-warning shadow h-100 py-2">
+                                <div class="card-body">
+                                    <div class="row no-gutters align-items-center">
+                                        <div class="col mr-2">
+                                            <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">
+                                                Pending Requests</div>
+                                            <div class="h5 mb-0 font-weight-bold text-gray-800">18</div>
+                                        </div>
+                                        <div class="col-auto">
+                                            <i class="fas fa-comments fa-2x text-gray-300"></i>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div> -->
+                    </div>
+<div style="overflow-x:auto;">
+  <!-- Editable table -->
+<div class="card">
+  <!--<h3 class="card-header text-center font-weight-bold text-uppercase py-4">
+    Editable table
+  </h3>  -->
+  <div class="card-body">
+    <div id="table" class="table-editable" style="overflow-x:auto;" role="region" aria-labelledby="caption" tabindex="0"> 
+      
+      <table id="dtHorizontalExample" class="table table-bordered table-responsive-md table-striped text-center w-auto" width="100%">
+        <thead>
+          <tr class="table-primary">
+            <th class="text-center"><div class="header_cell_container time_color_header"><div class="header_cell_div time_color_header">Start Date</div><div class="header_cell_div time_color_header">Start Time</div><div class="header_cell_div time_color_header">Uptime</div><div class="header_cell_div time_color_header">Downtime</div></div></th> 
+            <th class="text-center">Fault</th>
+            <th class="text-center">Stops Classification</th>
+            <th class="text-center">Transformation</th>
+            <th class="text-center">Component</th>
+            <th class="text-center">Failure Mode</th>
+            <th class="text-center">Stop Classification</th>
+            <th class="text-center">Comment</th>
+            <th class="text-center">Action</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for stop in stops %}
+          <tr class="row{{stop.sid}} table-danger">
+            <th class="table-success pt-3-half" contenteditable="false"><div class="body_cell_container time_color"><div class="body_cell_div time_color">{{stop.startdate}}</div><div class="body_cell_div time_color">{{stop.start_time}}</div><div class="body_cell_div time_color">{{stop.uptime}} mins</div><div class="body_cell_div time_color">{{stop.downtime}} mins</div></div></th>          
+            
+            <td class="pt-3-half" contenteditable="false">{{stop.error}}</td>
+            
+            <td class="pt-3-half" contenteditable="false"><div class="ur1div{{stop.sid}}"><select class="form-control ur1" name="stop_class" id="ur1{{stop.sid}}" onblur="fetchReason(this,'stop_trans','ur2{{stop.sid}}')" onchange="setCellWidth('.ur1div{{stop.sid}}','ur1{{stop.sid}}')"></select></div></td>
+            
+            <td class="pt-3-half" contenteditable="false"><div class="ur2div{{stop.sid}}"><select class="form-control ur2" name="stop_class" id="ur2{{stop.sid}}" onblur="fetchReason(this,'stop_comp','ur3{{stop.sid}}')" onchange="setCellWidth('.ur2div{{stop.sid}}','ur2{{stop.sid}}')"></select></div>
+            </td>
+            
+            <td class="pt-3-half" contenteditable="false"><div class="ur3div{{stop.sid}}"><select class="form-control ur3" name="stop_class" id="ur3{{stop.sid}}" onblur="fetchReason(this,'stop_mode','ur4{{stop.sid}}')" onchange="setCellWidth('.ur3div{{stop.sid}}','ur3{{stop.sid}}')"></select></div></td>
+            
+            <td class="pt-3-half" contenteditable="false"><div class="ur4div{{stop.sid}}"><select class="form-control ur4" name="stop_mode" id="ur4{{stop.sid}}" onblur="showBrkdwn(this,'{{stop.sid}}')" onchange="setCellWidth('.ur4div{{stop.sid}}','ur4{{stop.sid}}')"></select></div></td>
+            
+            <td class="pt-3-half" contenteditable="false"><div class="ur5div{{stop.sid}}"><select class="reason_five form-control" id="ur5{{stop.sid}}"><option class="brkdwn{{stop.sid}}" style="disply:none" value="0"></option><option class="brkdwn{{stop.sid}}" value="1" style="disply:none">Breakdown</option></select></div></td>
+            
+            <td class="pt-3-half" contenteditable="false"><div class="commdiv{{stop.sid}}"><input type="text" class="form-control" id="comm{{stop.sid}}"></div></td>
+            
+            <td>
+              <span class="table-remove">
+                  <input class="mergeBox" type="checkbox" name="merger" value="{{stop.sid}}">
+              </span>
+              {% if session['adminlevel'] > 1 %}
+              <span class="table-remove">
+                  <button type="button" id="{{stop.sid}}" class="btn btn-danger btn-rounded btn-sm my-0" onclick='deleteItem("{{stop.sid}}")'>
+                   <i class="fa fa-trash-o"></i>
+                  </button>
+              </span>
+              {% endif %}
+              <span class="table-remove">
+                  <button type="button" id="{{stop.sid}}" class="btn btn-info btn-rounded btn-sm my-0" onclick='updateSTOP("{{stop.sid}}")'><i class="fa fa-save"></i>                  
+                  </button>
+              </span>
+            </td>
+          </tr>
+          {% endfor %}         
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+<!-- Editable table -->
+{% endblock %}
+
+{% block tail %}
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@9"></script>
+
+ <script type="text/javascript">
+
+//$(".stop_insert_div").hide();
+$("body").on("click",".stopButt",function(){
+  var visible=$(".stop_insert_div").css("display");
+  if (visible=="none"){
+    $(".stop_insert_div").css("display","block");
+  }else{
+    $(".stop_insert_div").css("display","none");
+  }
+})
+
+function setCellWidth (div,selct){
+    var e = document.getElementById(selct);
+    var text=e.options[e.selectedIndex].text;
+    var texlen=text.length;
+    var len;
+    if (texlen<7){
+            texlen=7;
+        }
+
+    len = texlen * 14;
+    $(div).css("width",len);
+}
+
+//this function will highlight the button of the current view//
+function shadeViewButton(){
+    var U="http://127.0.0.1:5000/ml_w?shift=previous";
+
+    if (window.location.href==U){
+        $(".prev_Button").addClass('active'); ///$('#div').removeClass('left').addClass('right');
+        $(".w-butt").addClass('active');
+
+    }else{
+        $(".curr_Button").addClass('active');
+        $(".w-butt").addClass('active');
+    }
+}
+shadeViewButton();
+
+
+
+
+ </script>
+
+{% endblock %}

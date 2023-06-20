@@ -1,0 +1,204 @@
+{% extends 'public/base.html' %}
+
+{% block head %}
+<style type="text/css">
+.table > thead:first-child > tr:first-child > th:first-child{
+    position: absolute;
+   /* display: inline-block;    
+    height: 100%; */
+}
+
+.table > tbody > tr > td:first-child {
+    position: absolute;
+   /* display: inline-block;    
+    height: 100%; */
+}
+
+.table > thead:first-child > tr:first-child > th:nth-child(2) {
+    padding-left: 230px;
+}
+
+.table > tbody > tr > td:nth-child(2) {
+    padding-left: 240px !important;
+}
+</style>
+{% endblock %}
+
+
+{% block content %}
+
+<div class="container">
+    
+    
+    <div class="row text-center">
+                    
+                    <div class="col-md-12">
+                        <hr/><h3 style="background:#179cd7">PSG Production Result View</h3><hr/>
+                        <h3 style="backround:#179cd7">Result From {{start}} To {{end}}</h3><hr/>
+                        <div class="row">
+                            <div class="col-md-12">
+                                <span class="login100-form-logo">
+                                    <i class="fas fa-landscape"></i>
+                                    <span style="color:black;background: white;">{{resp}}</span>
+                                </span>
+                            </div>
+                        </div>
+    {%if results %}
+                        <div class="table-responsive">
+                            <table id="dtVerticalScrollExample" class="table table-striped table-bordered table-sm" cellspacing="0"
+  width="100%">
+                                            
+                                <thead>
+                                    <tr>
+                                        <th scope="col">
+                                           <div class="p-items param"> Process Parameters</div>
+                                        </th>
+                                        {%for man in results %}
+                                        <th scope="col">
+                                            {{man.mcode}}
+                                        </th>
+                                        {% endfor%}
+                                        <th scope="col">
+                                            <div class="m-items summary m-item-hds">
+                                                Total
+                                            </div>
+                                        </th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+
+                                        <td>
+                                            <div class="machine-datas">
+                                                <div class="p-items param">Process Reliability (%)</div>
+                                                <div class="p-items param">Schedule Time (mins)</div>
+                                                <div class="p-items param">Total DownTime (mins)</div>
+                                                <div class="p-items param">Volume (MSU)</div>
+                                            <div class="p-items param">Volume (Mt)</div>
+                                                <div class="p-items param">Unplanned Stops</div>
+                                                <div class="p-items param">Planned DownTime (%)</div>
+                                                <div class="p-items param">Unplanned DownTime (%)</div>
+                                                <div class="p-items param">Planned DownTime (mins)</div>
+                                                <div class="p-items param">Unplanned DownTime (mins)</div> 
+                                            </div>
+                                        </td>
+                                        {%for man in results %}
+                                        <td>
+                                            
+
+                                            <div class="m-items">{{man.pr}}</div>
+                                            <div class="m-items">{{man.skeduletime}}</div>
+                                            <div class="m-items">{{man.downtime |to_2dp}}</div>
+                                            <div class="m-items">{{man.msu}}</div>
+                                            <div class="m-items">
+                                                {{man.metrictone | to_2dp}}
+                                            </div>
+                                            <div class="m-items">{{man.upst}}</div>
+                                            <div class="m-items">
+                                                {{calc_planned_dt_percent(man.downtime,man.updt_mins,man.skeduletime)}}
+                                            </div>
+                                            <div class="m-items">{{man.updt}}</div>
+                                            <div class="m-items">
+                                            {{calc_planned_dt(man.downtime,man.updt_mins)}}
+                                            </div>
+                                            <div class="m-items">{{man.updt_mins}}</div>
+                                        </td>
+                                        {% endfor%}
+                                        <td>
+                                            <div class="m-items summary">{{total.pr}}</div>
+                                            <div class="m-items summary">{{total.skeduletime}}</div>
+                                            <div class="m-items summary">{{total.downtime}}</div>
+                                            
+                                            <div class="m-items summary">{{total.msu}}</div>
+                                            <div class="m-items summary">
+                                                {{total.metrictone | to_2dp}}
+                                            </div>
+                                            <div class="m-items summary">{{total.upst}}</div>
+                                            <div class="m-items summary">
+                                                {{calc_planned_dt_percent(total.downtime,total.updt_mins,total.skeduletime)}}
+                                            </div>
+                                            <div class="m-items summary">{{total.updt}}</div>
+                                            <div class="m-items summary">
+                                                {{calc_planned_dt(total.downtime,total.updt_mins)}}
+                                            </div>
+                                            <div class="m-items summary">{{total.updt_mins}}</div>                                            
+                                        </td>
+                                                
+                                    </tr>
+                                </tbody>
+                                        </table>
+                        </div>
+    {%endif%}                 
+                    </div>
+                </div>
+    
+                
+</div>
+
+{% endblock %}
+
+
+{% block tail %}
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@9"></script>
+<script type="text/javascript">
+    function changePassword(id){
+        var old = $('#oldpass').val();
+        var new1 = $('#pass1').val();
+        var new2 = $('#pass2').val();
+
+        if (new1 == new2){
+
+            if (old==new1){
+                Swal.fire({
+                        icon: 'error',
+                        title: 'Password Error',
+                        text: 'The new password cannot be the same as the old one.',                     
+                    });
+                return false;
+            }
+
+
+            const update = {itemid: id,old:old,new:new1,};
+
+                const options = {
+                                method: 'POST',
+                                headers: {'Content-Type': 'application/json',},
+                                body: JSON.stringify(update),
+                            };
+          
+                fetch(`/userprofile?action=${'CHANGEPASSWORD'}`,options)
+                    .then(function (response) {
+                            return response.json();
+                        }).then(function (text) {
+                                
+                                if (text.status==1){
+                                    Swal.fire({
+                                    icon: 'success',
+                                    title: 'Success',
+                                    html: text.message,
+                     
+                                    })
+                                }else{
+                                    Swal.fire({
+                                        icon: 'error',
+                                        title: 'Error',
+                                        html: text.message,                     
+                                        })
+                                    }
+                                
+
+                            });
+
+        }else{
+            Swal.fire({
+                        icon: 'error',
+                        title: 'Password Mismatch',
+                        text: 'The new passwords do not match.',                     
+                    });
+            return false;
+        }
+    }
+
+</script>
+
+{% endblock %}

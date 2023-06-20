@@ -1,0 +1,152 @@
+/*@import url("https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,700;1,200&display=swap"); */
+
+#dtHorizontalExample {
+/*  font-family: "Fraunces", serif;
+  font-size: 125%;    
+  border: 1px solid black;
+   */
+  white-space: nowrap;
+  margin: 0;
+  border: none;
+  border-collapse: separate;
+  border-spacing: 0;
+  table-layout: fixed;
+  font-size: 11px;
+  
+}
+
+#dtHorizontalExample td,
+#dtHorizontalExample th {
+/*  border: 1px solid black;
+  padding: 0.5rem 1rem;*/
+}
+
+#dtHorizontalExample thead th {
+/*    
+   width: 25vw;      
+  padding: 3px;
+  background: white; */  
+  top: 0;  
+  z-index: 1;
+  position: sticky;
+  
+  
+}
+
+#dtHorizontalExample td {
+/*  background: #fff;*/
+  padding: 4px 5px;
+  text-align: center;
+}
+
+#dtHorizontalExample tbody th {
+/*  font-weight: 100;
+  font-style: italic;
+   */
+  text-align: left;
+  position: relative;
+}
+#dtHorizontalExample thead th:first-child {
+  position: sticky;     
+ left: 0; 
+z-index: 2; 
+}
+#dtHorizontalExample tbody th {
+  position: sticky;   
+  background: white; 
+left: 0;
+z-index: 1;
+}
+
+caption {
+  text-align: left;
+  padding: 0.25rem;
+  position: sticky;
+  left: 0;
+}
+
+[role="region"][aria-labelledby][tabindex] {
+  width: 100%;
+  max-height: 98vh;
+  overflow: auto;
+}
+[role="region"][aria-labelledby][tabindex]:focus {
+  box-shadow: 0 0 0.5em rgba(0, 0, 0, 0.5);
+  outline: 0;
+}
+
+.header_cell_container, .body_cell_container {
+  width: 250px;
+  margin: 0;
+  box-sizing: border-box;
+}
+.header_cell_div, .body_cell_div {
+  width: 25%; 
+  float: left;
+  text-align: left;
+  padding: 0px 5px;
+  border: 1px solid grey;
+}
+
+/*this css colors the time section of all the stop events */
+.time_color{
+  background: #F5C6CB;
+}
+.time_color_header{
+  background: #b8daff;
+}
+
+/*this code modifies the css of the machine stat*/
+.live-stat > span {
+  font-size: 12px;
+}
+.m-item{
+          float:left;           
+          width:60px;
+          height:25px;
+          border: 1px solid grey;
+        } 
+
+.m-item-hd{
+          background-color: #40e0d0;
+        } 
+
+.m-item-hds{          
+          color: #fff;
+        }
+
+.m-items{
+                     
+          width:60px;
+          height:25px;
+          border: 1px solid grey;
+          background-color: #ef7b00;
+
+        } 
+
+.m-items-hd{
+          background-color: #40e0d0;
+        }
+.p-items{
+          width:220px;
+          height:25px;
+          border: 1px solid grey;
+          text-align: left;
+          background-color: #d56b52;
+          padding-left: 10px;
+        }
+
+.m-items-hds{          
+          color: #fff;
+        }                           
+
+.summary{
+          color: #fff;
+          background-color: #808000;
+          
+        }
+
+.param {
+          color: #fff;
+          background-color: #179cd7;
+}

@@ -1,0 +1,1109 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <title>UGC Intranet</title>
+    <link rel="icon" type="image/x-icon" href="/static/img/logo/favicon.ico">
+
+    <!-- Custom fonts for this template-->
+    <link href="static/vendor/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
+    <link
+        href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i"
+        rel="stylesheet">
+
+    <!-- Custom styles for this template-->
+    <link href="static/css/sb-admin-2.min.css" rel="stylesheet">
+    <link href="static/css/my_custom_css.css" rel="stylesheet">
+    <!-- Bootstrap styles for this template-->
+    <link href="static/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <link href="static/vendor/bootstrap/css/bootstrap-datetimepicker.min.css" rel="stylesheet">
+
+    <link rel="stylesheet" href="static/css/dtsel.css" />
+    
+    <!-- Icons -->
+    <link rel="stylesheet" type="text/css" href="static/assets/css/fontawesome.css">
+
+    <!--Slick slider css-->
+    <link rel="stylesheet" type="text/css" href="static/assets/css/slick.css">
+    <link rel="stylesheet" type="text/css" href="static/assets/css/slick-theme.css">
+
+    <!-- Animate icon -->
+    <link rel="stylesheet" type="text/css" href="static/assets/css/animate.css">
+
+    <!-- Themify icon -->
+    <link rel="stylesheet" type="text/css" href="static/assets/css/themify-icons.css">
+
+    <!-- Bootstrap css -->
+    <link rel="stylesheet" type="text/css" href="static/assets/css/bootstrap.css">
+
+    <!-- Theme css 
+    <link rel="stylesheet" type="text/css" href="static/assets/css/color8.css" media="screen" id="color"> -->
+    
+     <!--Google font-->      
+     <link rel="stylesheet" href="static/vendor/jquery/toastr.min.css"/>
+     <link rel="stylesheet" href="static/vendor/jquery/toastr.css"/>
+    <!-- <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/css/bootstrap.min.css">
+
+     Style Sheets -->        
+        <script>
+            jQuery.noConflict();
+        // Code that uses other library's $ can follow here.
+        </script>
+    
+    {% block head %} {% endblock %}
+</head>
+
+<body id="page-top">
+
+    <!-- Page Wrapper -->
+    <div id="wrapper">
+
+        <!-- Sidebar -->
+        <ul class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion" id="accordionSidebar">
+
+            <!-- Sidebar - Brand -->
+            <a class="sidebar-brand d-flex align-items-center justify-content-center" href="/">
+                <div class="sidebar-brand-icon"><!-- rotate-n-15">-->
+                   <!-- <i class="fas fa-laugh-wink"></i>-->
+                    <img src="/static/img/logo/ugee.png" alt="UGEE CHEMICALS LOGO" width="50px" height="50px">
+                </div>
+                <div class="sidebar-brand-text mx-3">UGEE CHEMICALS</div>
+            </a>
+
+            <!-- Divider -->
+            <hr class="sidebar-divider my-0">
+
+            <!-- Nav Item - Dashboard -->
+            <li class="nav-item active">
+                <a class="nav-link" href="/">
+                    <i class="fas fa-fw fa-tachometer-alt"></i>
+                    <span>Dashboard</span></a>
+            </li>
+
+            <!-- Divider -->
+            <hr class="sidebar-divider">
+
+            <!-- Heading -->
+            <div class="sidebar-heading">
+                Interface
+            </div>
+            {% if session["adminlevel"] >1 %}
+            <!-- Nav Item - Pages Collapse Menu -->
+            <li class="nav-item">
+                <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseTwo"
+                    aria-expanded="true" aria-controls="collapseTwo">
+                    <i class="fas fa-fw fa-cog"></i>
+                    <span>Admin Actions</span>
+                </a>
+                <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
+                    <div class="bg-white py-2 collapse-inner rounded">
+                        <h6 class="collapse-header">User Management:</h6>
+                        <a class="collapse-item" href="/adduser">Add New User</a>
+                        <a class="collapse-item" href="/userview">View Users</a>
+                        <a class="collapse-item" href="/reset_password">Change Password</a>
+                        <a class="collapse-item" href="/skuentry">View SKU</a>
+                        <a class="collapse-item" href="/user_roles?action=">User Roles</a>
+                        <a class="collapse-item" href="/machineview?action=">Machine View</a>                      
+                        
+                        <h6 class="collapse-header">BOS Management:</h6>
+                        <a class="collapse-item" href="/viewbos">View BOS Entries</a>
+                       
+                        
+                    </div>
+                </div>
+            </li>
+            {% endif %}
+            <!-- Nav Item - Utilities Collapse Menu -->
+            <li class="nav-item">
+                <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseUtilities"
+                    aria-expanded="true" aria-controls="collapseUtilities">
+                    <i class="fas fa-fw fa-wrench"></i>
+                    <span>BOS</span>
+                </a>
+                <div id="collapseUtilities" class="collapse" aria-labelledby="headingUtilities"
+                    data-parent="#accordionSidebar">
+                    <div class="bg-white py-2 collapse-inner rounded">
+                        <h6 class="collapse-header">Observation:</h6>
+                    {% if session["adminlevel"]<2 %}    
+                        {% if session["user_department"]==1 or session["user_department"]==3 %}    
+                        <a class="collapse-item" href="/bos?type=SAFETY&department=PSG">Safety BOS</a>
+                        <a class="collapse-item" href="/bos?type=QUALITY&department=PSG">Q BOS</a>
+                        <a class="collapse-item" href="/bos?type=OGC&department=PSG">OGC BOS</a>
+                        {% elif session["user_department"]==2 %}
+                        <a class="collapse-item" href="/bos?type=SAFETY&department=MSG">Safety BOS</a>
+                        <a class="collapse-item" href="/bos?type=QUALITY&department=MSG">Q BOS</a>
+                        <a class="collapse-item" href="/bos?type=OGC&department=MSG">OGC BOS</a>
+                        {% elif session["user_department"]==3 %}
+                        <a class="collapse-item" href="/bos?type=SAFETY&department=QA">Lab Safety BOS</a>
+                        <a class="collapse-item" href="/bos?type=QUALITY&department=QA">Lab Q Compliance</a>
+                        {% elif session["user_department"]==4 %}
+                        <a class="collapse-item" href="/bos?type=SAFETY&department=WHSE">FP Safety BOS</a>
+                        <a class="collapse-item" href="/bos?type=SAFETY&department=WHSERPM">RPM Safety BOS</a>
+                        <a class="collapse-item" href="/bos?type=QUALITY&department=WHSE">Q BOS</a>                            
+                        {% endif %}
+                        <a class="collapse-item" href="/bos?type=SAFETY&department=UTILITY">UTILITY Safety BOS</a>
+                    {% else %}
+                        <a class="collapse-item" href="/leadershipbos">Leadership BOS/OGC</a>
+                    {% endif %}    
+                        <a class="collapse-item" href="utilities-other.html">Other</a>
+                    </div>
+                </div>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseUtilities2"
+                    aria-expanded="true" aria-controls="collapseUtilities">
+                    <i class="fas fa-fw fa-wrench"></i>
+                    <span>Production</span>
+                </a>
+                <div id="collapseUtilities2" class="collapse" aria-labelledby="headingUtilities"
+                    data-parent="#accordionSidebar">
+                    <div class="bg-white py-2 collapse-inner rounded">
+                        {% if session["user_department"]==1 %}
+                        <h6 class="collapse-header">INPUT</h6>                           
+                        <a class="collapse-item" href="/psgproduction">Create Production</a>
+                        <a class="collapse-item" href="/psgproduction_report?action=">DT Report</a>
+                        <a class="collapse-item" href="/psgproduction_entries">Delete Production</a>                                                    
+                        {% endif %}
+                        <h6 class="collapse-header">OUTPUT</h6>
+                        <a class="collapse-item" href="/viewpsgproduction?action=">View Results</a>                        
+                    </div>                       
+                </div>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseUtilities4"
+                    aria-expanded="true" aria-controls="collapseUtilities">
+                    <i class="fas fa-fw fa-wrench"></i>
+                    <span>e_Learning</span>
+                </a>
+                <div id="collapseUtilities4" class="collapse" aria-labelledby="headingUtilities"
+                    data-parent="#accordionSidebar">
+                    <div class="bg-white py-2 collapse-inner rounded">                        
+                        <h6 class="collapse-header">Trainings</h6>                           
+                        <a class="collapse-item" href="/e_learning?action=">Skill Matrix</a>
+                    {% if session['adminlevel'] >2 %}
+                        <a class="collapse-item" href="/e_learning?action=ADD-TRAINING">Add Course</a>
+                    {% endif %}
+                    {% if session['adminlevel'] >1 %}
+                        <a class="collapse-item" href="/e_learning?action=VIEW-RECORDS">View Records</a>                    
+                    {% endif %}
+                    {% if session['adminlevel'] == 5 %}
+                        <a class="collapse-item" href="/e_learning?action=MANAGE">Manage Courses</a>
+                    {% endif %}
+                                               
+                    </div>                       
+                </div>
+            </li>
+
+            <!-- Divider -->
+            <hr class="sidebar-divider">
+            
+            <!-- Heading -->
+            <div class="sidebar-heading">
+                Addons
+            </div>
+
+            <!-- Nav Item - Pages Collapse Menu -->
+            <li class="nav-item">
+                <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseMachines"
+                    aria-expanded="true" aria-controls="collapsePages">
+                    <i class="fas fa-fw fa-folder"></i>
+                    <span>DownTime Events</span>
+                </a>
+                <div id="collapseMachines" class="collapse" aria-labelledby="headingPages" data-parent="#accordionSidebar">
+                    <div class="bg-white py-2 collapse-inner rounded">
+                        <h6 class="collapse-header">UVA Machines:</h6>
+                        <a class="collapse-item" href="/uva_a">A B C D</a>
+                        <a class="collapse-item" href="/uva_e">E F G H</a>
+                        <h6 class="collapse-header">Multilane Machines:</h6>                        
+                        <a class="collapse-item" href="/ml_r">R S T</a>                        
+                        <a class="collapse-item" href="/ml_u">U V W</a>                        
+                        <a class="collapse-item" href="/ml_i">I J K</a>                        
+                        <a class="collapse-item" href="/ml_l">L M N</a>
+                        <a class="collapse-item" href="/livechat">Live Preview</a>                                                
+                    </div>
+                </div>
+            </li>
+
+            <!-- Nav Item - Pages Collapse Menu -->
+            {%if session['fullname']=='Samuel Ndubumma' %}
+            <li class="nav-item">
+                <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapsePages"
+                    aria-expanded="true" aria-controls="collapsePages">
+                    <i class="fas fa-fw fa-folder"></i>
+                    <span>Pages</span>
+                </a>
+                <div id="collapsePages" class="collapse" aria-labelledby="headingPages" data-parent="#accordionSidebar">
+                    <div class="bg-white py-2 collapse-inner rounded">
+                        <h6 class="collapse-header">Operation Overview:</h6>
+                        <a class="collapse-item" href="/ml_u">Update Stops</a>
+                        <a class="collapse-item" href="/testpage">Test Page</a>
+                        <a class="collapse-item" href="/ml_j">I</a>
+
+                        <div class="collapse-divider"></div>
+                        <h6 class="collapse-header">Login Screens:</h6>
+                        <a class="collapse-item" href="login.html">Login</a>
+                        <a class="collapse-item" href="register.html">Register</a>
+                        <a class="collapse-item" href="forgot-password.html">Forgot Password</a>
+                        <div class="collapse-divider"></div>
+                        <h6 class="collapse-header">Other Pages:</h6>
+                        <a class="collapse-item" href="404.html">404 Page</a>
+                        <a class="collapse-item" href="blank.html">Blank Page</a>
+                    </div>
+                </div>
+            </li>
+
+            <!-- Nav Item - Charts -->
+            <li class="nav-item">
+                <a class="nav-link" href="charts.html">
+                    <i class="fas fa-fw fa-chart-area"></i>
+                    <span>Charts</span></a>
+            </li>
+
+            <!-- Nav Item - Tables -->
+            <li class="nav-item">
+                <a class="nav-link" href="tables.html">
+                    <i class="fas fa-fw fa-table"></i>
+                    <span>Tables</span></a>
+            </li>
+            {%endif%}
+            <!-- Divider -->
+            <hr class="sidebar-divider d-none d-md-block">
+
+            <!-- Sidebar Toggler (Sidebar) -->
+            <div class="text-center d-none d-md-inline">
+                <button class="rounded-circle border-0" id="sidebarToggle"></button>
+            </div>
+
+            <!-- Sidebar Message -->
+            <!--<div class="sidebar-card d-none d-lg-flex">
+                <img class="sidebar-card-illustration mb-2" src="img/undraw_rocket.svg" alt="...">
+                <p class="text-center mb-2"><strong>SB Admin Pro</strong> is packed with premium features, components, and more!</p>
+                <a class="btn btn-success btn-sm" href="https://startbootstrap.com/theme/sb-admin-pro">Upgrade to Pro!</a>
+            </div>-->
+
+        </ul>
+        <!-- End of Sidebar -->
+
+        <!-- Content Wrapper -->
+        <div id="content-wrapper" class="d-flex flex-column">
+
+            <!-- Main Content -->
+            <div id="content">
+
+                <!-- Topbar -->
+                <nav class="navbar navbar-expand navbar-light bg-white topbar mb-4 static-top shadow">
+
+                    <!-- Sidebar Toggle (Topbar) -->
+                    <button id="sidebarToggleTop" class="btn btn-link d-md-none rounded-circle mr-3">
+                        <i class="fa fa-bars"></i>
+                    </button>
+
+                    <!--top bar men at work icon, included-->
+                        <div style="background-image: url('/static/img/images/workman.png');background-repeat: no-repeat;background-size: contain; height: 70px;width: 500px;">
+                            <div >  
+                                <p style="float: right;color: blue;font-size: 12px;font-style: italic; text-align:center;width: 300px;margin-top: 10px;">You can now view your profile and change your password from your profile page when you click on your displayed name.</p>
+                            </div>
+                        </div>
+
+                    <!-- Topbar Search -->
+                    <!--<form
+                        class="d-none d-sm-inline-block form-inline mr-auto ml-md-3 my-2 my-md-0 mw-100 navbar-search">
+                        <div class="input-group">
+                            <input type="text" class="form-control bg-light border-0 small" placeholder="Search for..."
+                                aria-label="Search" aria-describedby="basic-addon2">
+                            <div class="input-group-append">
+                                <button class="btn btn-primary" type="button">
+                                    <i class="fas fa-search fa-sm"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </form>-->
+
+                    <!-- Topbar Navbar -->
+                    <ul class="navbar-nav ml-auto">
+                        
+                        <!-- Nav Item - Search Dropdown (Visible Only XS) -->
+                        <!--<li class="nav-item dropdown no-arrow d-sm-none">
+                            <a class="nav-link dropdown-toggle" href="#" id="searchDropdown" role="button"
+                                data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                <i class="fas fa-search fa-fw"></i>
+                            </a>-->
+                            <!-- Dropdown - Messages -->
+                            <!--<div class="dropdown-menu dropdown-menu-right p-3 shadow animated--grow-in"
+                                aria-labelledby="searchDropdown">
+                                <form class="form-inline mr-auto w-100 navbar-search">
+                                    <div class="input-group">
+                                        <input type="text" class="form-control bg-light border-0 small"
+                                            placeholder="Search for..." aria-label="Search"
+                                            aria-describedby="basic-addon2">
+                                        <div class="input-group-append">
+                                            <button class="btn btn-primary" type="button">
+                                                <i class="fas fa-search fa-sm"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                        </li>-->
+
+                        <!-- Nav Item - Alerts -->
+                        <!--<li class="nav-item dropdown no-arrow mx-1">
+                            <a class="nav-link dropdown-toggle" href="#" id="alertsDropdown" role="button"
+                                data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                <i class="fas fa-bell fa-fw"></i>-->
+                                <!-- Counter - Alerts -->
+                                <!--<span class="badge badge-danger badge-counter">3+</span>-->
+                            <!--</a>-->
+                            <!-- Dropdown - Alerts -->
+                            <!--<div class="dropdown-list dropdown-menu dropdown-menu-right shadow animated--grow-in"
+                                aria-labelledby="alertsDropdown">
+                                <h6 class="dropdown-header">
+                                    Alerts Center
+                                </h6>
+                                <a class="dropdown-item d-flex align-items-center" href="#">
+                                    <div class="mr-3">
+                                        <div class="icon-circle bg-primary">
+                                            <i class="fas fa-file-alt text-white"></i>
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <div class="small text-gray-500">December 12, 2019</div>
+                                        <span class="font-weight-bold">A new monthly report is ready to download!</span>
+                                    </div>
+                                </a>
+                                <a class="dropdown-item d-flex align-items-center" href="#">
+                                    <div class="mr-3">
+                                        <div class="icon-circle bg-success">
+                                            <i class="fas fa-donate text-white"></i>
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <div class="small text-gray-500">December 7, 2019</div>
+                                        $290.29 has been deposited into your account!
+                                    </div>
+                                </a>
+                                <a class="dropdown-item d-flex align-items-center" href="#">
+                                    <div class="mr-3">
+                                        <div class="icon-circle bg-warning">
+                                            <i class="fas fa-exclamation-triangle text-white"></i>
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <div class="small text-gray-500">December 2, 2019</div>
+                                        Spending Alert: We've noticed unusually high spending for your account.
+                                    </div>
+                                </a>
+                                <a class="dropdown-item text-center small text-gray-500" href="#">Show All Alerts</a>
+                            </div>
+                        </li>-->
+
+                        <!-- Nav Item - Messages -->
+                        <!--<li class="nav-item dropdown no-arrow mx-1">
+                            <a class="nav-link dropdown-toggle" href="#" id="messagesDropdown" role="button"
+                                data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                <i class="fas fa-envelope fa-fw"></i>-->
+                                <!-- Counter - Messages -->
+                                <!--<span class="badge badge-danger badge-counter">7</span>
+                            </a>-->
+                            <!-- Dropdown - Messages -->
+                            <!--<div class="dropdown-list dropdown-menu dropdown-menu-right shadow animated--grow-in"
+                                aria-labelledby="messagesDropdown">
+                                <h6 class="dropdown-header">
+                                    Message Center
+                                </h6>
+                                <a class="dropdown-item d-flex align-items-center" href="#">
+                                    <div class="dropdown-list-image mr-3">
+                                        <img class="rounded-circle" src="img/undraw_profile_1.svg"
+                                            alt="...">
+                                        <div class="status-indicator bg-success"></div>
+                                    </div>
+                                    <div class="font-weight-bold">
+                                        <div class="text-truncate">Hi there! I am wondering if you can help me with a
+                                            problem I've been having.</div>
+                                        <div class="small text-gray-500">Emily Fowler · 58m</div>
+                                    </div>
+                                </a>
+                                <a class="dropdown-item d-flex align-items-center" href="#">
+                                    <div class="dropdown-list-image mr-3">
+                                        <img class="rounded-circle" src="img/undraw_profile_2.svg"
+                                            alt="...">
+                                        <div class="status-indicator"></div>
+                                    </div>
+                                    <div>
+                                        <div class="text-truncate">I have the photos that you ordered last month, how
+                                            would you like them sent to you?</div>
+                                        <div class="small text-gray-500">Jae Chun · 1d</div>
+                                    </div>
+                                </a>
+                                <a class="dropdown-item d-flex align-items-center" href="#">
+                                    <div class="dropdown-list-image mr-3">
+                                        <img class="rounded-circle" src="img/undraw_profile_3.svg"
+                                            alt="...">
+                                        <div class="status-indicator bg-warning"></div>
+                                    </div>
+                                    <div>
+                                        <div class="text-truncate">Last month's report looks great, I am very happy with
+                                            the progress so far, keep up the good work!</div>
+                                        <div class="small text-gray-500">Morgan Alvarez · 2d</div>
+                                    </div>
+                                </a>
+                                <a class="dropdown-item d-flex align-items-center" href="#">
+                                    <div class="dropdown-list-image mr-3">
+                                        <img class="rounded-circle" src="https://source.unsplash.com/Mv9hjnEUHR4/60x60"
+                                            alt="...">
+                                        <div class="status-indicator bg-success"></div>
+                                    </div>
+                                    <div>
+                                        <div class="text-truncate">Am I a good boy? The reason I ask is because someone
+                                            told me that people say this to all dogs, even if they aren't good...</div>
+                                        <div class="small text-gray-500">Chicken the Dog · 2w</div>
+                                    </div>
+                                </a>
+                                <a class="dropdown-item text-center small text-gray-500" href="#">Read More Messages</a>
+                            </div>
+                        </li>
+
+                        <div class="topbar-divider d-none d-sm-block"></div>-->
+
+                        <!-- Nav Item - User Information -->
+                        <li class="nav-item dropdown no-arrow">
+                            <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button"
+                                data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                <span class="mr-2 d-none d-md-inline text-gray-600 small">Welcome, {{session['fullname']}}</span>
+                                <img class="img-profile rounded-circle"
+                                    src="img/undraw_profile.svg">
+                            </a>
+                            <!-- Dropdown - User Information -->
+                            <div class="dropdown-menu dropdown-menu-right shadow animated--grow-in"
+                                aria-labelledby="userDropdown">
+                                <a class="dropdown-item" href="/userprofile">
+                                    <i class="fas fa-user fa-sm fa-fw mr-2 text-gray-400"></i>
+                                    Profile
+                                </a>
+                                <a class="dropdown-item" href="#">
+                                    <i class="fas fa-cogs fa-sm fa-fw mr-2 text-gray-400"></i>
+                                    Settings
+                                </a>
+                                <a class="dropdown-item" href="#">
+                                    <i class="fas fa-list fa-sm fa-fw mr-2 text-gray-400"></i>
+                                    Activity Log
+                                </a>
+                                <div class="dropdown-divider"></div>
+                                <a class="dropdown-item" href="#" data-toggle="modal" data-target="#logoutModal">
+                                    <i class="fas fa-sign-out-alt fa-sm fa-fw mr-2 text-gray-400"></i>
+                                    Logout
+                                </a>
+                            </div>
+                        </li>
+
+                    </ul>
+
+                </nav>
+                {% with messages = get_flashed_messages() %}
+                    {% if messages %}
+                    
+                    <nav class="row align-items-center justify-content-center">
+                        {% for message in messages %}
+                        <div class="col-md-12">
+                            <div class="text-center">{{message}}</div>
+                        </div>
+                        {% endfor %}
+                    </nav>
+                    {% endif %}
+                {% endwith %}
+                <!-- End of Topbar -->
+
+                {% block content %} {% endblock %}
+
+            </div>
+            <!-- End of Main Content -->
+
+            <!-- Footer -->
+            <footer class="sticky-footer bg-white">
+                <div class="container my-auto">
+                    <div class="copyright text-center my-auto">
+                        <span>Copyright &copy; UGEE CHEMICALS LIMITED 2022</span>
+                    </div>
+                </div>
+            </footer>
+            <!-- End of Footer -->
+
+        </div>
+        <!-- End of Content Wrapper -->
+
+    </div>
+    <!-- End of Page Wrapper -->
+
+    <!-- Scroll to Top Button-->
+    <a class="scroll-to-top rounded" href="#page-top">
+        <i class="fas fa-angle-up"></i>
+    </a>
+
+    <!-- Logout Modal-->
+    <div class="modal fade" id="logoutModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Ready to Leave?</h5>
+                    <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">×</span>
+                    </button>
+                </div>
+                <div class="modal-body">Select "Logout" below if you are ready to end your current session.</div>
+                <div class="modal-footer">
+                    <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
+                    <a class="btn btn-primary" href="/logout">Logout</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+<!-- Default bootstrap modal example -->        
+<div class="modal fade bs-modal-lg" id="stop-insert-modal" tabindex="-1" role="basic" aria-labelledby="myModalLabel" aria-hidden="true" >        
+        <div class="modal-dialog modal-lg">     
+            <div class="modal-content" >                      
+                           
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
+                        <h6 style="text-align: center" class="modal-title text-center">Insert New Stop Event</h6>
+                    </div>
+                    <div class="modal-body">
+                        
+                        
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+                        <button type="submit" class="btn btn-primary" data-dismiss="modal" style="float:left;">Insert</button>
+                    </div>                       
+            </div>      
+        </div>      
+    </div>
+
+        <!-- Default bootstrap modal example -->        
+<div class="modal fade bs-modal-lg" id="ajaxlarge" tabindex="-1" role="basic" aria-labelledby="myModalLabel" aria-hidden="true" >       
+    <div class="modal-dialog modal-lg">     
+        <div class="modal-content" >        
+            <div class="modal-body" id="ajaxlargeModalBody">        
+                       
+                <span> &nbsp;&nbsp;Loading... </span>       
+            </div>      
+        </div>      
+    </div>      
+</div>
+
+    
+   
+
+    <script src="static/vendor/jquery/jquery.slim.min.js"></script>
+    <script src="static/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+    <script src="static/vendor/bootstrap/js/bootstrap.min.js"></script>
+   
+    <!-- Core plugin JavaScript-->
+    <script src="static/vendor/jquery-easing/jquery.easing.min.js"></script>
+
+    <!-- Custom scripts for all pages-->
+    <script src="static/js/sb-admin-2.min.js"></script>
+
+    <!-- Page level plugins -->
+    <script src="static/vendor/chart.js/Chart.min.js"></script>
+
+    <!-- Page level custom scripts -->
+    <script src="static/js/demo/chart-area-demo.js"></script>
+    <script src="static/js/demo/chart-pie-demo.js"></script>    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.11.2/moment.min.js"></script>
+    <script src="https://code.jquery.com/ui/1.11.4/jquery-ui.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/4.17.37/js/bootstrap-datepicker.min.js"></script>    
+    <script src="static/js/dtsel.js"></script>
+    <script src="static/vendor/jquery/toastr.min.js"></script>
+    <script src="static/vendor/jquery/toastr.js"></script>
+   <!-- <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js"></script>
+     jQuery Scripts--> 
+      <!-- latest jquery
+      <script src="static/assets/js/jquery-3.3.1.min.js"></script>-->
+      <!-- fly cart ui jquery
+      <script src="static/assets/js/jquery-ui.min.js"></script> --> 
+      <!-- exitintent jquery
+      <script src="static/assets/js/jquery.exitintent.js"></script>
+      <script src="static/assets/js/exit.js"></script>-->  
+      <!-- popper js
+      <script src="static/assets/js/popper.min.js"></script> --> 
+      <!-- slick js
+      <script src="static/assets/js/slick.js"></script> --> 
+      <!-- menu js
+      <script src="static/assets/js/menu.js"></script> -->  
+      <!-- lazyload js
+      <script src="static/assets/js/lazysizes.min.js"></script> --> 
+      <!-- Bootstrap js
+      <script src="static/assets/js/bootstrap.js"></script>  -->      
+      <!-- Bootstrap Notification js
+      <script src="static/assets/js/bootstrap-notify.min.js"></script>-->  
+      <!-- Fly cart js
+      <script src="static/assets/js/fly-cart.js"></script>  -->
+      <!-- Theme js
+      <script src="static/assets/js/script.js"></script> -->
+
+    
+<script>
+//this will restrict users from checking more than two boxes at a time//
+$('input.mergeBox').click(function(event){
+    var chekLimit=3;
+    var chekedBox = document.querySelectorAll('input[name="merger"]:checked').length;
+    if(chekedBox >= chekLimit) {
+        
+       event.preventDefault();
+       alert('You\'re not allowed to choose more than 2 boxes');
+
+   }
+})
+
+//this will process and merge the stop//
+function mergeTwoStops(machine){
+    var checked = document.querySelectorAll('input[name="merger"]:checked');
+    var count = document.querySelectorAll('input[name="merger"]:checked').length;
+    //check that a stop event has been selected//
+    if (count==0){
+
+        //toastr.success("Connection Error");
+        alert('Please select Two stops to be merged by checking the checkboxes against the stops.');
+    }else if(count<2){
+        alert('Please select the second stop to be merged with the already selected stop.')
+    }else if (count==2){
+        console.log(checked[0].value,checked[1].value);        
+        var data=JSON.stringify({stop1:checked[0].value,stop2:checked[1].value,machine:machine});
+
+        fetch(`/modstop?data=${data}&action=${'MERGE_STOP'}`)
+                    .then(function (response) {
+                            return response.json();
+                        }).then(function (text) {                                
+                                
+                                alert(text.message);
+                                //toastr.success(text.message);
+                                //toastr.success('Have fun storming the castle!', 'Miracle Max Says')
+                                window.setTimeout('location.reload()', 2000);
+
+                            });    
+    }else{
+
+    }
+    
+
+}
+
+
+  //instance = new dtsel.DTS('input[name="dateTimePicker"]');
+  instance = new dtsel.DTS('input[name="dateTimePicker1"]',  {
+  showTime: true, dateFormat: "yyyy-mm-dd",timeFormat: "HH:MM:SS.00"
+});
+  instance = new dtsel.DTS('input[name="dateTimePicker2"]',  {
+  showTime: true, dateFormat: "yyyy-mm-dd",timeFormat: "HH:MM:SS.00"
+});
+instance = new dtsel.DTS('input[name="dateTimePicker11"]',  {
+  showTime: false, dateFormat: "yyyy-mm-dd"
+});
+instance = new dtsel.DTS('input[name="dateTimePicker12"]',  {
+  showTime: false, dateFormat: "yyyy-mm-dd"
+});
+
+
+//this will insert start and end times for user-defined stops search///
+$("body").on("focus","#startTime",function(){
+  var date=$(".start_date2").val();
+  if (date){
+    $("#startTime").html('')
+    $("#startTime").append("<option value='07:00:00'>07:00:00</option>")
+    $("#startTime").append("<option value='19:00:00'>19:00:00</option>")
+  }else{
+    $("#startTime").html('');
+    $("#startTime").append("<option value=''>Select start date</option>")
+  }
+})
+$("body").on("focus","#endTime",function(){
+  var date=$(".end_date2").val();
+  if (date){
+    $("#endTime").html('')
+    $("#endTime").append("<option value='07:00:00'>07:00:00</option>")
+    $("#endTime").append("<option value='19:00:00'>19:00:00</option>")
+  }else{
+    $("#endTime").html('');
+    $("#endTime").append("<option value=''>Select end date</option>")
+    
+  }
+})
+
+ //handle input to select fields //
+ function populateSelectFields(id,events){
+    for (var i = 0; i < events.length; i++) {
+        var option = "<option value='"+events[i].value+"'>"+events[i].stop+"</option>";
+        $(id).append(option);
+        
+    }
+ }
+//show the breakdown field in the stops update page
+function showBrdwn(x,y){
+    if($(x).val()){
+    $(".brkdwn"+y).css("display","block");
+} else {
+    $(".brkdwn"+y).css("display","none");
+}
+}
+
+
+
+ var StopErrors = [{'stop':'Machine Stopped By Operator','value':0},{'stop':'Photoeye Fault','value':3},{'stop':'End Product','value':34},{'stop':'Horizontal Jaw Electric Current Limit','value':5},{'stop':'Horizontal Jaw: Servodrive Fault','value':36},{'stop':'Unwind Film Fault','value':7},{'stop':'Auger: Servodrive Fault','value':37},{'stop':'End Film','value':8},{'stop':'General Emergency Button Pressed','value':39},{'stop':'Temperature out of range Horiz.Jaw: Front','value':10},{'stop':'Coder Fault','value':48},{'stop':'Temperature out of range Vertical Jaw: Front','value':12},{'stop':'Local Emergency Button Pressed','value':49},{'stop':'Max temperature limit Horiz.Jaw: Front','value':16},{'stop':'Air Pressure Fault','value':52},{'stop':'Film Alignment: Right Limit','value':29},{'stop':'2D No Read','value':59},{'stop':'Safety Door 1 openned','value':30},{'stop':'2D No Match','value':60},{'stop':'Power Fault','value':32},{'stop':'Safety Disconnect Switch Heating','value':68},{'stop':'Safety Disconnect Switch Front Opened','value':67},{'stop':'DR Device Fault','value':69},{'stop':'Thermocouple 3 opened','value':73}];
+populateSelectFields('#stop_error',StopErrors); 
+
+ var StopClasses = [{'stop':'BFS','value':6},{'stop':'PSG Machine','value':7},{'stop':'Pack Material','value':5},{'stop':'Production Plan','value':2},{'stop':'Planned Stop','value':4},{'stop':'Blank','value':8},{'stop':'UTILITIES','value':1},{'stop':'Sifter','value':18},{'stop':'WHSE','value':20},{'stop':'Triverter','value':19},{'stop':'Labour Organization','value':17},{'stop':'Extraction Belt','value':15},{'stop':'End Of Line','value':16},{'stop':'Electrical System','value':14},{'stop':'DCS','value':13},{'stop':'Conveyor System','value':12},{'stop':'Control System','value':11},{'stop':'Constraint Not Scheduled','value':10},{'stop':'Camera System','value':9}];
+populateSelectFields('#stop_class',StopClasses);
+populateSelectFields('.ur1',StopClasses);
+
+
+///code for handling the selecfields for inserting stops///
+
+function fetchReason(select,field,id){
+    var value= $(select).children(':selected').val();
+    
+    fetch(`/fetchreasons?id=${value}&field=${field}`)
+                    .then(function (response) {
+                            return response.json();
+                        }).then(function (text) { 
+
+                                $('#'+id).html(text.message);
+                                //alert(text.message);
+
+                            });
+}
+
+function insertStop(machine,url){
+    var timeNow=new Date();
+    var start=$('.start_date').val();
+    var end=$('.end_date').val();
+    var error=$('#stop_error').val();
+    var r1=$('#stop_class').val();var r2=$('#stop_trans').val();
+    var r3=$('#stop_comp').val(); var r4=$('#stop_mode').val(); 
+    var r5=$('#stop_conc').val();
+    var comment=$('#stop_comment').val();
+    if (start==''){
+       return alert('Please enter Start date and time');
+    }else if (end==''){
+        return alert('Please enter End date and time');
+    }else if (error==''){
+       return alert('Please select one fault');
+    }else if (new Date(String(start))>timeNow || new Date(String(end))>timeNow){
+       return alert('One of your datetime is beyond the current time.');
+    }else if (new Date(String(start)) > new Date(String(end))){
+       return alert('The Start datetime cannot be further than the End datetime');
+    }else{
+        if (r5){
+            brk=r5
+        }else{
+            brk=0
+        }
+        var data=JSON.stringify({start:start,end:end,error:error,r1:r1,r2:r2,r3:r3,r4:r4,r5:brk,comment:comment,url:url,machine:machine});
+
+        fetch(`/insertstopevent?data=${data}`)
+                    .then(function (response) {
+                            return response.json();
+                        }).then(function (text) {                                
+                                
+                                //alert(text.message);
+                                $(".stop_insert_div").css("display","none");
+                                //toastr.success(text.message);
+                                //toastr.success('Have fun storming the castle!', 'Miracle Max Says')
+                                    window.setTimeout('location.reload()', 2000);
+
+                            });
+
+    }
+    
+}
+//function for updating stops//
+
+function updateSTOP(id){
+    var r1=$("#ur1"+id).val();var r2=$("#ur2"+id).val();var r3=$("#ur3"+id).val();var r4=$("#ur4"+id).val();
+    var r5=$("#ur5"+id).val();var comment=$("#comm"+id).val();
+    if (r5){
+            brk=r5
+        }else{
+            brk=0
+        }
+        var data=JSON.stringify({r1:r1,r2:r2,r3:r3,r4:r4,r5:brk,comment:comment,sid:id});
+
+        fetch(`/modstop?data=${data}&action=${'UPDATE_STOP'}`)
+                    .then(function (response) {
+                            return response.json();
+                        }).then(function (text) {                                
+                                
+                                alert(text.message);
+                                //toastr.success(text.message);
+                                //toastr.success('Have fun storming the castle!', 'Miracle Max Says')
+                                //window.setTimeout('location.reload()', 2000);
+
+                            });
+
+}
+
+//delete stop function//
+
+function deleteItem(data){
+  var sid=data;
+  var row=$(".row"+sid);
+  Swal.fire({
+        title: 'Are you sure you wan to delete this stop event?',        
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Yes, proceed'
+      }).then((result) => {
+        if (result.value) {
+          
+            fetch(`/modstop?sid=${sid}&action=${"DELETE_STOP"}`)
+                    .then(function (response) {
+                            return response.json();
+                        }).then(function (text) {
+                                row.css('display','none');
+                                toastr.success("Event deleted");
+
+                            });
+         
+            
+            
+        }
+      })
+}
+
+//this function will help delete BOS entry//
+
+function deleteX(id,bos){
+  
+  Swal.fire({
+        title: 'Are you sure you want to delete this Item?',        
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Yes, proceed'
+      }).then((result) => {
+        if (result.value) {
+
+            const update = {itemid: id,
+                            bos: bos,                           
+                            };
+
+            const options = {
+                                method: 'POST',
+                                headers: {'Content-Type': 'application/json',},
+                                body: JSON.stringify(update),
+                            };
+          
+            fetch(`/viewbos?type=${"ajax"}&action=${bos}`,options)
+                    .then(function (response) {
+                            return response.json();
+                        }).then(function (text) {
+                                
+                                if (text.status==1){
+                                    Swal.fire({
+                                    icon: 'success',
+                                    title: 'Success',
+                                    text: text.message,
+                     
+                                    }).then((value) => {
+                                        setTimeout(location.reload(), 3000);
+                                    });
+                                }else{
+                                    Swal.fire({
+                                        icon: 'error',
+                                        title: 'Error',
+                                        text: text.message,                     
+                                    })
+                                }
+                                
+
+                            });
+         
+            
+            
+        }
+      })
+}
+
+//set the width of the stop reason cells//
+function setInitialCellWidth (div,selct){
+    //var e = document.getElementById(selct);
+    //e.options[e.selectedIndex].value;
+    //e.options[e.selectedIndex].text;
+
+    var valu=$(selct).val();    
+    var text=$(selct).find(":selected").text(); //$(selct).text(); 
+
+    if (valu && valu!=0){
+        var texlen=text.length;
+        var len;
+        if (texlen<7){
+            texlen=7;
+        }
+
+        len = texlen * 14;
+
+        $(div).css("width",len);
+        console.log(len);
+    }    
+}
+
+function setCommentCellWidth (div,inpt){
+    var text = $(inpt).val();
+
+    if (text && text!="none"){
+        
+        var texlen=text.length;
+        var len;
+        if (texlen<7){
+            texlen=7;
+        }
+
+        len = texlen * 14;
+        $(div).css("width",len);
+        console.log(len);
+    }
+
+}
+
+//get the values for the updated stops//
+
+fetch(`/fetchreasons?id=${2}&field=${"fetch_all"}`)
+                    .then(function (response) {
+                            return response.json();
+                        }).then(function (text) {                                
+                               for (var i = 0; i < text.message.length; i++) {
+                                var rem=text.message[i];
+                                $("#ur1"+rem.sid).val(rem.r1);
+                                setInitialCellWidth (".ur1div"+rem.sid,"#ur1"+rem.sid);
+
+                                $("#ur2"+rem.sid).html("<option value='"+rem.r2+"'>"+rem.reas2+"</option>");
+                                setInitialCellWidth (".ur2div"+rem.sid,"#ur2"+rem.sid);
+
+                                $("#ur3"+rem.sid).html("<option value='"+rem.r3+"'>"+rem.reas3+"</option>");
+                                setInitialCellWidth (".ur3div"+rem.sid,"#ur3"+rem.sid);
+
+                                $("#ur4"+rem.sid).html("<option value='"+rem.r4+"'>"+rem.reas4+"</option>");
+                                setInitialCellWidth (".ur4div"+rem.sid,"#ur4"+rem.sid);
+
+                                if (rem.r5==1){
+                                    $("#ur5"+rem.sid).html("<option value='"+rem.r5+"'>Breakdown</option>");
+                                    setInitialCellWidth (".ur5div"+rem.sid,"#ur5"+rem.sid);   
+                                }else{
+                                     
+                                }
+
+                                $("#comm"+rem.sid).val(rem.comment);
+                                setCommentCellWidth(".commdiv"+rem.sid,"#comm"+rem.sid);
+                                }                                
+                            });
+
+//})
+
+//this code will show the form for user-defined stops search///
+$("body").on("click",".user_defined",function(){
+  var visible=$("#get_user_defined").css("display");
+  if (visible=="none"){
+    $("#get_user_defined").css("display","block");
+  }else{
+    $("#get_user_defined").css("display","none");
+  }
+})
+
+function triggerProcessing(){
+
+Swal.fire({
+  title: 'Processing..',
+  html: 'processing your request, please be patient...',
+  timerProgressBar: true,
+  backdrop: true,
+  allowOutsideClick:false,
+  allowEscapeKey:false,
+  onBeforeOpen: () => {
+    Swal.showLoading()
+   
+  }
+  //setTimeout(10000);
+
+  
+})
+    }
+
+//this function will fetch user defined stops for all the machines//
+
+function fetchUserDefined(url){
+    var startD=$('.start_date2').val();
+    var startT=$('#startTime').val();
+    var endD=$('.end_date2').val();
+    var endT=$('#endTime').val();
+
+    //validate input fields//
+    var timeNow=new Date();     
+    if (!startD || !startT || !endD || !endT){alert("Some fields are empty.");return false;}
+    if (new Date(String(startD))>timeNow){alert("Start Date cannot be in the future."); return false;}
+    if (startD >endD){alert("End date cannot be before start date.");return false;}
+    if (startD==endD && startT==endT){alert("Start time cannot be the same as end time");return false;}
+
+    location.href=url+'?shift=userdefined&startD='+startD+'&startT='+startT+'&endD='+endD+'&endT='+endT;
+}
+
+function exportTableToExcel(tableID = '', filename = ''){
+    var downloadLink;
+    var dataType = 'application/vnd.ms-excel';
+    if (!tableID){      
+
+        tableID = 'general_repo';
+    }
+    var tableSelect = document.getElementById(tableID);
+    var tableHTML = tableSelect.outerHTML.replace(/ /g, '%20');
+    
+    // Specify file name
+    var file_name = ''
+    var tim = Date.now();
+    var result = tim.toString();
+
+    if (filename){      
+
+        file_name = filename.toLowerCase() + '_' + result;
+    }
+
+    filename = file_name?file_name.split(' ').join('_')+'.xls':'general_report'+result+'.xls';
+    
+    // Create download link element
+    downloadLink = document.createElement("a");
+    
+    document.body.appendChild(downloadLink);
+    
+    if(navigator.msSaveOrOpenBlob){
+        var blob = new Blob(['\ufeff', tableHTML], {
+            type: dataType
+        });
+        navigator.msSaveOrOpenBlob( blob, filename);
+    }else{
+        // Create a link to the file
+        downloadLink.href = 'data:' + dataType + ', ' + tableHTML;
+    
+        // Setting the file name
+        downloadLink.download = filename;
+        
+        //triggering the function
+        downloadLink.click();
+    }
+}
+</script>
+    {% block tail %} {% endblock %}
+
+
+</body>
+
+</html>

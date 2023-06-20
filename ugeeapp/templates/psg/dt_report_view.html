@@ -1,0 +1,176 @@
+{% extends 'public/base.html' %}
+
+
+
+{% block content %}
+
+<div class="container">    
+	{% if report and report != 'None' %}
+    <div class="row align-items-center justify-content-center">
+        <div class="col-md-12">
+            <hr/><h3 style="background:#179cd7;text-align: center;">Entries -({{count}}) {{label}}</h3><hr/>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-2 tabb1">
+            <button title="export to excell" type="button" onclick="exportTableToExcel('dt_report','general_report')">
+                    <i class="fas fa-file-excel" style="font-size:24px;color:green;"></i>
+            </button>
+        </div>
+        <div class="col-md-2">
+            <button class="normalized_report_btn" title="Run Normalized Report" type="button" onclick='runNormalizedReport(this,{{raw |safe}})'>
+                    <i class="far fa-compass" style="font-size:24px;color:green;"></i>
+            </button>
+        </div>
+    </div>
+	<div class="row text-center">
+                    
+                    <div class="col-md-12">                        
+                        
+                        <hr/>
+                        
+                        <div class="table-responsive">
+                            <table class="table table-bordered table-striped" id='dt_report'>
+                                <thead>
+                                    <tr>                                     	
+                                     	<th scope="col">DownTime</th>
+                                     	<th scope="col">Stop</th>
+                                     	<th scope="col">Transformation</th>
+                                        <th scope="col">Component</th>
+                                        <th scope="col">Failure Mode</th>
+                                        <th scope="col">Comment</th>
+                                        <th scope="col">Machine</th>
+                                        <th scope="col">Start_Date</th>
+                                        <th scope="col">Start Time</th>
+                                        <th scope="col">End_Date</th>
+                                        <th scope="col">End Time</th>
+                                        <th scope="col">Actions</th>
+                                                                                
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                {% for  item in report %}
+                                    <tr>
+
+                                                <td>{{item.dwntime}}</td>
+                                                <td>{{item.reason1}}</td>         
+                                                <td>{{item.reason2}}</td>
+                                                <td>{{item.reason3}}</td>
+                                                <td>{{item.reason4}}</td>
+                                                <td>{{item.comment}}</td>
+                                                <td>{{item.machine}}</td>
+                                                <td>{{item.start_date}}</td>
+                                                <td>{{item.start_time}}</td>
+                                                <td>{{item.end_date}}</td>
+                                                <td>{{item.end_time}}</td> 
+                                                <td></td>                  
+                                        
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>                        
+                    </div>
+                </div>
+    {% else %}
+
+    <div class="row align-items-center justify-content-center">
+        <div class="col-md-12">
+            <div class='alert alert-warning'>No downtime records found</div>
+        </div>
+    </div>
+	
+    {% endif %}            
+</div>
+
+{% endblock %}
+
+{% block tail %}
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@9"></script>
+<script type="text/javascript">
+
+	function runNormalizedReport(selector,data){
+
+              
+  		const update = {data: data,};
+
+        const options = {
+                            method: 'POST',
+                            headers: {'Content-Type': 'application/json',},
+                            body: JSON.stringify(update),
+                        };
+          
+        fetch(`/psgproduction_report?action=${'NORMALIZED-REPORT'}`,options)
+                    .then(function (response) {
+                            return response.json();
+                        }).then(function (text) {
+                                
+                                if (text.status==1){
+
+                                    html = get_html(text.data);
+                                    $("#ajaxlargeModalBody").html(html);
+                                    $("#ajaxlarge").modal();
+
+                                }else{
+                                    //code here
+                                	}
+                                
+
+                            });
+         
+            
+            
+    }
+
+	function get_html(data){
+
+        html='';
+
+        html += '<div class="row">';
+        html += '<div class="col-md-12">';
+        html += '<hr/><h3 style="background:#179cd7;text-align:center">Normalized Report</h3><hr/>';
+        html += '</div></div>';
+        html += '<div class="row">';
+        html += '<div class="col-md-2 tabb1">';
+        html += '<button title="export to excell" type="button" onclick="exportTableToExcel("normalized_report","Normalize_dt_rpt")">';
+        html += '<i class="fas fa-file-excel" style="font-size:24px;color:green;"></i>';
+        html += '</button></div>';
+        
+        html += '</div>';
+
+        html += '<div class="row">';
+
+        html +='<div class="table-responsive">';
+        html +='<table class="table table-bordered table-striped" id="normalized_report">';
+
+        html +='<thead>';
+        html +='<tr>';
+        html +='<th>Transformation</th>';
+        html +='<th>Downtime (mins)</th>';
+        html +='<th>Machines Affected</th>';          
+        html +='</tr>';
+        html +='</thead>';
+
+        html +='<tbody>';
+        for (var i=0; i<data.length;i++){
+        html +='<tr>';
+        html +='<td>'+data[i].name+'</td>';
+        html +='<td>'+data[i].dwntime+'</td>';
+        html +='<td>'+data[i].machines+'</td>';
+        html +='</tr>';
+        }
+
+        html +='</tbody>';  
+
+        html +='</table>';
+        html +='</div></div>';
+
+        return html
+		
+    }
+
+
+</script>
+
+{% endblock %}
+

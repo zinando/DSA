@@ -1,0 +1,314 @@
+{% extends 'public/base.html' %}
+
+{% block content %}
+
+<!-- Begin Page Content -->
+                <div class="container-fluid">
+
+                    <!-- Page Heading -->
+                    <div class="d-sm-flex align-items-center justify-content-between mb-4">
+                        <h1 class="h3 mb-0 text-gray-800">Machine Status</h1>
+                        <!--<a href="#" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm"><i
+                                class="fas fa-download fa-sm text-white-50"></i> Generate Report</a>-->
+                    </div>
+
+                    <!-- Content Row -->
+                    <div class="row">
+
+                        <!-- Machine Status -->
+                        <div class="col-xl-3 col-md-4 mb-4">
+                            <div class="card shadow py-2 r-bod" style="width: 150px;height: 150px;border: .25rem solid #1cc88a;border-radius: 50%;">
+                                <div class="card-body" style="text-align: center; padding: 1.25rem;">
+                                    <div class="row no-gutters align-items-center">
+                                        <div class="col mr-2">                    
+                                            <div class="h5 mb-0 font-weight-bold">ML R</div>
+                                            <div class="h5 mb-0 font-weight-bold r-text" style="font-size: .8rem; color: #169b6b!important;margin-top: 5px;"></div>
+                                        </div>                                    
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-xl-3 col-md-4 mb-4">
+                            <div class="card shadow py-2 s-bod" style="width: 150px;height: 150px;border: .25rem solid #1cc88a;border-radius: 50%;">
+                                <div class="card-body" style="text-align: center; padding: 1.25rem;">
+                                    <div class="row no-gutters align-items-center">
+                                        <div class="col mr-2">                    
+                                            <div class="h5 mb-0 font-weight-bold">ML S</div>
+                                            <div class="h5 mb-0 font-weight-bold s-text" style="font-size: .8rem; color: #169b6b!important;margin-top: 5px;"></div>
+                                        </div>                                    
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-xl-3 col-md-4 mb-4">
+                            <div class="card shadow py-2 t-bod" style="width: 150px;height: 150px;border: .25rem solid #1cc88a;border-radius: 50%;">
+                                <div class="card-body" style="text-align: center; padding: 1.25rem;">
+                                    <div class="row no-gutters align-items-center">
+                                        <div class="col mr-2">                    
+                                            <div class="h5 mb-0 font-weight-bold">ML T</div>
+                                            <div class="h5 mb-0 font-weight-bold t-text" style="font-size: .8rem; color: #169b6b!important;margin-top: 5px;"></div>
+                                        </div>                                    
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-xl-3 col-md-4 mb-4">
+                            <div class="card shadow py-2 u-bod" style="width: 150px;height: 150px;border: .25rem solid #1cc88a;border-radius: 50%;">
+                                <div class="card-body" style="text-align: center; padding: 1.25rem;">
+                                    <div class="row no-gutters align-items-center">
+                                        <div class="col mr-2">                    
+                                            <div class="h5 mb-0 font-weight-bold">ML U</div>
+                                            <div class="h5 mb-0 font-weight-bold u-text" style="font-size: .8rem; color: #169b6b!important;margin-top: 5px;"></div>
+                                        </div>                                    
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-xl-3 col-md-4 mb-4">
+                            <div class="card shadow py-2 v-bod" style="width: 150px;height: 150px;border: .25rem solid #1cc88a;border-radius: 50%;">
+                                <div class="card-body" style="text-align: center; padding: 1.25rem;">
+                                    <div class="row no-gutters align-items-center">
+                                        <div class="col mr-2">                    
+                                            <div class="h5 mb-0 font-weight-bold">ML V</div>
+                                            <div class="h5 mb-0 font-weight-bold v-text" style="font-size: .8rem; color: #169b6b!important;margin-top: 5px;"></div>
+                                        </div>                                    
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-xl-3 col-md-4 mb-4">
+                            <div class="card shadow py-2 w-bod" style="width: 150px;height: 150px;border: .25rem solid #1cc88a;border-radius: 50%;">
+                                <div class="card-body" style="text-align: center; padding: 1.25rem;">
+                                    <div class="row no-gutters align-items-center">
+                                        <div class="col mr-2">                    
+                                            <div class="h5 mb-0 font-weight-bold">ML W</div>
+                                            <div class="h5 mb-0 font-weight-bold w-text" style="font-size: .8rem; color: #169b6b!important;margin-top: 5px;"></div>
+                                        </div>                                    
+                                    </div>
+                                </div>
+                            </div>
+                        </div>                       
+                        <div class="col-xl-3 col-md-4 mb-4">
+                            <div class="card shadow py-2 i-bod" style="width: 150px;height: 150px;border: .25rem solid #1cc88a;border-radius: 50%;">
+                                <div class="card-body" style="text-align: center; padding: 1.25rem;">
+                                    <div class="row no-gutters align-items-center">
+                                        <div class="col mr-2">                    
+                                            <div class="h5 mb-0 font-weight-bold">ML I</div>
+                                            <div class="h5 mb-0 font-weight-bold i-text" style="font-size: .8rem; color: #169b6b!important;margin-top: 5px;"></div>
+                                        </div>                                    
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-xl-3 col-md-4 mb-4">
+                            <div class="card shadow py-2 j-bod" style="width: 150px;height: 150px;border: .25rem solid #1cc88a;border-radius: 50%;">
+                                <div class="card-body" style="text-align: center; padding: 1.25rem;">
+                                    <div class="row no-gutters align-items-center">
+                                        <div class="col mr-2">                    
+                                            <div class="h5 mb-0 font-weight-bold">ML J</div>
+                                            <div class="h5 mb-0 font-weight-bold j-text" style="font-size: .8rem; color: #169b6b!important;margin-top: 5px;"></div>
+                                        </div>                                    
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-xl-3 col-md-4 mb-4">
+                            <div class="card shadow py-2 k-bod" style="width: 150px;height: 150px;border: .25rem solid #1cc88a;border-radius: 50%;">
+                                <div class="card-body" style="text-align: center; padding: 1.25rem;">
+                                    <div class="row no-gutters align-items-center">
+                                        <div class="col mr-2">                    
+                                            <div class="h5 mb-0 font-weight-bold">ML K</div>
+                                            <div class="h5 mb-0 font-weight-bold k-text" style="font-size: .8rem; color: #169b6b!important;margin-top: 5px;"></div>
+                                        </div>                                    
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-xl-3 col-md-4 mb-4">
+                            <div class="card shadow py-2 l-bod" style="width: 150px;height: 150px;border: .25rem solid #1cc88a;border-radius: 50%;">
+                                <div class="card-body" style="text-align: center; padding: 1.25rem;">
+                                    <div class="row no-gutters align-items-center">
+                                        <div class="col mr-2">                    
+                                            <div class="h5 mb-0 font-weight-bold">ML L</div>
+                                            <div class="h5 mb-0 font-weight-bold l-text" style="font-size: .8rem; color: #169b6b!important;margin-top: 5px;"></div>
+                                        </div>                                    
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-xl-3 col-md-4 mb-4">
+                            <div class="card shadow py-2 m-bod" style="width: 150px;height: 150px;border: .25rem solid #1cc88a;border-radius: 50%;">
+                                <div class="card-body" style="text-align: center; padding: 1.25rem;">
+                                    <div class="row no-gutters align-items-center">
+                                        <div class="col mr-2">                    
+                                            <div class="h5 mb-0 font-weight-bold">ML M</div>
+                                            <div class="h5 mb-0 font-weight-bold m-text" style="font-size: .8rem; color: #169b6b!important;margin-top: 5px;"></div>
+                                        </div>                                    
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                         <div class="col-xl-3 col-md-4 mb-4">
+                            <div class="card shadow py-2 n-bod" style="width: 150px;height: 150px;border: .25rem solid #1cc88a;border-radius: 50%;">
+                                <div class="card-body" style="text-align: center; padding: 1.25rem;">
+                                    <div class="row no-gutters align-items-center">
+                                        <div class="col mr-2">                    
+                                            <div class="h5 mb-0 font-weight-bold">ML N</div>
+                                            <div class="h5 mb-0 font-weight-bold n-text" style="font-size: .8rem; color: #169b6b!important;margin-top: 5px;"></div>
+                                        </div>                                    
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                    </div>
+
+                    <!-- Content Row -->                    
+
+                </div>
+                <!-- /.container-fluid -->
+
+{% endblock %}
+
+{% block tail %}
+<script type="text/javascript">
+    
+    setInterval(
+        function(){
+            fetch(`/updatenew`)
+                    .then(function (response) {
+                            return response.json();
+                        }).then(function (text) {
+                                if (text.R=='running'){
+                                   $('.r-bod').css('border','.25rem solid #1cc88a');
+                                   $('.r-text').css('color','green');
+                                   $('.r-text').html('Running...<br><span style="color:#4e73df;font-size:12px">2</span>'); 
+                               }else{
+                                    $('.r-bod').css('border','.25rem solid red');
+                                    $('.r-text').html('Stopped.<br><span style="color:#000;font-size:9px">'+text.r_e+'</span><br><span style="color:#4e73df;font-size:12px">2</span>');
+                                    $('.r-text').css('color','red');
+                                    
+                               }
+                               if (text.S=='running'){
+                                   $('.s-bod').css('border','.25rem solid #1cc88a');
+                                   $('.s-text').css('color','green');
+                                   $('.s-text').html('Running...<br><span style="color:#4e73df;font-size:12px">2</span>'); 
+                               }else{
+                                    $('.s-bod').css('border','.25rem solid red');
+                                    $('.s-text').html('Stopped.<br><span style="color:#000;font-size:9px">'+text.s_e+'</span><br><span style="color:#4e73df;font-size:12px">2</span>');
+                                    $('.s-text').css('color','red');
+                                    
+                               }
+                               if (text.T=='running'){
+                                   $('.t-bod').css('border','.25rem solid #1cc88a');
+                                   $('.t-text').css('color','green');
+                                   $('.t-text').html('Running...<br><span style="color:#4e73df;font-size:12px">2</span>'); 
+                               }else{
+                                    $('.t-bod').css('border','.25rem solid red');
+                                    $('.t-text').html('Stopped.<br><span style="color:#000;font-size:9px">'+text.t_e+'</span><br><span style="color:#4e73df;font-size:12px">2</span>');
+                                    $('.t-text').css('color','red');
+                                    
+                               }
+                               if (text.U=='running'){
+                                   $('.u-bod').css('border','.25rem solid #1cc88a');
+                                   $('.u-text').css('color','green');
+                                   $('.u-text').html('Running...<br><span style="color:#4e73df;font-size:12px">2</span>'); 
+                               }else{
+                                    $('.u-bod').css('border','.25rem solid red');
+                                    $('.u-text').html('Stopped.<br><span style="color:#000;font-size:9px">'+text.u_e+'</span><br><span style="color:#4e73df;font-size:12px">2</span>');
+                                    $('.u-text').css('color','red');
+                                    
+                               }
+                               if (text.V=='running'){
+                                   $('.v-bod').css('border','.25rem solid #1cc88a');
+                                   $('.v-text').css('color','green');
+                                   $('.v-text').html('Running...<br><span style="color:#4e73df;font-size:12px">2</span>'); 
+                               }else{
+                                    $('.v-bod').css('border','.25rem solid red');
+                                    $('.v-text').html('Stopped.<br><span style="color:#000;font-size:9px">'+text.v_e+'</span><br><span style="color:#4e73df;font-size:12px">2</span>');
+                                    $('.v-text').css('color','red');
+                                    
+                               }
+                               if (text.W=='running'){
+                                   $('.w-bod').css('border','.25rem solid #1cc88a');
+                                   $('.w-text').css('color','green');
+                                   $('.w-text').html('Running...<br><span style="color:#4e73df;font-size:12px">2</span>'); 
+                               }else{
+                                    $('.w-bod').css('border','.25rem solid red');
+                                    $('.w-text').html('Stopped.<br><span style="color:#000;font-size:9px">'+text.w_e+'</span><br><span style="color:#4e73df;font-size:12px">2</span>');
+                                    $('.w-text').css('color','red');
+                                    
+                               }
+                               if (text.I=='running'){
+                                   $('.i-bod').css('border','.25rem solid #1cc88a');
+                                   $('.i-text').css('color','green');
+                                   $('.i-text').html('Running...<br><span style="color:#4e73df;font-size:12px">2</span>'); 
+                               }else{
+                                    $('.i-bod').css('border','.25rem solid red');
+                                    $('.i-text').html('Stopped.<br><span style="color:#000;font-size:9px">'+text.i_e+'</span><br><span style="color:#4e73df;font-size:12px">2</span>');
+                                    $('.i-text').css('color','red');
+                                    
+                               }
+                               if (text.J=='running'){
+                                   $('.j-bod').css('border','.25rem solid #1cc88a');
+                                   $('.j-text').css('color','green');
+                                   $('.j-text').html('Running...<br><span style="color:#4e73df;font-size:12px">2</span>'); 
+                               }else{
+                                    $('.j-bod').css('border','.25rem solid red');
+                                    $('.j-text').html('Stopped.<br><span style="color:#000;font-size:9px">'+text.j_e+'</span><br><span style="color:#4e73df;font-size:12px">2</span>');
+                                    $('.j-text').css('color','red');
+                                    
+                               }
+                               if (text.K=='running'){
+                                   $('.k-bod').css('border','.25rem solid #1cc88a');
+                                   $('.k-text').css('color','green');
+                                   $('.k-text').html('Running...<br><span style="color:#4e73df;font-size:12px">2</span>'); 
+                               }else{
+                                    $('.k-bod').css('border','.25rem solid red');
+                                    $('.k-text').html('Stopped.<br><span style="color:#000;font-size:9px">'+text.k_e+'</span><br><span style="color:#4e73df;font-size:12px">2</span>');
+                                    $('.k-text').css('color','red');
+                                    
+                               }
+                               if (text.L=='running'){
+                                   $('.l-bod').css('border','.25rem solid #1cc88a');
+                                   $('.l-text').css('color','green');
+                                   $('.l-text').html('Running...<br><span style="color:#4e73df;font-size:12px">2</span>'); 
+                               }else{
+                                    $('.l-bod').css('border','.25rem solid red');
+                                    $('.l-text').html('Stopped.<br><span style="color:#000;font-size:9px">'+text.l_e+'</span><br><span style="color:#4e73df;font-size:12px">2</span>');
+                                    $('.l-text').css('color','red');
+                                    
+                               }
+                               if (text.M=='running'){
+                                   $('.m-bod').css('border','.25rem solid #1cc88a');
+                                   $('.m-text').css('color','green');
+                                   $('.m-text').html('Running...<br><span style="color:#4e73df;font-size:12px">2</span>'); 
+                               }else{
+                                    $('.m-bod').css('border','.25rem solid red');
+                                    $('.m-text').html('Stopped.<br><span style="color:#000;font-size:9px">'+text.m_e+'</span><br><span style="color:#4e73df;font-size:12px">2</span>');
+                                    $('.m-text').css('color','red');
+                                    
+                               }
+                               if (text.N=='running'){
+                                   $('.n-bod').css('border','.25rem solid #1cc88a');
+                                   $('.n-text').css('color','green');
+                                   $('.n-text').html('Running...<br><span style="color:#4e73df;font-size:12px">2</span>'); 
+                               }else{
+                                    $('.n-bod').css('border','.25rem solid red');
+                                    $('.n-text').html('Stopped.<br><span style="color:#000;font-size:9px">'+text.n_e+'</span><br><span style="color:#4e73df;font-size:12px">2</span>');
+                                    $('.n-text').css('color','red');
+                                    
+                               }
+                                
+
+                            });
+        }, 
+        1000
+    ); // Every 1 second.
+
+
+</script>
+
+
+
+{% endblock %}

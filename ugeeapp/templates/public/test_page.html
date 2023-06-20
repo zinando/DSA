@@ -1,0 +1,32 @@
+{% extends 'public/base.html' %}
+
+{% block content %}
+    <h1>{% block title %} TEST PAGE {% endblock %}</h1>
+    {% for p in stop %}
+    <div style="background-color: green; color: #fff;"><span style="margin: 10px 10px;">{{p.reason}}</span><span style="margin: 10px 10px;"></span><span>--{{p.rid}}</span></div>
+
+    {% endfor %}
+    
+{% endblock %}
+
+{% block tail %}
+ <script>
+    var count = 1;
+    //var mach="L";
+    setInterval(
+        function(){
+            fetch(`/update?c=${mach}`)
+                    .then(function (response) {
+                            return response.json();
+                        }).then(function (text) {
+                                //$('.count_mode').html(text.message);
+                                $('.stop_mode').html(text.stop);
+
+                            });
+        }, 
+        1000
+    ); // Every 1 second.
+
+ </script>
+
+{% endblock %}

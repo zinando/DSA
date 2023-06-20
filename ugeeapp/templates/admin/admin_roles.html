@@ -1,0 +1,372 @@
+{% extends 'public/base.html' %}
+
+
+
+{% block content %}
+
+<div class="container">
+	<div class="row align-items-center justify-content-center"> 
+		<div class="col-md-12">
+								<div class="login100-form-logo text-center">									
+									<div class="text-center" style="color:white;background: #179cd7;">CREATE USER ROLE (WIP...)</div>
+								</div>
+		</div>
+		<div class="col-md-10 " style="backgound: red;">
+			<div class="row align-items-center justify-content-center">
+				<div class="col-md-12">
+					<form id="" style="margin-top:20px" method="POST" action="/user_roles?action=ADD-ROLE">
+						{{ form.csrf_token }}
+						<div class="row">
+							<div class="col-md-12">
+								<span class="login100-form-logo">
+									<i class="fas fa-landscape"></i>
+									<span style="color:black;background: white;">{{resp}}</span>
+								</span>
+							</div>
+						</div>
+						<div class="row">
+							<div class="col-md-3">
+                        		<div class='form-group'>
+                        			{{form.name.label()}}
+                        			{{form.name(class='form-control')}}
+                        		</div>
+                    		</div>
+
+                    		<div class="col-md-3">
+                        		<div class='form-group'>
+                        			{{form.report_to.label()}}
+                        			{{form.report_to(class='form-control')}}
+                        		</div>
+                    		</div>
+                    		<div class="col-md-6">
+                        		<div class='form-group'>
+                        			{{form.description.label()}}
+                        			{{form.description(class='form-control')}}
+                        		</div>
+                    		</div>               		
+                		</div>
+                		<div class="row align-items-center justify-content-center">                			
+                    		<div class="col-md-10">
+                        		<div class='form-group'>
+                        			{{form.rnr.label()}}
+                        			{{form.rnr(class='form-control')}}
+                        		</div>
+                    		</div>
+                    		<div class="col-md-2">                    
+                        		<div class='form-group'>
+                            		{{form.submit(class="btn btn-info")}}  
+                        		</div>
+                    		</div>
+						</div>
+					</form>
+				</div>
+				
+			</div>
+		</div>
+		
+	</div>
+	{% if roles %}
+	<div class="col-md-12">
+								<hr style="border: 2px #0074CC solid">
+		</div>
+	<div class="row text-center">
+                    
+                    <div class="col-md-12">
+                        <hr/><h3 style="background:#179cd7">User Roles</h3><hr/>
+                        
+                        <div class="table-responsive">
+                            <table class="table table-bordered table-striped">
+                                <thead>
+                                    <tr>               
+                                        <th scope="col">Title</th>
+                                        <th scope="col">Description</th>
+                                        <th scope="col">Reports to</th>
+                                        <th scope="col">Skill Set</th> 
+                                        <th scope="col">R n R</th>                                        
+                                        <th scope="col">Actions</th>
+                                                                                
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                {% for  role in roles %}
+                                    <tr>
+                                                <td>{{role.rname}}</td>
+                                                <td>{{role.description}}</td>
+                                                <td>{{get_reporting_manager(role.report_to)}}</td>
+                                                <td>
+                                                	<button type="button" class="btn-sm btn-success" data-mcode="" data-params="" style="color:#fff;cursor: pointer; font-size:11px" onclick="viewSkillset(this,'{{role.rid}}')"> View</button>
+                                            	</td>
+                                                <td>                           	
+                                                	<button type="button" class="btn-sm btn-success" data-mcode="" data-params="" style="color:#fff;cursor: pointer; font-size:11px" onclick="viewParams(this)"> View</button>                                    
+                                            	</td>
+                                                <td>	
+                                                   		<div class="btn btn-sm" style="font-size: 11px;color: #179cd7;" onclick="deleteRole('{{role.rid}}')">DELETE ROLE</div><br>
+                                                   		<div class="btn btn-sm" style="font-size: 11px;color: #179cd7;" onclick="editRole('{{role.rid}}')">EDIT ROLE</div>
+                                                </td>
+                                        
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>                        
+                    </div>
+                </div>
+	
+    {% endif %} 
+</div>
+
+{% endblock %}
+
+{% block tail %}
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@9"></script>
+<script type="text/javascript">
+	
+function deleteRole(id){
+  
+  Swal.fire({
+        title: 'Are you sure?',        
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Yes, proceed',
+        html: "<div class='alert alert-danger'>Role can only be deleted if no user is assigned to it.</div>"
+      }).then((result) => {
+        if (result.value) {
+
+        	const update = {itemid: id,};
+
+			const options = {
+								method: 'POST',
+								headers: {'Content-Type': 'application/json',},
+								body: JSON.stringify(update),
+							};
+          
+            fetch(`/user_roles?action=${'DELETE-ROLE'}`,options)
+                    .then(function (response) {
+                            return response.json();
+                        }).then(function (text) {
+                                
+                                if (text.status==1){
+                                	Swal.fire({
+                        			icon: 'success',
+                        			title: 'Success',
+                        			html: text.message,
+                     
+                      				}).then((value) => {
+										setTimeout(location.reload(), 3000);
+									});
+                                }else{
+                                	Swal.fire({
+                        				icon: 'error',
+                        				title: 'Error',
+                        				html: text.message,                     
+                      				})
+                                }
+                                
+
+                            });
+         
+            
+            
+        }
+      })
+}
+
+function editRole(id){
+
+	location.href='/user_roles?action=UPDATE-ROLE&id='+id;
+}
+
+function viewSkillset(selector,roleid)
+{
+
+	$("#ajaxlargeModalBody").html(get_form(roleid));
+	$("#ajaxlarge").modal();
+
+	//var mcode = $(paras).attr('data-mcode');
+	const update = {rid:roleid,};
+
+	const options = {
+						method: 'POST',
+						headers: {'Content-Type': 'application/json',},
+						body: JSON.stringify(update),
+					};
+          
+    fetch(`/user_roles?action=${'FETCH-SKILL-SET'}`,options)
+            .then(function (response) 
+            	{
+                    return response.json();
+                }).then(function (text) {                   
+
+						html='';
+
+						html += '<div class="row"><div class="col-md-12"><hr style="background:#179cd7;height:3px;"></div>';
+
+						html +='<div class="table-responsive">';
+						html +='<table class="table table-bordered table-striped">';
+
+						html +='<thead>';
+						html +='<tr>';
+						html +='<th>Training Code</th>';
+						html +='<th>Title</th>';
+						html +='<th>Action</th>';				
+						html +='</tr>';
+						html +='</thead>';
+
+						html +='<tbody>';
+						if (text.status == 1){
+							data = text.data;
+
+							for (var i=0; i<data.length;i++){
+							html +='<tr>';
+							html +='<td>'+data[i].t_code+'</td>';
+							html +='<td>'+data[i].title+'</td>';
+							html +='<td><span class="btn-sm btn-success" style="color:#fff;cursor: pointer; font-size:11px" onclick="deleteSkill('+data[i].t_code+','+roleid+')">remove</span></td>';
+							html +='</tr>';
+							}
+						} else {
+
+							html +='<tr>';
+							html +='<td></td>';
+							html +='<td>No Skills Found.</td>';
+							html +='<td></td>';
+							html +='</tr>';
+						}
+
+						html +='</tbody>';	
+
+						html +='</table>';
+						html +='</div></div>';
+
+						$("#ajaxlargeModalBody").append(html);
+
+				})
+
+
+
+}
+
+function deleteSkill(tcode,rid){
+	tcode = String(tcode).padStart(6, "0"); //preserves leading zeros in tcode
+	Swal.fire({
+        title: 'Are you sure you wan to delete this Item?',        
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Yes, proceed'
+      }).then((result) => {
+        if (result.value) {
+
+        	const update = {tcode:tcode, rid:rid,};
+
+			const options = {
+								method: 'POST',
+								headers: {'Content-Type': 'application/json',},
+								body: JSON.stringify(update),
+							};
+          
+            fetch(`/user_roles?action=${'DELETE-SKILL'}`,options)
+                    .then(function (response) {
+                            return response.json();
+                        }).then(function (text) {
+                                
+                                if (text.status==1){
+                                	Swal.fire({
+                        			icon: 'success',
+                        			title: 'Success',
+                        			html: text.message,
+                     
+                      				});
+                                }else{
+                                	Swal.fire({
+                        				icon: 'error',
+                        				title: 'Error',
+                        				html: text.message,                     
+                      				})
+                                }
+                                
+
+                            });
+         
+            
+            
+        }
+      })
+}
+
+function get_form(roleid)
+{
+	html = '<div class="row align-items-center justify-content-center">';
+
+	html += '<div class="col-md-12">Add skills to this Admin Role</div>';
+
+	html += '<div class="col-md-12">';
+	html += '<form id="" style="margin-top:20px" method="POST"';
+	html += 'action="/user_roles?action=ADD-SKILL-TO-ROLE&rid="'+roleid+'>';
+	html += '<div class="row">'; //row class
+	html += '<div class="col-md-10">';
+	html += '<div class="form-group">';
+	html += '<textarea rows="2" cols="40" placeholder="Enter training codes here..." id="rolez" class="form-control" required></textarea>';
+	html += '</div></div>'; //........................
+	html += '<div class="col-md-2">';
+	html += '<div class="form-group">';
+	html += '<input type="button" onclick="addSkillsToRole('+roleid+')" class="btn btn-info btn-sm" value="Add Skills">';
+	html += '</div></div>';
+	html += '<div class="col-md-12"><small style="color:red; font-size:10px">Separate training codes by comma</smal></div>';
+	html += '</div>'; //end of row class
+	html += '</form></div>';
+	html += '</div>'; //end of form
+
+	return html
+}
+
+function addSkillsToRole(roleid)
+{
+	var trainings = $('#rolez').val();
+
+	if (!trainings){
+		alert('empty field!');
+		return;
+	}
+	
+
+	const update = {rid: roleid, trainings:trainings,};
+
+	const options = {
+						method: 'POST',
+						headers: {'Content-Type': 'application/json',},
+						body: JSON.stringify(update),
+					};
+          
+    fetch(`/user_roles?action=${'ADD-SKILLS-TO-ROLE'}`,options)
+                    .then(function (response) {
+                            return response.json();
+                        }).then(function (text) {
+                                
+                                if (text.status==1){
+                                	Swal.fire({
+                        			icon: 'success',
+                        			title: 'Success',
+                        			html: text.message,
+                     
+                      				}).then((value) => {
+										setTimeout(location.reload(), 3000);
+									});
+                                }else{
+                                	Swal.fire({
+                        				icon: 'error',
+                        				title: 'Error',
+                        				html: text.message,                     
+                      				})
+                                }
+                                
+
+                            });
+}
+</script>
+
+{% endblock %}
+

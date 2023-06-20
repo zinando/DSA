@@ -1,0 +1,199 @@
+{% extends 'public/base.html' %}
+
+
+
+{% block content %}
+
+<div class="container">
+	<div class="row align-items-center justify-content-center">
+		<div class="col-md-12">
+								<div class="login100-form-logo text-center">
+									
+									<div class="text-center" style="color:white;background: #179cd7;">FHC LAB SAFETY BOS CHECKLIST</div>
+								</div>
+		</div>
+		<div class="col-md-12 " style="backgound: red;">
+			<div class="row align-items-center justify-content-center">
+				<div class="col-md-10">
+					<form id="safetyBosForm" style="margin-top:20px" method="POST" action="/bos?type=SAFETY&department=QA">
+						{{ form.csrf_token }}
+						<div class="row">
+							<div class="col-md-12">
+								<span class="login100-form-logo">
+									<i class="fas fa-landscape"></i>
+									<span style="color:black;background: white;">{{resp}}</span>
+								</span>
+							</div>
+						</div>
+						<div class="row">
+							<div class="col-md-6">
+                        		<div class='form-group'>
+                        			{{form.observer.label()}}
+                        			{{form.observer(class='form-control')}}
+                        		</div>
+                    		</div>
+                    		<div class="col-md-6">
+                        		<div class='form-group'>
+                        			{{form.department.label()}}
+                        			{{form.department(class='form-control')}}
+                        		</div>
+                    		</div>
+                		</div>
+
+                		<div class="row">
+							<div class="col-md-6">
+                        		<div class='form-group'>
+                        			{{form.line.label()}}
+                        			{{form.line(class='form-control')}}
+                        		</div>
+                    		</div>
+                    		<div class="col-md-6">
+                        		<div class='form-group'>
+                        			{{form.shift.label()}}
+                        			{{form.shift(class='form-control')}}
+                        		</div>
+                    		</div>
+                		</div>
+						
+						<div class="row">
+							<div class="col-md-4">
+                        		<div class='form-group'>
+                        			{{form.bos_type.label()}}
+                        			{{form.bos_type(class='form-control')}}
+                        		</div>
+                    		</div>
+                    		<div class="col-md-4">
+                        		<div class='form-group'>
+                        			{{form.team.label()}}
+                        			{{form.team(class='form-control')}}
+                        		</div>
+                    		</div>
+                    		<div class="col-md-4">
+                        		<div class='form-group'>
+                        			{{form.bos_time.label()}}
+                        			{{form.bos_time(class='form-control')}}
+                        		</div>
+                    		</div>
+                		</div>
+
+                		<div class="row align-items-center justify-content-center" >
+							<div class="col-md-12">
+                        		<hr style="border: 3px solid #179cd7">
+                    		</div>
+                    		<div class='col-md-8 alert alert-info text-center'> Place your cursor on each select field to see more details.</div>                    		
+                		</div>
+
+                		<div class="row">
+							<div class="col-md-4">
+                        		<div class='form-group'>
+                        			{{form.point1.label()}}
+                        			<div class="col-md-12" style="margin-bottom:10px">
+                        				<img src="/static/img/images/bos/qa/safety/work_bench.png" height="145px" width="100%">
+                        			</div>
+                        			{{form.point1(class='form-control point p1', onchange='getPercent()')}}
+                        		</div>
+                    		</div>
+                    		<div class="col-md-4">
+                        		<div class='form-group'>
+                        			{{form.point2.label()}}
+                        			<div class="col-md-12" style="margin-bottom:10px">
+                        				<img src="/static/img/images/bos/qa/safety/desicator.png" height="145px" width="100%">
+                        			</div>
+                        			{{form.point2(class='form-control point p2', onchange='getPercent()')}}
+                        		</div>
+                    		</div>
+                    		<div class="col-md-4">
+                        		<div class='form-group'>
+                        			{{form.point3.label()}}
+                        			<div class="col-md-12" style="margin-bottom:10px">
+                        				<img src="/static/img/images/bos/qa/safety/bottle.png" height="145px" width="100%">
+                        			</div>
+                        			{{form.point3(class='form-control point p3', onchange='getPercent()')}}
+                        		</div>
+                    		</div>
+                		</div>
+
+                		<div class="row">							
+                    		<div class="col-md-6">
+                        		<div class='form-group'>
+                        			{{form.point4.label()}}
+                        			<div class="col-md-12" style="margin-bottom:10px">
+                        				<img src="/static/img/images/bos/qa/safety/area_std.png" height="145px" width="100%">
+                        			</div>
+                        			{{form.point4(class='form-control point p4', onchange='getPercent()')}}
+                        		</div>
+                    		</div>
+                    		<div class="col-md-6">
+                        		<div class='form-group'>
+                        			{{form.point5.label()}}
+                        			<div class="col-md-12" style="margin-bottom:10px">
+                        				<img src="/static/img/images/bos/qa/safety/balance.png" height="145px" width="100%">
+                        			</div>
+                        			{{form.point5(class='form-control point p5', onchange='getPercent()')}}
+                        		</div>
+                    		</div>
+                		</div>
+
+                		<div class="row align-items-center justify-content-center">    
+                    		<div class="col-md-12">
+                        		<div class='form-group'>
+                        			{{form.comment.label()}} 
+                        			{{form.comment(class='form-control')}}                        			
+                        		</div>
+                    		</div>                    		
+						</div>
+						
+						<div class="row align-items-center justify-content-center">    
+                    		<div class="col-md-4">
+                        		<div class='form-group'>
+                        			{{form.percent.label()}} 
+                        			{{form.percent(class='form-control percent')}}                       			
+                        		</div>
+                    		</div>                    		
+                    		<div class="col-md-4">                    
+                        		<div class='form-group'>
+                            		{{form.submit(class="btn btn-info")}} 
+                        		</div>
+                    		</div>
+						</div>
+					</form>
+				</div>
+				
+			</div>
+		</div>
+		
+	</div>
+</div>
+
+{% endblock %}
+
+{% block tail %}
+<script type="text/javascript">
+
+	var p1=$(".p1").val();
+	var p2=$(".p2").val();
+	var p3=$(".p3").val();
+	var p4=$(".p4").val();
+	var p5=$(".p5").val();
+	var total = parseInt(p1) + parseInt(p2) + parseInt(p3) + parseInt(p4) + parseInt(p5);
+	var unit="%";
+	var value=(total/5)*100;
+	$(".percent").val(value.toFixed(2)+" "+unit);
+
+	
+
+
+function getPercent(){
+	var p1=$(".p1").val(); var p2=$(".p2").val(); var p3=$(".p3").val(); var p4=$(".p4").val();	var p5=$(".p5").val();
+		total = parseInt(p1) + parseInt(p2) + parseInt(p3) + parseInt(p4) + parseInt(p5);		
+		value=(total/5)*100;
+		$(".percent").val(value.toFixed(2)+" "+unit);
+
+	}
+	
+
+
+</script>
+
+{% endblock %}
+

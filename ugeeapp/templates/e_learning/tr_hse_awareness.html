@@ -1,0 +1,661 @@
+{% extends 'public/base.html' %}
+
+
+
+{% block content %}
+
+<div class="container">
+	<div class="row align-items-center justify-content-center">
+		<div class="col-md-12">
+			<div class="login100-form-logo align-items-center justify-content-center">
+									
+				<div class="text-center" style="color:white;background: #179cd7;">
+					WELCOME TO MY e_LEARNING
+				</div>
+			</div>
+		</div><hr>
+		<div class="col-md-12">
+		<div class="col-md-12" style="margin-bottom:10px">
+            <img src="/static/documents/e_learning/page_images/hse_awareness.PNG" height="200px" width="100%">
+        </div>			
+		</div>
+		<div class="col-md-12 " style="backgound: red;">
+			<div class="row">
+				<div class="col-md-10">
+					<form id="" style="margin-top:20px" method="POST" action="">		
+						
+						<div class="row align-items-center justify-content-center v1">
+							<div class="col-md-12">
+                        		<div class='form-group'>
+                        			<div>INSTRUCTIONS:</div>                       			
+                        			<p>Before you proceed with this quiz, ensure you</p>
+                        			<ol>                        				
+                        				<li>Download the course outline by clicking on the link provided in your skills matrix page</li>
+                        				<li>Open the outline from your device</li>
+                        				<li>Study the outline thoroughly</li>
+                        				<li>Then return here to attempt this quiz.</li>
+                        				<li>You are expected to score at least <span style="color:#179cd7;">{{pass_mark}}%</span> to pass this course.</li>
+                        			</ol>
+
+                        		</div>
+                    		</div>
+                    		<div class="col-md-4">
+                        		<div class='form-group'>
+                        			<button type="button" class="btn btn-secondary" onclick="getView1()">Start Quiz</button>
+                        		</div>
+                    		</div>            		
+                		</div>
+                		<div class="row align-items-center justify-content-center v2" style="display:none;">
+							<div class="col-md-12">
+                        		<div class='form-group'>
+                        			1.	What is Health Safety and Environment vision?
+                        		</div>
+                    		</div>
+                    		<div class="col-md-12">
+                        		<div class='form-group'>
+                        			<input type="radio" style="margin-right: 10px; margin-left: 20px;" name="q1" class="" id="q11" value=1 onchange="getView2()">a.	Protect People, Public Trust, and Profit <br>
+
+                        			<input type="radio" style="margin-right: 10px; margin-left: 20px;" name="q1" class="" id="q12" value=0 onchange="getView2()">b.	Protect everything, everything <br> 
+
+                        			<input type="radio" style="margin-right: 10px; margin-left: 20px;" name="q1" class="" id="q13" value=0 onchange="getView2()">c.	Help people understand safety<br>
+
+                        			<input type="radio" style="margin-right: 10px; margin-left: 20px;" name="q1" class="" id="q14" value=0 onchange="getView2()">d.	Save everybody
+                        			
+                        		</div>
+                    		</div>
+                    		              		
+                		</div> 
+                		<div class="row align-items-center justify-content-center v3" style="display:none;">
+							<div class="col-md-12">
+                        		<div class='form-group'>
+                        			2.	Which of the following is not a HSE Key Element?
+                        		</div>
+                    		</div>
+                    		<div class="col-md-12">
+                        		<div class='form-group'>
+                        			<input type="radio" style="margin-right: 10px; margin-left: 20px;" name="q2" class="" id="q21" value=0 onchange="getView3()">a.	Leadership and Commitment <br>
+
+                        			<input type="radio" style="margin-right: 10px; margin-left: 20px;" name="q2" class="" id="q22" value=1 onchange="getView3()">b.	HSE Program Leader <br>
+
+                        			<input type="radio" style="margin-right: 10px; margin-left: 20px;" name="q2" class="" id="q23" value=0 onchange="getView3()">c.	Training and Procedure <br>
+
+                        			<input type="radio" style="margin-right: 10px; margin-left: 20px;" name="q2" class="" id="q24" value=0 onchange="getView3()">d.	Behavior and Culture 
+                        			
+                        		</div>
+                    		</div>                    		              		
+                		</div>
+                		<div class="row align-items-center justify-content-center v4" style="display:none;">
+							<div class="col-md-12">
+                        		<div class='form-group'>
+                        			3.	Which of the following is a HSE values?
+                        		</div>
+                    		</div>
+                    		<div class="col-md-12">
+                        		<div class='form-group'>
+                        			<input type="radio" style="margin-right: 10px; margin-left: 20px;" name="q3" class="" id="q31" value=0 onchange="getView4()">a.	Do QRP before every task <br>
+
+                        			<input type="radio" style="margin-right: 10px; margin-left: 20px;" name="q3" class="" id="q32" value=1 onchange="getView4()">b.	Safety is everyone’s responsibility<br>
+
+                        			<input type="radio" style="margin-right: 10px; margin-left: 20px;" name="q3" class="" id="q33" value=0 onchange="getView4()">c.	Report all near misses <br>
+
+                        			<input type="radio" style="margin-right: 10px; margin-left: 20px;" name="q3" class="" id="q34" value=0 onchange="getView4()">d.	Use the right PPEs
+                        		</div>
+                    		</div>
+                		</div>
+                		<div class="row align-items-center justify-content-center v5" style="display:none;">
+							<div class="col-md-12">
+                        		<div class='form-group'>
+                        			4.	The site HSE Program Leader is responsible for the HSE KI system
+                        		</div>
+                    		</div>
+                    		<div class="col-md-12">
+                        		<div class='form-group'>
+                        			<input type="radio" style="margin-right: 10px; margin-left: 20px;" name="q4" class="" id="q41" value=0 onchange="getView5()">a. True <br>
+                        			
+                        			<input type="radio" style="margin-right: 10px;margin-left: 20px;" name="q4" class="" id="q42" value=1 onchange="getView5()">b. False
+                        			
+                        		</div>
+                    		</div>                    		              		
+                		</div>
+                		<div class="row align-items-center justify-content-center v6" style="display:none;">
+							<div class="col-md-12">
+                        		<div class='form-group'>
+                        			5.	Which of the following is a Health and Safety System?
+                        		</div>
+                    		</div>
+                    		<div class="col-md-12">
+                        		<div class='form-group'>
+                        			<input type="radio" style="margin-right: 10px; margin-left: 20px;" name="q5" class="" id="q51" value=0 onchange="getView6()">a.	Boiler Systems <br>
+
+                        			<input type="radio" style="margin-right: 10px; margin-left: 20px;" name="q5" class="" id="q52" value=0 onchange="getView6()">b.	Nuclear Systems<br>
+
+                        			<input type="radio" style="margin-right: 10px; margin-left: 20px;" name="q5" class="" id="q53" value=1 onchange="getView6()">c.	Fall Protection and Prevention<br>
+                        			
+                        			<input type="radio" style="margin-right: 10px;margin-left: 20px;" name="q5" class="" id="q54" value=0 onchange="getView6()">d.	All of the above 
+                        			
+                        		</div>
+                    		</div>                    		              		
+                		</div>
+                		<div class="row align-items-center justify-content-center v7" style="display:none;">
+							<div class="col-md-12">
+                        		<div class='form-group'>
+                        			6.	How many Key Elements are there in the HSE Program
+                        		</div>
+                    		</div>
+                    		<div class="col-md-12">
+                        		<div class='form-group'>
+                        			<input type="radio" style="margin-right: 10px; margin-left: 20px;" name="q6" class="" id="q61" value=0 onchange="getView7()">a.	3 <br>
+
+                        			<input type="radio" style="margin-right: 10px; margin-left: 20px;" name="q6" class="" id="q62" value=0 onchange="getView7()">b.	4<br>
+
+                        			<input type="radio" style="margin-right: 10px; margin-left: 20px;" name="q6" class="" id="q63" value=0 onchange="getView7()">c.	5<br>
+                        			
+                        			<input type="radio" style="margin-right: 10px;margin-left: 20px;" name="q6" class="" id="q64" value=1 onchange="getView7()">d. 6
+                        			
+                        		</div>
+                    		</div>                    		              		
+                		</div>
+                		<div class="row align-items-center justify-content-center v8" style="display:none;">
+							<div class="col-md-12">
+                        		<div class='form-group'>
+                        			7.	Which of the following is not an HSE value?
+                        		</div>
+                    		</div>
+                    		<div class="col-md-12">
+                        		<div class='form-group'>
+                        			<input type="radio" style="margin-right: 10px; margin-left: 20px;" name="q7" class="" id="q71" value=0 onchange="getView8()">a.	Nothing we do is worth getting hurt for <br>
+                        			
+                        			<input type="radio" style="margin-right: 10px;margin-left: 20px;" name="q7" class="" id="q72" value=1 onchange="getView8()">b. Report all near misses <br>
+
+                        			<input type="radio" style="margin-right: 10px; margin-left: 20px;" name="q7" class="" id="q73" value=0 onchange="getView8()">c.	Every incident could and should have been avoided <br>
+
+                        			<input type="radio" style="margin-right: 10px; margin-left: 20px;" name="q7" class="" id="q74" value=0 onchange="getView8()">d.	Safety can be managed
+
+                        		</div>
+                    		</div>                    		              		
+                		</div>
+                		<div class="row align-items-center justify-content-center v9" style="display:none;">
+							<div class="col-md-12">
+                        		<div class='form-group'>
+                        			8.	Who owns Key Element I?
+                        		</div>
+                    		</div>
+                    		<div class="col-md-12">
+                        		<div class='form-group'>
+                        			<input type="radio" style="margin-right: 10px; margin-left: 20px;" name="q8" class="" id="q81" value=0 onchange="getView9()">a.	HSE Program Leader and TSM<br>
+                        			
+                        			<input type="radio" style="margin-right: 10px;margin-left: 20px;" name="q8" class="" id="q82" value=0 onchange="getView9()">b. TSM <br>
+
+                        			<input type="radio" style="margin-right: 10px;margin-left: 20px;" name="q8" class="" id="q83" value=1 onchange="getView9()">c.	Site Leadership and HSE Leadership <br>
+
+                        			<input type="radio" style="margin-right: 10px;margin-left: 20px;" name="q8" class="" id="q84" value=0 onchange="getView9()">d.	F&HC Module Leader
+                        			
+                        		</div>
+                    		</div>                    		              		
+                		</div>
+                		<div class="row align-items-center justify-content-center v10" style="display:none;">
+							<div class="col-md-12">
+                        		<div class='form-group'>
+                        			9.	What can cause a safety incident?
+                        		</div>
+                    		</div>
+                    		<div class="col-md-12">
+                        		<div class='form-group'>
+                        			<input type="radio" style="margin-right: 10px; margin-left: 20px;" name="q9" class="" id="q91" value=0 onchange="getView10()">a. Behaviors <br>
+                        			
+                        			<input type="radio" style="margin-right: 10px;margin-left: 20px;" name="q9" class="" id="q92" value=0 onchange="getView10()">b.	Conditions <br>
+
+                        			<input type="radio" style="margin-right: 10px; margin-left: 20px;" name="q9" class="" id="q93" value=1 onchange="getView10()">c. Behaviors and Conditions <br>
+                        			
+                        			<input type="radio" style="margin-right: 10px;margin-left: 20px;" name="q9" class="" id="q94" value=0 onchange="getView10()">d.	Sleeping on duty
+                        			
+                        		</div>
+                    		</div>                    		              		
+                		</div>
+                		<div class="row align-items-center justify-content-center v11" style="display:none;">
+							<div class="col-md-12">
+                        		<div class='form-group'>
+                        			10.	Which of the following is not a HSE Utility sub-system? 
+                        		</div>
+                    		</div>
+                    		<div class="col-md-12">
+                        		<div class='form-group'>
+                        			<input type="radio" style="margin-right: 10px; margin-left: 20px;" name="q10" class="" id="q101" value=0 onchange="getView11()">a. Thermal Safety <br>
+
+                        			<input type="radio" style="margin-right: 10px;margin-left: 20px;" name="q10" class="" id="q102" value=1 onchange="getView11()">b. Generator System and Facility Maintenance <br>
+
+                        			<input type="radio" style="margin-right: 10px; margin-left: 20px;" name="q10" class="" id="q103" value=0 onchange="getView11()">c. Maintenance and Welding Systems  <br>
+
+                        			<input type="radio" style="margin-right: 10px;margin-left: 20px;" name="q10" class="" id="q104" value=0 onchange="getView11()">d. Electrical Power Systems 
+                        		</div>
+                    		</div>
+                    		<div class="col-md-4">
+                        		<div class='form-group'>
+                        			<button type="button" class="btn btn-success" onclick="getResult('{{qid}}','{{pass_mark}}','{{tid}}')">Get Result</button>
+                        		</div>
+                    		</div>                    		              		
+                		</div>              		       		
+						
+					</form>
+				</div>
+				
+			</div>
+			
+		</div>
+		
+	</div>
+	          
+</div>
+
+{% endblock %}
+
+{% block tail %}
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@9"></script>
+<script type="text/javascript">
+
+
+function getView1()
+{
+	$('.v1').fadeOut('slow');
+	$('.v2').fadeIn('slow');
+}
+
+function getView2()
+{
+	$('.v2').fadeOut('slow');
+	var ans = $("input[type='radio'][name='q1']:checked").val();
+
+	if (ans == 1)
+	{
+		Swal.fire({
+                   	icon: 'success',
+                    title: 'Correct!',                                         
+                }).then(function(){
+			                
+							$('.v3').fadeIn('slow');
+
+			            })
+	} else
+	{
+		Swal.fire({
+                   	icon: 'error',
+                    title: 'Wrong Answer!',                                         
+                }).then(function(){
+			                
+							$('.v3').fadeIn('slow');
+
+			            })
+	}
+	
+}
+
+function getView3()
+{
+	$('.v3').fadeOut('slow');
+	var ans = $("input[type='radio'][name='q2']:checked").val();
+
+	if (ans == 1)
+	{
+		Swal.fire({
+                   	icon: 'success',
+                    title: 'Correct!',                                         
+                }).then(function(){
+			                
+							$('.v4').fadeIn('slow');
+
+			            })
+	} else
+	{
+		Swal.fire({
+                   	icon: 'error',
+                    title: 'Wrong Answer!',                                         
+                }).then(function(){
+
+			                $('.v4').fadeIn('slow');
+
+			            })
+	}
+
+	
+}
+
+function getView4()
+{
+	
+	$('.v4').fadeOut('slow');
+	var ans = $("input[type='radio'][name='q3']:checked").val();	
+
+	if (ans == 1)
+	{
+		Swal.fire({
+                   	icon: 'success',
+                    title: 'Correct!',                                         
+                }).then(function(){
+			                
+							$('.v5').fadeIn('slow');
+
+			            })
+	} else
+	{
+		Swal.fire({
+                   	icon: 'error',
+                    title: 'Wrong Answer!',                                         
+                }).then(function(){
+			                
+							$('.v5').fadeIn('slow');
+
+			            })
+	}
+
+
+}
+
+function getView5()
+{
+	$('.v5').fadeOut('slow');
+	var ans = $("input[type='radio'][name='q4']:checked").val(); 
+
+	if (ans == 1)
+	{
+		Swal.fire({
+                   	icon: 'success',
+                    title: 'Correct!',                                         
+                }).then(function(){
+			                
+							$('.v6').fadeIn('slow');
+
+			            })
+	} else
+	{
+		Swal.fire({
+                   	icon: 'error',
+                    title: 'Wrong Answer!',                                         
+                }).then(function(){
+			                
+							$('.v6').fadeIn('slow');
+
+			            })
+	}
+
+
+}
+
+function getView6()
+{
+	$('.v6').fadeOut('slow');
+	var ans = $("input[type='radio'][name='q5']:checked").val(); 
+
+	if (ans == 1)
+	{
+		Swal.fire({
+                   	icon: 'success',
+                    title: 'Correct!',                                         
+                }).then(function(){
+			                
+							$('.v7').fadeIn('slow');
+
+			            })
+	} else
+	{
+		Swal.fire({
+                   	icon: 'error',
+                    title: 'Wrong Answer!',                                         
+                }).then(function(){
+			                
+							$('.v7').fadeIn('slow');
+
+			            })
+	}
+	
+}
+
+function getView7()
+{
+	$('.v7').fadeOut('slow');
+	var ans = $("input[type='radio'][name='q6']:checked").val(); 
+
+	if (ans == 1)
+	{
+		Swal.fire({
+                   	icon: 'success',
+                    title: 'Correct!',                                         
+                }).then(function(){
+			                
+							$('.v8').fadeIn('slow');
+
+			            })
+	} else
+	{
+		Swal.fire({
+                   	icon: 'error',
+                    title: 'Wrong Answer!',                                         
+                }).then(function(){
+			                
+							$('.v8').fadeIn('slow');
+
+			            })
+	}
+	
+}
+
+function getView8()
+{
+	$('.v8').fadeOut('slow');
+	var ans = $("input[type='radio'][name='q7']:checked").val(); 
+
+	if (ans == 1)
+	{
+		Swal.fire({
+                   	icon: 'success',
+                    title: 'Correct!',                                         
+                }).then(function(){
+			                
+							$('.v9').fadeIn('slow');
+
+			            })
+	} else
+	{
+		Swal.fire({
+                   	icon: 'error',
+                    title: 'Wrong Answer!',                                         
+                }).then(function(){
+			                
+							$('.v9').fadeIn('slow');
+
+			            })
+	}
+	
+}
+
+function getView9()
+{
+	$('.v9').fadeOut('slow');
+	var ans = $("input[type='radio'][name='q8']:checked").val(); 
+
+	if (ans == 1)
+	{
+		Swal.fire({
+                   	icon: 'success',
+                    title: 'Correct!',                                         
+                }).then(function(){
+			                
+							$('.v10').fadeIn('slow');
+
+			            })
+	} else
+	{
+		Swal.fire({
+                   	icon: 'error',
+                    title: 'Wrong Answer!',                                         
+                }).then(function(){
+			                
+							$('.v10').fadeIn('slow');
+
+			            })
+	}
+	
+}
+
+function getView10()
+{
+	$('.v10').fadeOut('slow');
+	var ans = $("input[type='radio'][name='q9']:checked").val(); 
+
+	if (ans == 1)
+	{
+		Swal.fire({
+                   	icon: 'success',
+                    title: 'Correct!',                                         
+                }).then(function(){
+			                
+							$('.v11').fadeIn('slow');
+
+			            })
+	} else
+	{
+		Swal.fire({
+                   	icon: 'error',
+                    title: 'Wrong Answer!',                                         
+                }).then(function(){
+			                
+							$('.v11').fadeIn('slow');
+
+			            })
+	}
+	
+}
+
+function getView11()
+{
+	//$('.v11').fadeOut('slow');
+	var ans = $("input[type='radio'][name='q10']:checked").val(); 
+
+	if (ans == 1)
+	{
+		Swal.fire({
+                   	icon: 'success',
+                    title: 'Correct!',                                         
+                })
+	} else
+	{
+		Swal.fire({
+                   	icon: 'error',
+                    title: 'Wrong Answer!',                                         
+                })
+	}
+	
+}
+
+function getResult(id,mark,tid)
+{	
+	//check if the last question has been amswered//
+	check = $("input[type='radio'][name='q10']").is(':checked');
+	if (!check){alert('Please choose an option.'); return false;}
+
+	triggerProcessing();
+setTimeout(function(){
+	//compute result
+	var ans1 = $("input[type='radio'][name='q1']:checked").val(); 
+	var ans2 = $("input[type='radio'][name='q2']:checked").val();
+	var ans3 = $("input[type='radio'][name='q3']:checked").val();
+	var ans4 = $("input[type='radio'][name='q4']:checked").val();
+	var ans5 = $("input[type='radio'][name='q5']:checked").val();
+	var ans6 = $("input[type='radio'][name='q6']:checked").val(); 
+	var ans7 = $("input[type='radio'][name='q7']:checked").val();
+	var ans8 = $("input[type='radio'][name='q8']:checked").val();
+	var ans9 = $("input[type='radio'][name='q9']:checked").val();
+	var ans10 = $("input[type='radio'][name='q10']:checked").val();
+
+	var ans11 = parseInt(ans1) + parseInt(ans2) + parseInt(ans3) + parseInt(ans4) + parseInt(ans5);
+	var ans12 = parseInt(ans6) + parseInt(ans7) + parseInt(ans8) + parseInt(ans9) + parseInt(ans10);
+	var ans = ans11 + ans12;
+	var percent = (ans / 10) * 100;
+	percent = percent.toFixed(2);
+
+	//alert('You are doing well');
+	//save result to database
+	const update = {
+						score:parseInt(percent),
+						quizid:id,
+						tid:tid,
+					};
+
+    const options = {
+                    	method: 'POST',
+                    	headers: {'Content-Type': 'application/json',},
+                    	body: JSON.stringify(update),
+                };
+
+	fetch(`/e_learning?action=${'POST-RESULT'}`, options)
+                    .then(function (response) {
+                            return response.json();
+                        }).then(function (text) {
+                                
+             if (percent >= parseInt(mark))
+				{
+					Swal.fire({
+			                   	icon: 'success',
+			                    title: 'Congratulations!',
+			                    html: "<div class='alert alert-success'>You scored "+percent+"% <br>You have successfully completed this Course.</div>",
+			                                                             
+			                }).then(function(){
+
+			                	setTimeout(function(){
+			                		location.reload()
+			                	},1000);
+
+			                })
+				} else
+				{
+					Swal.fire({
+			                   	icon: 'error',
+			                    title: 'Sorry!',
+			                    html: "<div class='alert alert-danger'>You scored "+percent+"% <br>You did not meet the pass mark for this Course. Please go through the material again and attempt the quiz once more.</div>",
+			                                                             
+			                }).then(function(){
+
+			                	setTimeout(function(){
+			                		location.reload()
+			                	},1000);
+
+			                })
+				}
+
+				        })
+
+},3000);	
+
+	
+}
+
+function getCheckboxValue(name)
+{
+	var checked = document.querySelectorAll('input[name="'+name+'"]:checked');
+	var count = document.querySelectorAll('input[name="'+name+'"]:checked').length;
+
+	if (count == 0)
+	{
+		return parseInt(0);
+	}
+
+	var ans = 0;
+
+	for (var x = 0; x < count; x++)
+	{
+		ans += parseFloat(checked[x].value);
+	}
+
+	if (ans < 1)
+	{
+		return parseInt(0);
+	} else
+	{
+		return parseInt(1);
+	}
+
+}
+</script>
+
+{% endblock %}
+

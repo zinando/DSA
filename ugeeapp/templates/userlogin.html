@@ -1,0 +1,84 @@
+{% extends 'public/baseview.html' %}
+
+{% block content %}
+
+<div class="container">
+	<div class="row align-items-center justify-content-center">
+		<div class="col-md-12 text-center">
+			<hr/><h3 style="background:#179cd7">User Login</h3><hr/>
+		</div>
+
+		<div class="col-md-6 " style="opacity: 0.9; background: #179cd7;">
+			<div class="row align-items-center justify-content-center">
+				<div class="col-md-8">
+					<form id="loginForm" style="margin-top:20px" method="POST" action="">
+						{{ form.csrf_token }}
+						<div class="row">
+							<div class="col-md-12">
+								<span class="login100-form-logo">
+									<i class="fas fa-landscape"></i>
+									<span style="color:black;background: white;">{{resp}}</span>
+								</span>
+							</div>
+						</div>
+						<div class="row">
+							<div class="col-md-6">
+                        		<div class='form-group' style="color:red">
+                        			{{form.username.label()}}
+                        		</div>
+                    		</div>
+                		</div>
+                		<div class="row">    
+                    		<div class="col-md-12">                    
+                        		<div class='form-group'>
+                            		{{form.username(class="form-control")}}
+                        		</div>
+                    		</div>
+						</div>
+						<div class="row">
+							<div class="col-md-4">
+                        		<div class='form-group' style="color:red">
+                        			{{form.password.label()}}
+                        		</div>
+                    		</div>
+                		</div>
+                		<div class="row">    
+                    		<div class="col-md-12">                    
+                        		<div class='form-group'>
+                            		{{form.password(class="form-control")}}
+                        		</div>
+                    		</div>
+						</div>
+						<div class="row">    
+                    		<div class="col-md-10">                    
+                        		<div class='form-group'>
+                            		<span>{{form.remember()}}</span>                        
+                        			<span style="color:red">{{form.remember.label()}}</span>
+                        		</div>
+                    		</div>
+						</div>
+						<div class="row align-items-center justify-content-center">    
+                    		<div class="col-md-12">                    
+                        		<div class='form-group'>
+                            		{{form.submit(class="btn btn-info")}} <a href="/reset_password" style="text-decoration: none;"><span><samll style="font-size: 12px;color: yellow;">Forgot Password</samll></span></a>
+                        		</div>
+                    		</div>
+						</div>
+					</form>
+				</div>
+				
+			</div>
+		</div>
+		
+	</div>
+</div>
+
+{% endblock %}
+
+{% block tail %}
+
+<script type="text/javascript">
+    
+</script>
+
+{% endblock %}

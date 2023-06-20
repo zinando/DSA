@@ -1,0 +1,173 @@
+
+{% extends 'public/base.html' %}
+
+
+
+{% block content %}
+
+<div class="container">
+        <div class="row">
+                                <div class="col-md-6">    
+                                    <div class="table-responsive">
+                                        <table class='table table-striped'>
+                                            
+                                            <tr>
+                                                <td>Full Name</td>
+                                                <td>
+                                                    {{userinfo.fname}} {{userinfo.sname}}
+                                                </td>
+                                                    
+                                            </tr>
+                                            <tr>
+                                                <td>Department</td>
+                                                <td>{{get_department(userinfo.department)}}</td>       
+                                            </tr>
+                                            <tr>
+                                                <td>Phone</td>
+                                                <td>{{userinfo.phone}}</td>       
+                                            </tr>
+                                            <tr>
+                                                <td>Email</td>
+                                                <td>{{userinfo.email}}</td>       
+                                            </tr>
+                                            <tr>
+                                                <td>Account Type</td>
+                                                <td>{{userinfo.acctype}}</td>       
+                                            </tr>
+
+                                                
+                                        </table>
+                                    </div>
+
+                                </div>
+
+            <div class="col-md-6">
+                <div class="col-md-12 login100-form-logo text-center">
+                        
+                    <div class="text-center" style="color:white;background: #179cd7;">
+                    Change Password Form
+                    </div>
+                </div>
+            
+
+        <div class="col-md-12 " style="backgound: red;">
+            <div class="row align-items-center justify-content-center">
+                <div class="col-md-12">
+                    <form id="ChangePasswordForm" style="margin-top:20px" method="POST" action="">
+                        
+                        <div class="row">
+                            <div class="col-md-12">
+                                <span class="login100-form-logo">
+                                    <i class="fas fa-landscape"></i>
+                                    <span style="color:black;background: white;">{{resp}}</span>
+                                </span>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class='form-group'>
+                                    <label>Old Password</label>
+                                    <input class="form-control" type="password" id="oldpass">                                    
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class='form-group'>
+                                    <label>New Password</label>
+                                    <input class="form-control" type="password" id="pass1">                                    
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class='form-group'>
+                                    <label>Repeat Password</label>
+                                    <input class="form-control" type="password" id="pass2">                                    
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row align-items-center justify-content-center">    
+                            <div class="col-md-12">                    
+                                <div class='form-group'>
+                                    <input class="btn btn-info" type="button" value="Change Password" onclick="changePassword('{{userinfo.userid}}')">
+                                    
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                
+            </div>
+        </div>
+       </div> 
+    
+    </div>
+</div>
+
+
+{% endblock %}
+
+{% block tail %}
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@9"></script>
+<script type="text/javascript">
+    function changePassword(id){
+        var old = $('#oldpass').val();
+        var new1 = $('#pass1').val();
+        var new2 = $('#pass2').val();
+
+        if (new1 == new2){
+
+            if (old==new1){
+                Swal.fire({
+                        icon: 'error',
+                        title: 'Password Error',
+                        text: 'The new password cannot be the same as the old one.',                     
+                    });
+                return false;
+            }
+
+
+            const update = {itemid: id,old:old,new:new1,};
+
+                const options = {
+                                method: 'POST',
+                                headers: {'Content-Type': 'application/json',},
+                                body: JSON.stringify(update),
+                            };
+          
+                fetch(`/userprofile?action=${'CHANGEPASSWORD'}`,options)
+                    .then(function (response) {
+                            return response.json();
+                        }).then(function (text) {
+                                
+                                if (text.status==1){
+                                    Swal.fire({
+                                    icon: 'success',
+                                    title: 'Success',
+                                    html: text.message,
+                     
+                                    })
+                                }else{
+                                    Swal.fire({
+                                        icon: 'error',
+                                        title: 'Error',
+                                        html: text.message,                     
+                                        })
+                                    }
+                                
+
+                            });
+
+        }else{
+            Swal.fire({
+                        icon: 'error',
+                        title: 'Password Mismatch',
+                        text: 'The new passwords do not match.',                     
+                    });
+            return false;
+        }
+    }
+
+</script>
+
+{% endblock %}

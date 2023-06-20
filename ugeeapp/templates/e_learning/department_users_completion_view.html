@@ -1,0 +1,216 @@
+{% extends 'public/base.html' %}
+
+
+
+{% block content %}
+
+<div class="container">
+	<div class="row align-items-center justify-content-center hold">
+		<div class="col-md-12">
+			<div class="login100-form-logo align-items-center justify-content-center">
+									
+				<div class="text-center" style="color:white;background: #179cd7;">
+					WELCOME TO MY e_LEARNING
+				</div>
+			</div>
+		</div>		
+		<!--<div class="col-md-12 " style="backgound: red;"> -->
+		<div class="row">
+			
+				
+		</div>
+			
+		<div class="col-md-12 hr1" >
+			<hr style="border: solid 2px #179cd7;">
+		</div>
+
+		<div class="col-md-10 title" style="text-align:center" data-user="{{username}}">
+					Skill Matrix For: {{username}}
+		</div>
+		<div class="col-md-2" id="excel_expo">
+			<button title="export to excell" type="button" onclick="exportTableToExcel('','{{username}} all tr')">
+				<i class="fas fa-file-excel" style="font-size:24px;color:green;"></i>
+			</button>
+		</div>
+		<div class="col-md-12 hr2">
+			<hr style="border: solid 2px #179cd7;">
+		</div>
+			
+			
+		<div class="row main_row">
+			<div class="col-md-12" id="tr-items">
+				<div class="table-responsive tabb2">
+		            <table class="table table-bordered table-striped" id="general_repo">
+		            	{% if userid == 1 or userid == 2 %}
+						<thead class="team">
+		                    <tr>
+                                <th scope="col">S/N</th>
+                                <th scope="col">Team</th>
+                                <th scope="col">Total</th>
+                                <th scope="col">Mandatory</th>
+                                <th scope="col">Priority A</th> 
+                            </tr>
+		                </thead>
+		                <tbody class="team">
+		                	{% for team in teams %}
+		                	<tr>
+		                		<td>{{team.count}}</td>
+		                		<td>
+		                			<a style="color:#179cd7;" class='btn btn-small titlle' onclick="view_team_report({{userid}},'{{team.title}}')" data-title="{{team.title}}">
+                                		{{team.title}}
+                            		</a>
+		                		
+		                		</td>
+		                		<td>{{team.T}}</td>
+		                		<td>{{team.M}}</td>
+		                		<td>{{team.A}}</td>
+		                	</tr>
+		                	{% endfor%}
+		                </tbody>       
+						
+						<!-- table divider -->
+						<thead class="team">
+		                    <tr>
+                                <th scope="col"></th>
+                                <th scope="col"></th>
+                                <th scope="col"></th>
+                                <th scope="col"></th>
+                                <th scope="col"></th> 
+                            </tr>
+		                </thead>
+		                <!-- table divider end-->
+		                {% endif %}
+		                <thead class="t_head">
+		                    <tr>
+                                <th scope="col">S/N</th>
+                                <th scope="col">Employee Name</th>
+                                <th scope="col">Total</th>
+                                <th scope="col">Mandatory</th>
+                                <th scope="col">Priority A</th> 
+                            </tr>
+		                </thead>
+		                <tbody class="tr_items">
+		                {% if records %}
+		                	<tr>
+		                		<td></td>
+		                		<td>{{username}}</td>
+                                <td>{{T}}</td>
+                                <td>{{M}}</td>
+                                <td>{{A}}</td>                  
+		                	</tr>
+		                    {% for record in records %}
+		                    <tr>
+                                <td>{{record.count}}</td>
+                                <td>
+                                	<a href="/skills_matrix?action=INDIVIDUAL&userid={{record.userid}}&filter=all&value=" target="_blank" style="text-decoration:none">
+                                		{{record.name}}
+                            		</a>
+                            	</td>
+                                <td>{{record.total}}</td>
+                                <td>{{record.m}}</td>
+                                <td>{{record.a}}</td>
+                            </tr>
+		                    {% endfor %}
+		                {% else %}
+                            <tr>
+                                <td></td>
+                                <td>
+                                	<div class="alert alert-danger">
+                                		No records found
+                                	</div>
+                                </td>
+                                <td></td>
+                                <td></td>
+                                <td></td>                
+                            </tr>
+		                {% endif %}
+		                </tbody>
+		            </table>
+	            </div>
+					
+			</div>
+					
+		</div>
+		<!--</div>-->
+		
+	</div>
+	{% if enteries %}
+	
+	
+    {% endif %}            
+</div>
+
+{% endblock %}
+
+{% block tail %}
+
+<script type="text/javascript">
+var html = '<div class="row">';
+html += '<div class="col-md-12">';
+html += $('.hr1').html();
+html += '</div>';
+html +='<div class="col-md-8 new-title" style="text-align:center">';
+html += '</div>';
+html += '<div class="col-md-2" id="excel_expo">';
+//html += $('#excel_expo').html();
+html += '</div>';
+html += '<div class="col-md-12">';
+html += $('.hr1').html();
+html += '</div>';
+html += '</div>';
+html += '<div class="row">';
+html += '<div class="col-md-12" id="tr-items"><div class="table-responsive tabb2">';
+html += '<table class="table table-bordered table-striped" id="general_repo">';
+html += '<thead class="t_head"><tr>';
+html += '<th scope="col">S/N</th><th scope="col">Employee Name</th>';
+html += '<th scope="col">Total</th><th scope="col">Mandatory</th>';
+html += '<th scope="col">Priority A</th>';
+html += '</tr></thead><tbody class="new-tb">';
+html += '</tbody>';
+html += '</table></div></div></div>';
+
+function view_team_report(department,team)
+{
+	const update = {department:department,team:team,};
+
+			const options = {
+								method: 'POST',
+								headers: {'Content-Type': 'application/json',},
+								body: JSON.stringify(update),
+							};
+          
+            fetch(`/skills_matrix?action=${'TEAM-REPORT'}`,options)
+                    .then(function (response) {
+                            return response.json();
+                        }).then(function (text) {
+                $('#ajaxlargeModalBody').html(html);
+                var depart = $('.title').attr('data-user');
+				$('.new-title').html('Skill Matrix For Team: '+team+', '+depart);
+				var tr = '';
+
+                for (var i=0; i<text.data.length;i++)
+                {
+                	tr += '<tr>';
+                	tr += '<td>' +text.data[i].count+ '</td>';
+                	tr += '<td>';
+                	tr += '<a href="/skills_matrix?action=INDIVIDUAL&userid=';
+                	tr += text.data[i].userid;
+                	tr += '&filter=all&value=" target="_blank"';
+                	tr += ' style="text-decoration:none">';
+                	tr += text.data[i].name;
+                	tr += '</a></td>';
+                	tr += '<td>' +text.data[i].T+ '</td>';
+                	tr += '<td>' +text.data[i].M+ '</td>';
+                	tr += '<td>' +text.data[i].A+ '</td>';
+                	tr += '</tr>';
+				}
+				$('.new-tb').html(tr);
+				$("#ajaxlarge").modal();
+			})
+}
+
+
+</script>
+
+{% endblock %}
+

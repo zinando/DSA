@@ -1,0 +1,672 @@
+{% extends 'public/base.html' %}
+
+
+
+{% block content %}
+
+<div class="container">
+	<div class="row align-items-center justify-content-center">
+		<div class="col-md-12">
+			<div class="login100-form-logo align-items-center justify-content-center">
+									
+				<div class="text-center" style="color:white;background: #179cd7;">
+					WELCOME TO MY e_LEARNING
+				</div>
+			</div>
+		</div><hr>
+		<div class="col-md-12">
+		<div class="col-md-12" style="margin-bottom:10px">
+            <img src="/static/documents/e_learning/page_images/Managing_Deviation.PNG" height="200px" width="100%">
+        </div>			
+		</div>
+		<div class="col-md-12 " style="backgound: red;">
+			<div class="row">
+				<div class="col-md-10">
+					<form id="" style="margin-top:20px" method="POST" action="">		
+						
+						<div class="row align-items-center justify-content-center v1">
+							<div class="col-md-12">
+                        		<div class='form-group'>
+                        			<div>INSTRUCTIONS:</div>                       			
+                        			<p>Before you proceed with this quiz, ensure you</p>
+                        			<ol>                        				
+                        				<li>Download the course outline by clicking on the link provided in your skills matrix page</li>
+                        				<li>Open the outline from your device</li>
+                        				<li>Study the outline thoroughly</li>
+                        				<li>Then return here to attempt this quiz.</li>
+                        				<li>You are expected to score at least <span style="color:#179cd7;">{{pass_mark}}%</span> to pass this course.</li>
+                        			</ol>
+
+                        		</div>
+                    		</div>
+                    		<div class="col-md-4">
+                        		<div class='form-group'>
+                        			<button type="button" class="btn btn-secondary" onclick="getView1()">Start Quiz</button>
+                        		</div>
+                    		</div>            		
+                		</div>
+                		<div class="row align-items-center justify-content-center v2" style="display:none;">
+							<div class="col-md-12">
+                        		<div class='form-group'>
+                        			1.	What is the Purpose of this SOP?
+                        		</div>
+                    		</div>
+                    		<div class="col-md-12">
+                        		<div class='form-group'>
+                        			<input type="radio" style="margin-right: 10px; margin-left: 20px;" name="q1" class="" id="q11" value=1 onchange="getView2()">a.	To provide a standard way of Managing Deviation and Exceptions with appropriate management review <br>
+
+                        			<input type="radio" style="margin-right: 10px; margin-left: 20px;" name="q1" class="" id="q12" value=0 onchange="getView2()">b.	To provide a standard way of Managing Alerts and Exceptions with appropriate management review 
+	
+                        		</div>
+                    		</div>
+                    		              		
+                		</div> 
+                		<div class="row align-items-center justify-content-center v3" style="display:none;">
+							<div class="col-md-12">
+                        		<div class='form-group'>
+                        			2.	Any deviation from normal procedure without proper authorization as outlined in this procedure must not be reported as quality Failure. True/False?
+                        		</div>
+                    		</div>
+                    		<div class="col-md-12">
+                        		<div class='form-group'>
+                        			<input type="radio" style="margin-right: 10px; margin-left: 20px;" name="q2" class="" id="q21" value=0 onchange="getView3()">a.	True <br>
+
+                        			<input type="radio" style="margin-right: 10px; margin-left: 20px;" name="q2" class="" id="q22" value=1 onchange="getView3()">b.	False 
+                        			
+                        		</div>
+                    		</div>                    		              		
+                		</div>
+                		<div class="row align-items-center justify-content-center v4" style="display:none;">
+							<div class="col-md-12">
+                        		<div class='form-group'>
+                        			3.	Any deviation or exception to be sustained permanently must be adopted via ........
+                        		</div>
+                    		</div>
+                    		<div class="col-md-12">
+                        		<div class='form-group'>
+                        			<input type="radio" style="margin-right: 10px; margin-left: 20px;" name="q3" class="" id="q31" value=0 onchange="getView4()">a.	SOP System <br>
+
+                        			<input type="radio" style="margin-right: 10px; margin-left: 20px;" name="q3" class="" id="q32" value=0 onchange="getView4()">b.	Deviation System. <br>
+
+                        			<input type="radio" style="margin-right: 10px; margin-left: 20px;" name="q3" class="" id="q33" value=1 onchange="getView4()">c.	Change control system.
+
+                        		</div>
+                    		</div>
+                		</div>
+                		<div class="row align-items-center justify-content-center v5" style="display:none;">
+							<div class="col-md-12">
+                        		<div class='form-group'>
+                        			4.	Deviation should be filled for an equipment malfunction which could directly affect the quality of an intermediate, bulk or finished product. True or False?
+
+                        		</div>
+                    		</div>
+                    		<div class="col-md-12">
+                        		<div class='form-group'>
+                        			<input type="radio" style="margin-right: 10px; margin-left: 20px;" name="q4" class="" id="q41" value=1 onchange="getView5()">a. True <br>
+                        			
+                        			<input type="radio" style="margin-right: 10px;margin-left: 20px;" name="q4" class="" id="q42" value=0 onchange="getView5()">b. False
+                        			
+                        		</div>
+                    		</div>                    		              		
+                		</div>
+                		<div class="row align-items-center justify-content-center v6" style="display:none;">
+							<div class="col-md-12">
+                        		<div class='form-group'>
+                        			5.	What is deviation?
+                        		</div>
+                    		</div>
+                    		<div class="col-md-12">
+                        		<div class='form-group'>
+                        			<input type="radio" style="margin-right: 10px; margin-left: 20px;" name="q5" class="" id="q51" value=1 onchange="getView6()">a.	Any unplanned event, which constitutes a departure from the technical standard, normal approved operating procedure and/or product/package attributes. <br>
+
+                        			<input type="radio" style="margin-right: 10px; margin-left: 20px;" name="q5" class="" id="q52" value=0 onchange="getView6()">b.	Any pre-planned departure of limited duration from the normal approved operating procedures control and/or use of materials not fully in line with specifications. <br>
+
+                        			<input type="radio" style="margin-right: 10px; margin-left: 20px;" name="q5" class="" id="q53" value=0 onchange="getView6()">c.	Any unusual event not according to worldwide quality assurance policies.
+                        			
+                        		</div>
+                    		</div>                    		              		
+                		</div>
+                		<div class="row align-items-center justify-content-center v7" style="display:none;">
+							<div class="col-md-12">
+                        		<div class='form-group'>
+                        			6.	What is an exception?
+                        		</div>
+                    		</div>
+                    		<div class="col-md-12">
+                        		<div class='form-group'>
+                        			<input type="radio" style="margin-right: 10px; margin-left: 20px;" name="q6" class="" id="q61" value=1 onchange="getView7()">a.	Any pre-planned and pre-approved departure of limited duration from the Technical Standards, normal approved operating procedures control and/or use of materials not fully in line with specifications <br>
+
+                        			<input type="radio" style="margin-right: 10px; margin-left: 20px;" name="q6" class="" id="q62" value=0 onchange="getView7()">b.	Any pre-planned departure of limited duration from the Technical Standards, normal approved operating procedures control and/or use of materials not fully in line with specifications. <br>
+
+                        			<input type="radio" style="margin-right: 10px; margin-left: 20px;" name="q6" class="" id="q63" value=0 onchange="getView7()">c.	Any unusual event not according to worldwide quality assurance policies. 
+                        			
+                        		</div>
+                    		</div>                    		              		
+                		</div>
+                		<div class="row align-items-center justify-content-center v8" style="display:none;">
+							<div class="col-md-12">
+                        		<div class='form-group'>
+                        			7.	Implementation of the process seeking an Exception for could be done before its approval. True/False
+                        		</div>
+                    		</div>
+                    		<div class="col-md-12">
+                        		<div class='form-group'>
+                        			<input type="radio" style="margin-right: 10px; margin-left: 20px;" name="q7" class="" id="q71" value=0 onchange="getView8()">a.	True <br>
+                        			
+                        			<input type="radio" style="margin-right: 10px;margin-left: 20px;" name="q7" class="" id="q72" value=1 onchange="getView8()">b. False
+
+                        		</div>
+                    		</div>                    		              		
+                		</div>
+                		<div class="row align-items-center justify-content-center v9" style="display:none;">
+							<div class="col-md-12">
+                        		<div class='form-group'>
+                        			8.	Deviation/exception can be approved by the department manager without the knowledge of the QA Leader. True/False
+                        		</div>
+                    		</div>
+                    		<div class="col-md-12">
+                        		<div class='form-group'>
+                        			<input type="radio" style="margin-right: 10px; margin-left: 20px;" name="q8" class="" id="q81" value=0 onchange="getView9()">a.	True <br>
+                        			
+                        			<input type="radio" style="margin-right: 10px;margin-left: 20px;" name="q8" class="" id="q82" value=1 onchange="getView9()">b. False
+                        			
+                        		</div>
+                    		</div>                    		              		
+                		</div>
+                		<div class="row align-items-center justify-content-center v10" style="display:none;">
+							<div class="col-md-12">
+                        		<div class='form-group'>
+                        			9.	During the process of filling the deviation form, the initiator needs to do the following except?
+                        		</div>
+                    		</div>
+                    		<div class="col-md-12">
+                        		<div class='form-group'>
+                        			<input type="radio" style="margin-right: 10px; margin-left: 20px;" name="q9" class="" id="q91" value=0 onchange="getView10()">a. Describe what happened, outline the sequence of events and how the deviation occurred. <br>
+                        			
+                        			<input type="radio" style="margin-right: 10px;margin-left: 20px;" name="q9" class="" id="q92" value=1 onchange="getView10()">b.	Review against validation data if applicable <br>
+
+                        			<input type="radio" style="margin-right: 10px; margin-left: 20px;" name="q9" class="" id="q93" value=0 onchange="getView10()">c. State what causes were found related to raw materials and/or packaging material, or related to procedure, or to the equipment performance or due to overall system capability <br>
+
+                        			<input type="radio" style="margin-right: 10px;margin-left: 20px;" name="q9" class="" id="q94" value=0 onchange="getView10()">d.	Check that the form is filled in line with WQA guidelines and assign deviation number. <br>
+                        			
+                        		</div>
+                    		</div>                    		              		
+                		</div>
+                		<div class="row align-items-center justify-content-center v11" style="display:none;">
+							<div class="col-md-12">
+                        		<div class='form-group'>
+                        			10.	The following need not to be stated in the deviation form? Select All that apply
+                        		</div>
+                    		</div>
+                    		<div class="col-md-12">
+                        		<div class='form-group'>
+                        			<input type="checkbox" style="margin-right: 10px; margin-left: 20px;" name="q10" class="" id="q101" value=0>a. 	Status of material and product whether reject, rework, release <br>
+
+                        			<input type="checkbox" style="margin-right: 10px;margin-left: 20px;" name="q10" class="" id="q102" value=0>b.	Root cause(s) leading to the deviation or exception <br>
+
+                        			<input type="checkbox" style="margin-right: 10px;margin-left: 20px;" name="q10" class="" id="q103" value=0.5>c. 	GRN Number for Materials, Batch Number for finished product, IRMs/IPMS for technical standards is indicated as applicable <br>
+
+                        			<input type="checkbox" style="margin-right: 10px;margin-left: 20px;" name="q10" class="" id="q104" value=0.5>d.	Who caused the problem leading to the deviation included as a learning. 
+
+                        		</div>
+                    		</div>
+                    		<div class="col-md-4">
+                        		<div class='form-group'>
+                        			
+                        		</div>
+                    		</div>
+                    		<div class="col-md-12">                    		              		
+                		    <div class='form-group'>
+                        			<button type="button" class="btn btn-success" onclick="getResult('{{qid}}','{{pass_mark}}','{{tid}}')">Get Result</button>
+                        		</div>
+                    		</div>                    		              		
+                		</div>              		       		
+						
+					</form>
+				</div>
+				
+			</div>
+			
+		</div>
+		
+	</div>
+	          
+</div>
+
+{% endblock %}
+
+{% block tail %}
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@9"></script>
+<script type="text/javascript">
+
+
+function getView1()
+{
+	$('.v1').fadeOut('slow');
+	$('.v2').fadeIn('slow');
+}
+
+function getView2()
+{
+	$('.v2').fadeOut('slow');
+	var ans = $("input[type='radio'][name='q1']:checked").val();
+
+	if (ans == 1)
+	{
+		Swal.fire({
+                   	icon: 'success',
+                    title: 'Correct!',                                         
+                }).then(function(){
+			                
+							$('.v3').fadeIn('slow');
+
+			            })
+	} else
+	{
+		Swal.fire({
+                   	icon: 'error',
+                    title: 'Wrong Answer!',                                         
+                }).then(function(){
+			                
+							$('.v3').fadeIn('slow');
+
+			            })
+	}
+	
+}
+
+function getView3()
+{
+	$('.v3').fadeOut('slow');
+	var ans = $("input[type='radio'][name='q2']:checked").val();
+
+	if (ans == 1)
+	{
+		Swal.fire({
+                   	icon: 'success',
+                    title: 'Correct!',                                         
+                }).then(function(){
+			                
+							$('.v4').fadeIn('slow');
+
+			            })
+	} else
+	{
+		Swal.fire({
+                   	icon: 'error',
+                    title: 'Wrong Answer!',                                         
+                }).then(function(){
+
+			                $('.v4').fadeIn('slow');
+
+			            })
+	}
+
+	
+}
+
+function getView4()
+{
+	
+	$('.v4').fadeOut('slow');
+	var ans = $("input[type='radio'][name='q3']:checked").val();	
+
+	if (ans == 1)
+	{
+		Swal.fire({
+                   	icon: 'success',
+                    title: 'Correct!',                                         
+                }).then(function(){
+			                
+							$('.v5').fadeIn('slow');
+
+			            })
+	} else
+	{
+		Swal.fire({
+                   	icon: 'error',
+                    title: 'Wrong Answer!',                                         
+                }).then(function(){
+			                
+							$('.v5').fadeIn('slow');
+
+			            })
+	}
+
+
+}
+
+function getView5()
+{
+	$('.v5').fadeOut('slow');
+	var ans = $("input[type='radio'][name='q4']:checked").val(); 
+
+	if (ans == 1)
+	{
+		Swal.fire({
+                   	icon: 'success',
+                    title: 'Correct!',                                         
+                }).then(function(){
+			                
+							$('.v6').fadeIn('slow');
+
+			            })
+	} else
+	{
+		Swal.fire({
+                   	icon: 'error',
+                    title: 'Wrong Answer!',                                         
+                }).then(function(){
+			                
+							$('.v6').fadeIn('slow');
+
+			            })
+	}
+
+
+}
+
+function getView6()
+{
+	$('.v6').fadeOut('slow');
+	var ans = $("input[type='radio'][name='q5']:checked").val(); 
+
+	if (ans == 1)
+	{
+		Swal.fire({
+                   	icon: 'success',
+                    title: 'Correct!',                                         
+                }).then(function(){
+			                
+							$('.v7').fadeIn('slow');
+
+			            })
+	} else
+	{
+		Swal.fire({
+                   	icon: 'error',
+                    title: 'Wrong Answer!',                                         
+                }).then(function(){
+			                
+							$('.v7').fadeIn('slow');
+
+			            })
+	}
+	
+}
+
+function getView7()
+{
+	$('.v7').fadeOut('slow');
+	var ans = $("input[type='radio'][name='q6']:checked").val(); 
+
+	if (ans == 1)
+	{
+		Swal.fire({
+                   	icon: 'success',
+                    title: 'Correct!',                                         
+                }).then(function(){
+			                
+							$('.v8').fadeIn('slow');
+
+			            })
+	} else
+	{
+		Swal.fire({
+                   	icon: 'error',
+                    title: 'Wrong Answer!',                                         
+                }).then(function(){
+			                
+							$('.v8').fadeIn('slow');
+
+			            })
+	}
+	
+}
+
+function getView8()
+{
+	$('.v8').fadeOut('slow');
+	var ans = $("input[type='radio'][name='q7']:checked").val(); 
+
+	if (ans == 1)
+	{
+		Swal.fire({
+                   	icon: 'success',
+                    title: 'Correct!',                                         
+                }).then(function(){
+			                
+							$('.v9').fadeIn('slow');
+
+			            })
+	} else
+	{
+		Swal.fire({
+                   	icon: 'error',
+                    title: 'Wrong Answer!',                                         
+                }).then(function(){
+			                
+							$('.v9').fadeIn('slow');
+
+			            })
+	}
+	
+}
+
+function getView9()
+{
+	$('.v9').fadeOut('slow');
+	var ans = $("input[type='radio'][name='q8']:checked").val(); 
+
+	if (ans == 1)
+	{
+		Swal.fire({
+                   	icon: 'success',
+                    title: 'Correct!',                                         
+                }).then(function(){
+			                
+							$('.v10').fadeIn('slow');
+
+			            })
+	} else
+	{
+		Swal.fire({
+                   	icon: 'error',
+                    title: 'Wrong Answer!',                                         
+                }).then(function(){
+			                
+							$('.v10').fadeIn('slow');
+
+			            })
+	}
+	
+}
+
+function getView10()
+{
+	$('.v10').fadeOut('slow');
+	var ans = $("input[type='radio'][name='q9']:checked").val(); 
+
+	if (ans == 1)
+	{
+		Swal.fire({
+                   	icon: 'success',
+                    title: 'Correct!',                                         
+                }).then(function(){
+			                
+							$('.v11').fadeIn('slow');
+
+			            })
+	} else
+	{
+		Swal.fire({
+                   	icon: 'error',
+                    title: 'Wrong Answer!',                                         
+                }).then(function(){
+			                
+							$('.v11').fadeIn('slow');
+
+			            })
+	}
+	
+}
+
+function getView11()
+{
+	var checked = document.querySelectorAll('input[name="q10"]:checked');
+	var count = document.querySelectorAll('input[name="q10"]:checked').length;
+
+	if (count == 0)
+	{
+		alert('Please choose at least one option.');
+		return false;
+	}
+
+	//$('.v11').fadeOut('slow');
+
+	var ans = 0;
+
+	for (var x = 0; x < count; x++)
+	{
+		ans += parseFloat(checked[x].value);
+	}		
+	
+
+	if (ans == 1)
+	{
+		Swal.fire({
+                   	icon: 'success',
+                    title: 'Correct!',                                         
+                 }).then(function(){
+			                
+							$('.getResult').fadeIn('slow');
+
+			            })
+	} else
+	{
+		Swal.fire({
+                   	icon: 'error',
+                    title: 'Wrong Answer!',                                                 
+                 }).then(function(){
+			                
+							$('.getResult').fadeIn('slow');
+			    })
+	}
+	
+}
+
+
+function getResult(id,mark,tid)
+{	
+	//check if the last question has been amswered//
+	check = $("input[type='checkbox'][name='q10']").is(':checked');
+	if (!check){alert('Please choose an option.'); return false;}
+
+	triggerProcessing();
+setTimeout(function(){
+	//compute result
+	var ans1 = $("input[type='radio'][name='q1']:checked").val(); 
+	var ans2 = $("input[type='radio'][name='q2']:checked").val();
+	var ans3 = $("input[type='radio'][name='q3']:checked").val();
+	var ans4 = $("input[type='radio'][name='q4']:checked").val();
+	var ans5 = $("input[type='radio'][name='q5']:checked").val();
+	var ans6 = $("input[type='radio'][name='q6']:checked").val(); 
+	var ans7 = $("input[type='radio'][name='q7']:checked").val();
+	var ans8 = $("input[type='radio'][name='q8']:checked").val();
+	var ans9 = $("input[type='radio'][name='q9']:checked").val();
+	var ans10 = getCheckboxValue('q10',1);
+
+	var ans11 = parseInt(ans1) + parseInt(ans2) + parseInt(ans3) + parseInt(ans4) + parseInt(ans5);
+	var ans12 = parseInt(ans6) + parseInt(ans7) + parseInt(ans8) + parseInt(ans9) + parseInt(ans10);
+	var ans = ans11 + ans12;
+	var percent = (ans / 10) * 100;
+	percent = percent.toFixed(2);
+
+	//alert('You are doing well');
+	//save result to database
+	const update = {
+						score:parseInt(percent),
+						quizid:id,
+						tid:tid,
+					};
+
+    const options = {
+                    	method: 'POST',
+                    	headers: {'Content-Type': 'application/json',},
+                    	body: JSON.stringify(update),
+                };
+
+	fetch(`/e_learning?action=${'POST-RESULT'}`, options)
+                    .then(function (response) {
+                            return response.json();
+                        }).then(function (text) {
+                                
+             if (percent >= parseInt(mark))
+				{
+					Swal.fire({
+			                   	icon: 'success',
+			                    title: 'Congratulations!',
+			                    html: "<div class='alert alert-success'>You scored "+percent+"% <br>You have successfully completed this Course.</div>",
+			                                                             
+			                }).then(function(){
+
+			                	setTimeout(function(){
+			                		location.reload()
+			                	},1000);
+
+			                })
+				} else
+				{
+					Swal.fire({
+			                   	icon: 'error',
+			                    title: 'Sorry!',
+			                    html: "<div class='alert alert-danger'>You scored "+percent+"% <br>You did not meet the pass mark for this Course. Please go through the material again and attempt the quiz once more.</div>",
+			                                                             
+			                }).then(function(){
+
+			                	setTimeout(function(){
+			                		location.reload()
+			                	},1000);
+
+			                })
+				}
+
+				        })
+
+},3000);	
+
+	
+}
+
+function getCheckboxValue(name,base)
+{
+	var checked = document.querySelectorAll('input[name="'+name+'"]:checked');
+	var count = document.querySelectorAll('input[name="'+name+'"]:checked').length;
+
+	if (count == 0)
+	{
+		return parseInt(0);
+	}
+
+	var ans = 0;
+
+	for (var x = 0; x < count; x++)
+	{
+		ans += parseFloat(checked[x].value);
+	}
+
+	if (ans < base)
+	{
+		return parseInt(0);
+	} else
+	{
+		return parseInt(1);
+	}
+
+}
+</script>
+
+{% endblock %}
+
+

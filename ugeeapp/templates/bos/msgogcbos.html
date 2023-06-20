@@ -1,0 +1,639 @@
+{% extends 'public/base.html' %}
+
+
+
+{% block content %}
+
+<div class="container">
+	<div class="row align-items-center justify-content-center">
+		<div class="col-md-12">
+								<div class="login100-form-logo text-center">
+									
+									<div class="text-center" style="color:white;background: #179cd7;">MSG OGC SURVEY CHECKLIST</div>
+								</div>
+		</div>
+		<div class="col-md-12">
+								<div class="login100-form-logo" style="color:#000;background: #F37912;">									
+									<div class="" style="font-size:9px">Directions</div>
+									<div class="" style="font-size:9px">Carry out Survey of specified items and rate versus below guideline. For rating "2" and below, please give comment in the comment field. Ratings should be done in compliance with the following:</div>
+									<ol>
+										<li style="font-size:9px">Leaking Product - Unacceptable</li>
+										<li style="font-size:9px">Visible Product outside containment - Unacceptable</li>
+										<li style="font-size:9px">Visible Product inside containment - acceptable</li>
+										<li style="font-size:9px"> No Visible Product - acceptable</li>
+									</ol>
+									<div class="" style="font-size:9px">For units <3, give details in the comment field at the bottom of the checklist.</div>
+								</div>
+		</div>
+		<div class="col-md-12 " style="backgound: red;">
+			<div class="col-md-12">
+                        		<hr style="border: 3px solid #179cd7">
+            </div>
+			<div class="row align-items-center justify-content-center">
+				<div class="col-md-10">
+					<form id="safetyBosForm" style="margin-top:20px" method="POST" action="/bos?type=OGC&department=MSG">
+						{{ form.csrf_token }}
+						<div class="row">
+							<div class="col-md-12">
+								<span class="login100-form-logo">
+									<i class="fas fa-landscape"></i>
+									<span style="color:black;background: white;">{{resp}}</span>
+								</span>
+							</div>
+						</div>
+						<div class="row">
+							<div class="col-md-6">
+                        		<div class='form-group'>
+                        			{{form.observer.label()}}
+                        			{{form.observer(class='form-control')}}
+                        		</div>
+                    		</div>
+                    		<div class="col-md-6">
+                        		<div class='form-group'>
+                        			{{form.department.label()}}
+                        			{{form.department(class='form-control')}}
+                        		</div>
+                    		</div>
+                		</div>
+
+                		<div class="row">
+							<div class="col-md-6">
+                        		<div class='form-group'>
+                        			{{form.line.label()}}
+                        			{{form.line(class='form-control')}}
+                        		</div>
+                    		</div>
+                    		<div class="col-md-6">
+                        		<div class='form-group'>
+                        			{{form.shift.label()}}
+                        			{{form.shift(class='form-control')}}
+                        		</div>
+                    		</div>
+                		</div>
+						
+						<div class="row">
+							<div class="col-md-4">
+                        		<div class='form-group'>
+                        			{{form.bos_type.label()}}
+                        			{{form.bos_type(class='form-control')}}
+                        		</div>
+                    		</div>
+                    		<div class="col-md-4">
+                        		<div class='form-group'>
+                        			{{form.team.label()}}
+                        			{{form.team(class='form-control')}}
+                        		</div>
+                    		</div>
+                    		<div class="col-md-4">
+                        		<div class='form-group'>
+                        			{{form.bos_time.label()}}
+                        			{{form.bos_time(class='form-control')}}
+                        		</div>
+                    		</div>
+                		</div>
+
+                		<div class="row align-items-center justify-content-center" >
+							<div class="col-md-12">
+                        		<hr style="border: 3px solid #179cd7">
+                    		</div>
+                    		<div class='col-md-8 alert alert-info text-center'> Place your cursor on each select field to see more details.</div> 
+                    		<div class="col-md-12">
+                        		<hr style="border: 1px solid #179cd7">
+                    		</div>                   		
+                		</div>
+
+                		<div class="row">
+                			
+                			<div class="col-md-12">
+                				<span class='alert alert-info' style="background:#179cd7; color: #fff;">MATERIAL STORAGE AREA (LEVEL 0)</span>
+                				<hr style="border: none">
+                        		<div class="row">
+                					<div class="col-md-6" style="margin-bottom:10px">
+                        				<img src="/static/img/images/bos/msg/ogc/storage1.jpg" height="145px" width="100%">
+                        			</div>
+                        			<div class="col-md-6" style="margin-bottom:10px">
+                        				<img src="/static/img/images/bos/msg/ogc/storage2.jpg" height="145px" width="100%">
+                        			</div>                        			
+                        		</div>                        		
+                        		<hr style="border: none">
+                    		</div>
+							<div class="col-md-6">
+                        		<div class='form-group'>
+                        			{{form.point1.label()}}
+                        			{{form.point1(class='form-control point p1', onchange='getPercent()')}}
+                        		</div>
+                    		</div>
+                    		<div class="col-md-6">
+                        		<div class='form-group'>
+                        			{{form.point2.label()}}
+                        			{{form.point2(class='form-control point p2', onchange='getPercent()')}}
+                        		</div>
+                    		</div>
+                    	</div>
+
+                    	<div class="row align-items-center justify-content-center" >
+							<div class="col-md-12">
+                        		<hr style="border: 3px solid #179cd7">
+                    		</div>                    		                    		
+                		</div>
+
+                    	<div class="row">
+                    		<div class="col-md-12">
+                				<span class='alert alert-info' style="background:#179cd7; color: #fff;">PUMPING AREA (LEVEL 0)</span>
+                				<hr style="border: none">
+                        		<div class="row">
+                					<div class="col-md-4" style="margin-bottom:10px">
+                        				<img src="/static/img/images/bos/msg/ogc/pump1.jpg" height="145px" width="100%">
+                        			</div>
+                        			<div class="col-md-4" style="margin-bottom:10px">
+                        				<img src="/static/img/images/bos/msg/ogc/pump2.jpg" height="145px" width="100%">
+                        			</div>
+                        			<div class="col-md-4" style="margin-bottom:10px">
+                        				<img src="/static/img/images/bos/msg/ogc/pump3.jpg" height="145px" width="100%">
+                        			</div>                        			
+                        		</div> 
+                        		<hr style="border: none">
+                    		</div>	
+                    		<div class="col-md-4">
+                        		<div class='form-group'>
+                        			{{form.point3.label()}}
+                        			{{form.point3(class='form-control point p3', onchange='getPercent()')}}
+                        		</div>
+                    		</div>                    		
+                    		<div class="col-md-4">
+                        		<div class='form-group'>
+                        			{{form.point4.label()}}
+                        			{{form.point4(class='form-control point p4', onchange='getPercent()')}}
+                        		</div>
+                    		</div>
+                    		<div class="col-md-4">
+                        		<div class='form-group'>
+                        			{{form.point5.label()}}
+                        			{{form.point5(class='form-control point p5', onchange='getPercent()')}}
+                        		</div>
+                    		</div>
+                		</div>
+                		<div class="row">             										
+                    		<div class="col-md-6">
+                        		<div class='form-group'>
+                        			{{form.point6.label()}}
+                        			{{form.point6(class='form-control point p6', onchange='getPercent()')}}
+                        		</div>
+                    		</div>                    		
+                    		<div class="col-md-6">
+                        		<div class='form-group'>
+                        			{{form.point7.label()}}
+                        			{{form.point7(class='form-control point p7', onchange='getPercent()')}}
+                        		</div>
+                    		</div>
+                		</div>
+
+                		<div class="row align-items-center justify-content-center" >
+							<div class="col-md-12">
+                        		<hr style="border: 3px solid #179cd7">
+                    		</div>
+                    		                    		
+                		</div>
+
+                		<div class="row">
+                				
+                			<div class="col-md-12">
+                				<span class='alert alert-info' style="background:#179cd7; color: #fff;">CONTROL ROOM (LEVEL 3)</span>
+                				<hr style="border: none">
+                        		<div class="row">
+                					<div class="col-md-6" style="margin-bottom:10px">
+                        				<img src="/static/img/images/bos/msg/ogc/croom1.jpg" height="145px" width="100%">
+                        			</div>
+                        			<div class="col-md-6" style="margin-bottom:10px">
+                        				<img src="/static/img/images/bos/msg/ogc/croom2.jpg" height="145px" width="100%">
+                        			</div>                        			
+                        		</div>
+                        		<hr style="border: none">
+                    		</div>						
+                    		<div class="col-md-6">
+                        		<div class='form-group'>
+                        			{{form.point8.label()}}
+                        			{{form.point8(class='form-control point p8', onchange='getPercent()')}}
+                        		</div>
+                    		</div>
+                    		<div class="col-md-6">
+                        		<div class='form-group'>
+                        			{{form.point9.label()}}
+                        			{{form.point9(class='form-control point p9', onchange='getPercent()')}}
+                        		</div>
+                    		</div>                    		
+                		</div>
+
+                		<div class="row align-items-center justify-content-center" >
+							<div class="col-md-12">
+                        		<hr style="border: 3px solid #179cd7">
+                    		</div>                    		                    		
+                		</div>
+
+                		<div class="row">
+                			<div class="col-md-12">
+                				<span class='alert alert-info' style="background:#179cd7; color: #fff;">CRUTCHER FLOOR (LEVEL 6)</span>
+                				<hr style="border: none">
+                        		<div class="row">
+                					<div class="col-md-4" style="margin-bottom:10px">
+                        				<img src="/static/img/images/bos/msg/ogc/crutcher1.jpg" height="145px" width="100%">
+                        			</div>
+                        			<div class="col-md-4" style="margin-bottom:10px">
+                        				<img src="/static/img/images/bos/msg/ogc/crutcher2.jpg" height="145px" width="100%">
+                        			</div>
+                        			<div class="col-md-4" style="margin-bottom:10px">
+                        				<img src="/static/img/images/bos/msg/ogc/crutcher3.jpg" height="145px" width="100%">
+                        			</div>                        			
+                        		</div>
+                        		<hr style="border: none">
+                    		</div>
+                    		<div class="col-md-4">
+                        		<div class='form-group'>
+                        			{{form.point10.label()}}
+                        			{{form.point10(class='form-control point p10', onchange='getPercent()')}}
+                        		</div>
+                    		</div>                										
+                    		
+                    		<div class="col-md-2">
+                        		<div class='form-group'>
+                        			{{form.point12.label()}}
+                        			{{form.point12(class='form-control point p12', onchange='getPercent()')}}
+                        		</div>
+                    		</div>
+                    		<div class="col-md-6">
+                        		<div class='form-group'>
+                        			{{form.point11.label()}}
+                        			{{form.point11(class='form-control point p11', onchange='getPercent()')}}
+                        		</div>
+                    		</div>                    		
+                		</div>
+
+                		<div class="row align-items-center justify-content-center" >
+							<div class="col-md-12">
+                        		<hr style="border: 3px solid #179cd7">
+                    		</div>                    		                    		
+                		</div>
+
+                		<div class="row">
+                			<div class="col-md-12">
+                				<span class='alert alert-info' style="background:#179cd7; color: #fff;">MIXER FLOOR (LEVEL 12)</span>
+                				<hr style="border: none">
+                        		<div class="row">
+                					<div class="col-md-4" style="margin-bottom:10px">
+                        				<img src="/static/img/images/bos/msg/ogc/mixer1.jpg" height="145px" width="100%">
+                        			</div>
+                        			<div class="col-md-4" style="margin-bottom:10px">
+                        				<img src="/static/img/images/bos/msg/ogc/mixer2.jpg" height="145px" width="100%">
+                        			</div>
+                        			<div class="col-md-4" style="margin-bottom:10px">
+                        				<img src="/static/img/images/bos/msg/ogc/mixer3.jpg" height="145px" width="100%">
+                        			</div>                        			
+                        		</div>
+                        		<div class="row">
+                					<div class="col-md-4" style="margin-bottom:10px">
+                        				<img src="/static/img/images/bos/msg/ogc/mixer4.jpg" height="145px" width="100%">
+                        			</div>
+                        			<div class="col-md-4" style="margin-bottom:10px">
+                        				<img src="/static/img/images/bos/msg/ogc/mixer5.jpg" height="145px" width="100%">
+                        			</div>
+                        			<div class="col-md-4" style="margin-bottom:10px">
+                        				<img src="/static/img/images/bos/msg/ogc/mixer6.jpg" height="145px" width="100%">
+                        			</div>                        			
+                        		</div>
+                        		<hr style="border: none">
+                    		</div>
+                			<div class="col-md-4">
+                        		<div class='form-group'>
+                        			{{form.point13.label()}}
+                        			{{form.point13(class='form-control point p13', onchange='getPercent()')}}
+                        		</div>
+                    		</div>                										
+                    		<div class="col-md-4">
+                        		<div class='form-group'>
+                        			{{form.point14.label()}}
+                        			{{form.point14(class='form-control point p14', onchange='getPercent()')}}
+                        		</div>
+                    		</div>
+                    		<div class="col-md-4">
+                        		<div class='form-group'>
+                        			{{form.point15.label()}}
+                        			{{form.point15(class='form-control point p15', onchange='getPercent()')}}
+                        		</div>
+                    		</div>
+                    		
+                		</div>
+
+                		<div class="row">	
+                			<div class="col-md-6">
+                        		<div class='form-group'>
+                        			{{form.point16.label()}}
+                        			{{form.point16(class='form-control point p16', onchange='getPercent()')}}
+                        		</div>
+                    		</div>
+                    		<div class="col-md-6">
+                        		<div class='form-group'>
+                        			{{form.point19.label()}}
+                        			{{form.point19(class='form-control point p19', onchange='getPercent()')}}
+                        		</div>
+                    		</div>
+                    		
+                    	</div>	                		
+
+                		<div class="row">            				               								
+                    		
+                    		<div class="col-md-4">
+                        		<div class='form-group'>
+                        			{{form.point18.label()}}
+                        			{{form.point18(class='form-control point p18', onchange='getPercent()')}}
+                        		</div>
+                    		</div>
+                    		<div class="col-md-4">
+                        		<div class='form-group'>
+                        			{{form.point17.label()}}
+                        			{{form.point17(class='form-control point p17', onchange='getPercent()')}}
+                        		</div>
+                    		</div>                    		
+                    		<div class="col-md-4">
+                        		<div class='form-group'>
+                        			{{form.point20.label()}}
+                        			{{form.point20(class='form-control point p20', onchange='getPercent()')}}
+                        		</div>
+                    		</div>
+                		</div>
+
+                		<div class="row">               										
+                    		
+                    		<div class="col-md-4">
+                        		<div class='form-group'>
+                        			{{form.point21.label()}}
+                        			{{form.point21(class='form-control point p21', onchange='getPercent()')}}
+                        		</div>
+                    		</div>
+                    		<div class="col-md-4">
+                        		<div class='form-group'>
+                        			{{form.point22.label()}}
+                        			{{form.point22(class='form-control point p22', onchange='getPercent()')}}
+                        		</div>
+                    		</div>
+                    		<div class="col-md-4">
+                        		<div class='form-group'>
+                        			{{form.point23.label()}}
+                        			{{form.point23(class='form-control point p23', onchange='getPercent()')}}
+                        		</div>
+                    		</div>
+                		</div>
+
+                		<div class="row align-items-center justify-content-center" >
+							<div class="col-md-12">
+                        		<hr style="border: 3px solid #179cd7">
+                    		</div>                    		                    		
+                		</div>
+
+                		<div class="row">
+                			<div class="col-md-12">
+                				<span class='alert alert-info' style="background:#179cd7; color: #fff;">LIW (LEVEL 18)</span>
+                				<hr style="border: none">
+                        		<div class="row">
+                					<div class="col-md-4" style="margin-bottom:10px">
+                        				<img src="/static/img/images/bos/msg/ogc/liw1.jpg" height="145px" width="100%">
+                        			</div>
+                        			<div class="col-md-4" style="margin-bottom:10px">
+                        				<img src="/static/img/images/bos/msg/ogc/liw2.jpg" height="145px" width="100%">
+                        			</div>
+                        			<div class="col-md-4" style="margin-bottom:10px">
+                        				<img src="/static/img/images/bos/msg/ogc/liw3.jpg" height="145px" width="100%">
+                        			</div>                        			
+                        		</div>
+                        		<hr style="border: none">
+                    		</div>               										
+                    		
+                    		<div class="col-md-4">
+                        		<div class='form-group'>
+                        			{{form.point24.label()}}
+                        			{{form.point24(class='form-control point p24', onchange='getPercent()')}}
+                        		</div>
+                    		</div> 
+                    		<div class="col-md-4">
+                        		<div class='form-group'>
+                        			{{form.point25.label()}}
+                        			{{form.point25(class='form-control point p25', onchange='getPercent()')}}
+                        		</div>
+                    		</div>
+                    		<div class="col-md-4">
+                        		<div class='form-group'>
+                        			{{form.point26.label()}}
+                        			{{form.point26(class='form-control point p26', onchange='getPercent()')}}
+                        		</div>
+                    		</div>                    		
+                		</div>             		
+
+                		<div class="row">                										
+                    		<div class="col-md-4">
+                        		<div class='form-group'>
+                        			{{form.point27.label()}}
+                        			{{form.point27(class='form-control point p27', onchange='getPercent()')}}
+                        		</div>
+                    		</div>
+                    		<div class="col-md-4">
+                        		<div class='form-group'>
+                        			{{form.point28.label()}}
+                        			{{form.point28(class='form-control point p28', onchange='getPercent()')}}
+                        		</div>
+                    		</div>    
+                    		<div class="col-md-4">
+                        		<div class='form-group'>
+                        			{{form.point29.label()}}
+                        			{{form.point29(class='form-control point p29', onchange='getPercent()')}}
+                        		</div>
+                    		</div>                		
+                		</div>
+
+						<div class="row align-items-center justify-content-center" >
+							<div class="col-md-12">
+                        		<hr style="border: 3px solid #179cd7">
+                    		</div>                    		                    		
+                		</div>
+
+                		<div class="row">
+                			<div class="col-md-12">
+                				<span class='alert alert-info' style="background:#179cd7; color: #fff;">LEVEL 24/30</span>
+                				<hr style="border: none">
+                        		<div class="row">
+                					<div class="col-md-3" style="margin-bottom:10px">
+                        				<img src="/static/img/images/bos/msg/ogc/level1.jpg" height="145px" width="100%">
+                        			</div>
+                        			<div class="col-md-3" style="margin-bottom:10px">
+                        				<img src="/static/img/images/bos/msg/ogc/level2.jpg" height="145px" width="100%">
+                        			</div>
+                        			<div class="col-md-3" style="margin-bottom:10px">
+                        				<img src="/static/img/images/bos/msg/ogc/level3.jpg" height="145px" width="100%">
+                        			</div>
+                        			<div class="col-md-3" style="margin-bottom:10px">
+                        				<img src="/static/img/images/bos/msg/ogc/level4.jpg" height="145px" width="100%">
+                        			</div>                        			
+                        		</div>
+                        		<hr style="border: none">
+                    		</div>               										
+                    		
+                    		<div class="col-md-4">
+                        		<div class='form-group'>
+                        			{{form.point30.label()}}
+                        			{{form.point30(class='form-control point p30', onchange='getPercent()')}}
+                        		</div>
+                    		</div> 
+                    		<div class="col-md-4">
+                        		<div class='form-group'>
+                        			{{form.point31.label()}}
+                        			{{form.point31(class='form-control point p31', onchange='getPercent()')}}
+                        		</div>
+                    		</div>
+                    		<div class="col-md-4">
+                        		<div class='form-group'>
+                        			{{form.point32.label()}}
+                        			{{form.point32(class='form-control point p32', onchange='getPercent()')}}
+                        		</div>
+                    		</div>                    		
+                		</div>             		
+
+                		<div class="row">                										
+                    		<div class="col-md-4">
+                        		<div class='form-group'>
+                        			{{form.point33.label()}}
+                        			{{form.point33(class='form-control point p33', onchange='getPercent()')}}
+                        		</div>
+                    		</div>
+                    		<div class="col-md-4">
+                        		<div class='form-group'>
+                        			{{form.point34.label()}}
+                        			{{form.point34(class='form-control point p34', onchange='getPercent()')}}
+                        		</div>
+                    		</div>    
+                    		<div class="col-md-4">
+                        		<div class='form-group'>
+                        			{{form.point35.label()}}
+                        			{{form.point35(class='form-control point p35', onchange='getPercent()')}}
+                        		</div>
+                    		</div>                		
+                		</div>
+
+                		<div class="row">                										
+                    		<div class="col-md-4">
+                        		<div class='form-group'>
+                        			{{form.point36.label()}}
+                        			{{form.point36(class='form-control point p36', onchange='getPercent()')}}
+                        		</div>
+                    		</div>
+                    		<div class="col-md-4">
+                        		<div class='form-group'>
+                        			{{form.point37.label()}}
+                        			{{form.point37(class='form-control point p37', onchange='getPercent()')}}
+                        		</div>
+                    		</div>    
+                    		<div class="col-md-4">
+                        		<div class='form-group'>
+                        			{{form.point38.label()}}
+                        			{{form.point38(class='form-control point p38', onchange='getPercent()')}}
+                        		</div>
+                    		</div>                		
+                		</div>
+
+
+                		<div class="row align-items-center justify-content-center">    
+                    		<div class="col-md-12">
+                        		<div class='form-group'>
+                        			{{form.comment.label()}} 
+                        			{{form.comment(class='form-control')}}                        			
+                        		</div>
+                    		</div>                    		
+						</div>
+
+						<div class="row align-items-center justify-content-center">    
+                    		<div class="col-md-4">
+                        		<div class='form-group'>
+                        			{{form.percent.label()}} 
+                        			{{form.percent(class='form-control percent')}}                       			
+                        		</div>
+                    		</div>                    		
+                    		<div class="col-md-4">                    
+                        		<div class='form-group'>
+                            		{{form.submit(class="btn btn-info")}} 
+                        		</div>
+                    		</div>
+						</div>
+					</form>
+				</div>
+				
+			</div>
+		</div>
+		
+	</div>
+</div>
+
+{% endblock %}
+
+{% block tail %}
+<script type="text/javascript">
+
+	function rparseInt(data){
+		if (parseInt(data)>2){
+			return 1
+		} else{
+			return 0
+		}
+	}
+
+	var p1=$(".p1").val();var p6=$(".p6").val();var p12=$(".p12").val();var p18=$(".p18").val();var p23=$(".p23").val();
+	var p2=$(".p2").val();var p7=$(".p7").val();var p13=$(".p13").val();var p19=$(".p19").val();var p24=$(".p24").val();
+	var p3=$(".p3").val();var p8=$(".p8").val();var p14=$(".p14").val();var p20=$(".p20").val();var p25=$(".p25").val();
+	var p4=$(".p4").val();var p9=$(".p9").val();var p15=$(".p15").val();var p21=$(".p21").val();var p26=$(".p26").val();
+	var p5=$(".p5").val();var p10=$(".p10").val();var p16=$(".p16").val();var p22=$(".p22").val();var p27=$(".p27").val();
+	var p28=$(".p28").val();var p11=$(".p11").val();var p17=$(".p17").val();var p29=$(".p29").val();var p30=$(".p30").val();
+	var p31=$(".p31").val();var p32=$(".p32").val();var p33=$(".p33").val();var p34=$(".p34").val();var p35=$(".p35").val();
+	var p36=$(".p36").val();var p37=$(".p37").val();var p38=$(".p38").val();
+
+	var total1 = rparseInt(p1) + rparseInt(p2) + rparseInt(p3) + rparseInt(p4) + rparseInt(p5) + rparseInt(p6) + rparseInt(p7);
+	var total2 = rparseInt(p8) + rparseInt(p9) + rparseInt(p10) + rparseInt(p11) + rparseInt(p12) + rparseInt(p13) + rparseInt(p14);
+	var total3 = rparseInt(p15) + rparseInt(p16) + rparseInt(p17) + rparseInt(p18) + rparseInt(p19) + rparseInt(p20) + rparseInt(p21);
+	var total4 = rparseInt(p22) + rparseInt(p23) + rparseInt(p24) + rparseInt(p25) + rparseInt(p26) + rparseInt(p27) + rparseInt(p28);
+	var total5 = rparseInt(p29) + rparseInt(p30) + rparseInt(p31) + rparseInt(p32) + rparseInt(p33) + rparseInt(p34) + rparseInt(p35);
+	var total6 = rparseInt(p36) + rparseInt(p37) + rparseInt(p38);
+	
+	var total = total1 + total2 + total3 + total4 + total5 + total6;
+	var unit="%";
+	var value=(total/38)*100;
+	$(".percent").val(value.toFixed(2)+" "+unit);
+
+	
+
+
+function getPercent(){
+	var p1=$(".p1").val();var p6=$(".p6").val();var p12=$(".p12").val();var p18=$(".p18").val();var p23=$(".p23").val();
+	var p2=$(".p2").val();var p7=$(".p7").val();var p13=$(".p13").val();var p19=$(".p19").val();var p24=$(".p24").val();
+	var p3=$(".p3").val();var p8=$(".p8").val();var p14=$(".p14").val();var p20=$(".p20").val();var p25=$(".p25").val();
+	var p4=$(".p4").val();var p9=$(".p9").val();var p15=$(".p15").val();var p21=$(".p21").val();var p26=$(".p26").val();
+	var p5=$(".p5").val();var p10=$(".p10").val();var p16=$(".p16").val();var p22=$(".p22").val();var p27=$(".p27").val();
+	var p28=$(".p28").val();var p11=$(".p11").val();var p17=$(".p17").val();var p29=$(".p29").val();var p30=$(".p30").val();
+	var p31=$(".p31").val();var p32=$(".p32").val();var p33=$(".p33").val();var p34=$(".p34").val();var p35=$(".p35").val();
+	var p36=$(".p36").val();var p37=$(".p37").val();var p38=$(".p38").val();
+
+	var total1 = rparseInt(p1) + rparseInt(p2) + rparseInt(p3) + rparseInt(p4) + rparseInt(p5) + rparseInt(p6) + rparseInt(p7);
+	var total2 = rparseInt(p8) + rparseInt(p9) + rparseInt(p10) + rparseInt(p11) + rparseInt(p12) + rparseInt(p13) + rparseInt(p14);
+	var total3 = rparseInt(p15) + rparseInt(p16) + rparseInt(p17) + rparseInt(p18) + rparseInt(p19) + rparseInt(p20) + rparseInt(p21);
+	var total4 = rparseInt(p22) + rparseInt(p23) + rparseInt(p24) + rparseInt(p25) + rparseInt(p26) + rparseInt(p27) + rparseInt(p28);
+	var total5 = rparseInt(p29) + rparseInt(p30) + rparseInt(p31) + rparseInt(p32) + rparseInt(p33) + rparseInt(p34) + rparseInt(p35);
+	var total6 = rparseInt(p36) + rparseInt(p37) + rparseInt(p38);
+	
+	var total = total1 + total2 + total3 + total4 + total5 + total6;
+			
+		
+		value=(total/38)*100;
+		$(".percent").val(value.toFixed(2)+" "+unit);
+
+	}
+	
+
+
+</script>
+
+{% endblock %}
+

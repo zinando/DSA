@@ -1,0 +1,13 @@
+cd OneDrive - SIL Chemicals Limited\PYTHON
+virtual\scripts\activate
+set FLASK_APP=ugeeapp
+flask run --host=0.0.0.0 
+
+"C:\Users\Administrator\Desktop\PYTHON\virtual\Scripts\python.
+istrator\Desktop\PYTHON\virtual\lib\site-packages\wfastcgi.py"
+
+
+192.168.104.11 
+
+C:\Users\Administrator\OneDrive - SIL Chemicals Limited
+C:\Users\Administrator\Desktop

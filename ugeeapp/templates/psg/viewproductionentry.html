@@ -1,0 +1,143 @@
+{% extends 'public/base.html' %}
+
+
+
+{% block content %}
+
+<div class="container">
+    
+    
+    <div class="row text-center">
+                    
+                    <div class="col-md-12">
+                        <hr/><h3 style="background:#179cd7">PSG Production Entries</h3><hr/>
+                        <div class="row">
+                            <div class="col-md-12 alert alert-success">
+                                Entries Between {{start}} and {{end}}
+                            </div>
+                        </div>
+    {%if resp %}
+             <div class="table-responsive">
+                 <table class="table table-bordered table-striped">
+                                <thead>
+                                    <tr>
+                                        <th scope="col">Actions</th>
+                                        <th scope="col">Date</th>
+                                        <th scope="col">Start Time</th>
+                                        <th scope="col">SKU</th>
+                                        <th scope="col">Line</th>
+                                        <th scope="col">Shift</th>
+                                        <th scope="col">Team</th>
+                                        <th scope="col">Machine</th>
+                                        <th scope="col">Skedule Time</th>
+                                        <th scope="col">Cases</th>
+                                        <th scope="col">MSU</th>
+                                        <th scope="col">VOLUME</th>
+                                        <th scope="col">EXP VOLUME(g)</th>
+
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                {% for  entry in resp %}
+                                    <tr>
+
+                                                <td>
+                                                    <div class="btn btn-sm"  style="font-size: 11px;color: #179cd7;" onclick="deleteProduction('{{entry.prodate}}','{{entry.product_code}}','{{entry.line}}','{{entry.shift}}')">DELETE</div>
+                                                </td>
+                                                <td>{{entry.prodate}}</td>
+                                                <td>{{entry.start_tyme}}</td>
+                                                <td>{{get_sku(entry.product_code)}}</td>
+                                                <td>{{entry.line}}</td>
+                                                <td>{{entry.shift}}</td>
+                                                <td>{{entry.team}}</td>
+                                                <td>{{entry.mcode}}</td>
+                                                <td>{{entry.skedule_time}}</td>
+                                                <td>{{entry.cases}}</td>
+                                                <td>{{entry.msu}}</td>
+                                                <td>{{entry.volume}}</td>
+                                                <td>{{entry.exp_volume}}</td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+             </div>
+ 
+    
+    {%else%}
+
+        <div class='alert alert-danger'>No production entries found</div>
+
+    {%endif%}                 
+                    </div>
+                </div>
+    
+                
+</div>
+
+{% endblock %}
+
+
+{% block tail %}
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@9"></script>
+<script type="text/javascript">
+
+    function deleteProduction(date,code,line,shift){
+  
+      Swal.fire({
+            title: 'This action will erase this production records from all the machines.',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Yes, proceed'
+          }).then((result) => {
+            
+            if (result.value) {
+
+                const update = {date: date,
+                                code: code,
+                                line: line,
+                                shift: shift,
+                                                           
+                                };
+
+                const options = {
+                                    method: 'POST',
+                                    headers: {'Content-Type': 'application/json',},
+                                    body: JSON.stringify(update),
+                                };
+          
+                fetch(`/psgproduction_entries?action=${'DELETE-ENTRY'}`,options)
+                        .then(function (response) {
+                                return response.json();
+                            }).then(function (text) {
+                                
+                                if (text.status==1){
+                                    Swal.fire({
+                                    icon: 'success',
+                                    title: 'Success',
+                                    text: text.message,
+                     
+                                    }).then((value) => {
+                                        setTimeout(location.reload(), 3000);
+                                    });
+                                }else{
+                                    Swal.fire({
+                                        icon: 'error',
+                                        title: 'Error',
+                                        text: text.message,                     
+                                    })
+                                }
+                                
+
+                            });
+         
+            
+            
+        }
+      })
+}
+
+</script>
+
+{% endblock %}

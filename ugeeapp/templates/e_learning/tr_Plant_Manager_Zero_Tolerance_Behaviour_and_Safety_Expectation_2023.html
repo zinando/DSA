@@ -1,0 +1,142 @@
+{% extends 'public/base.html' %}
+
+
+
+{% block content %}
+
+<div class="container">
+	<div class="row align-items-center justify-content-center">
+		<div class="col-md-12">
+			<div class="login100-form-logo align-items-center justify-content-center">
+									
+				<div class="text-center" style="color:white;background: #179cd7;">
+					WELCOME TO MY e_LEARNING
+				</div>
+			</div>
+		</div><hr>
+		<div class="col-md-12">
+		<div class="col-md-12" style="margin-bottom:10px">
+            <img src="/static/documents/e_learning/page_images/Zero_Tolerance_Behaviour_and_Safety_Expectation_2023.PNG" height="200px" width="100%">
+        </div>			
+		</div>
+		<div class="col-md-12 " style="backgound: red;">
+			<div class="row">
+				<div class="col-md-10">
+					<form id="" style="margin-top:20px" method="POST" action="">		
+						
+						<div class="row align-items-center justify-content-center v1">
+							<div class="col-md-12">
+                        		<div class='form-group'>
+                        			<div>INSTRUCTIONS:</div>                       			
+                        			<p>This course requires you to</p>
+                        			<ol>                        				
+                        				<li>Download the Zero Tolerance Behaviour and Safety Expectation for year 2023 by clicking on the link provided in your skills matrix page</li>
+                        				<li>Open the outline from your device</li>
+                        				<li>Read and understand the content of the material</li>
+                        				<li>Come back here to acknowledge that you have read and understood the content of the material.</li>
+                        			</ol>
+
+                        		</div>
+                    		</div>
+                    		<div class="col-md-4">
+                        		<div class='form-group'><p style="font-style: italic; color: #179cd7;">I, {{session['fullname']}} hereby acknowledge that i have read and understood the content of the training:</p><p><b>{{training.title}}</b></p>
+                        			<button type="button" style="background-color: green; color:white" class="btn btn-secondary" onclick="acknowledge()">Acknowledge</button>
+                        			<a href="{{training.doc_link}}"><button type="button" class="btn btn-secondary">Read Content</button></a>
+                        		</div>
+                    		</div>            		
+                		</div>
+					</form>
+				</div>
+				
+			</div>
+			
+		</div>
+		
+	</div>
+	          
+</div>
+
+{% endblock %}
+
+{% block tail %}
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@9"></script>
+<script type="text/javascript">
+
+function acknowledge()
+{	
+	var percent = 100;
+	Swal.fire({
+			                   	icon: 'warning',
+			                    title: 'Are you sure you have read and understood the content of the course outline?',
+			                    confirmButtonText: 'Yes, acknowledge.',
+			                    confirmButtonColor: 'green',
+			                    showCancelButton: true,
+			                    cancelButtonColor: 'red',			                                                             
+			                }).then((result) => { 
+			                	if (result.value) {
+			                
+
+	triggerProcessing();
+setTimeout(function(){
+	
+	const update = {
+						score:percent,
+						quizid:'{{qid}}',
+						tid:'{{tid}}',
+					};
+
+    const options = {
+                    	method: 'POST',
+                    	headers: {'Content-Type': 'application/json',},
+                    	body: JSON.stringify(update),
+                };
+
+	fetch(`/e_learning?action=${'POST-RESULT'}`, options)
+                    .then(function (response) {
+                            return response.json();
+                        }).then(function (text) {
+                                
+             if (percent >= parseInt('{{pass_mark}}'))
+				{
+					Swal.fire({
+			                   	icon: 'success',
+			                    title: 'Success!',
+			                    html: "<div class='alert alert-success'>Your acknowledgement was received successfully.</div>",
+			                                                             
+			                }).then(function(){
+
+			                	setTimeout(function(){
+			                		location.href='/e_learning?action=';
+			                	},1000);
+
+			                })
+				} else
+				{
+					Swal.fire({
+			                   	icon: 'error',
+			                    title: 'Sorry!',
+			                    html: "<div class='alert alert-danger'>You scored "+percent+"% <br>You did not meet the pass mark for this Course. Please go through the material again and attempt the quiz once more.</div>",
+			                                                             
+			                }).then(function(){
+
+			                	setTimeout(function(){
+			                		location.reload()
+			                	},1000);
+
+			                })
+				}
+
+				        })
+
+},3000); //end set_time out
+
+}});	
+
+	
+}
+
+</script>
+
+{% endblock %}
+

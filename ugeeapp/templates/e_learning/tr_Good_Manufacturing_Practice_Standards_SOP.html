@@ -1,0 +1,683 @@
+{% extends 'public/base.html' %}
+
+
+
+{% block content %}
+
+<div class="container">
+	<div class="row align-items-center justify-content-center">
+		<div class="col-md-12">
+			<div class="login100-form-logo align-items-center justify-content-center">
+									
+				<div class="text-center" style="color:white;background: #179cd7;">
+					WELCOME TO MY e_LEARNING
+				</div>
+			</div>
+		</div><hr>
+		<div class="col-md-12">
+		<div class="col-md-12" style="margin-bottom:10px">
+            <img src="/static/documents/e_learning/page_images/GMP.PNG" height="200px" width="100%">
+        </div>			
+		</div>
+		<div class="col-md-12 " style="backgound: red;">
+			<div class="row">
+				<div class="col-md-10">
+					<form id="" style="margin-top:20px" method="POST" action="">		
+						
+						<div class="row align-items-center justify-content-center v1">
+							<div class="col-md-12">
+                        		<div class='form-group'>
+                        			<div>INSTRUCTIONS:</div>                       			
+                        			<p>Before you proceed with this quiz, ensure you</p>
+                        			<ol>                        				
+                        				<li>Download the course outline by clicking on the link provided in your skills matrix page</li>
+                        				<li>Open the outline from your device</li>
+                        				<li>Study the outline thoroughly</li>
+                        				<li>Then return here to attempt this quiz.</li>
+                        				<li>You are expected to score at least <span style="color:#179cd7;">{{pass_mark}}%</span> to pass this course.</li>
+                        			</ol>
+
+                        		</div>
+                    		</div>
+                    		<div class="col-md-4">
+                        		<div class='form-group'>
+                        			<button type="button" class="btn btn-secondary" onclick="getView1()">Start Quiz</button>
+                        		</div>
+                    		</div>            		
+                		</div>
+                		<div class="row align-items-center justify-content-center v2" style="display:none;">
+							<div class="col-md-12">
+                        		<div class='form-group'>
+                        			1.	Which of the following is not applicable to GMP?
+                        		</div>
+                    		</div>
+                    		<div class="col-md-12">
+                        		<div class='form-group'>
+                        			<input type="radio" style="margin-right: 10px; margin-left: 20px;" name="q1" class="" id="q11" value=0 onchange="getView2()">a. GMP refers to principles of quality assurance procedures that should be applied to             manufacturing practices. <br>
+                        			
+                        			<input type="radio" style="margin-right: 10px;margin-left: 20px;" name="q1" class="" id="q12" value=0 onchange="getView2()">b. GMP is that part of QA which ensures that products are consistently produced and controlled to the quality standards appropriate for their intended use. <br>
+
+                        			<input type="radio" style="margin-right: 10px;margin-left: 20px;" name="q1" class="" id="q13" value=1 onchange="getView2()">c. GMP is a principle in quality control that ensures the right material is used for production.
+                        			
+                        		</div>
+                    		</div>                    		              		
+                		</div>
+                		<div class="row align-items-center justify-content-center v3" style="display:none;">
+							<div class="col-md-12">
+                        		<div class='form-group'>
+                        			2.	Which of the following is not part of GMP and housekeeping standards?
+                        		</div>
+                    		</div>
+                    		<div class="col-md-12">
+                        		<div class='form-group'>
+                        			<input type="radio" style="margin-right: 10px; margin-left: 20px;" name="q2" class="" id="q21" value=0 onchange="getView3()">a. Canteen and toilets must have full soap dispensers and functioning hand dryers. <br>
+                        			
+                        			<input type="radio" style="margin-right: 10px;margin-left: 20px;" name="q2" class="" id="q22" value=0 onchange="getView3()">b. Toilet should not directly communicate with product or material storage areas.  <br>
+
+                        			<input type="radio" style="margin-right: 10px;margin-left: 20px;" name="q2" class="" id="q23" value=1 onchange="getView3()">c. Waste bins must be available only at office areas <br>
+
+                        			<input type="radio" style="margin-right: 10px;margin-left: 20px;" name="q2" class="" id="q24" value=0 onchange="getView3()">d. Locker rooms must be clean and free of offensive odor
+                        			
+                        		</div>
+                    		</div>                    		              		
+                		</div>
+                		<div class="row align-items-center justify-content-center v4" style="display:none;">
+							<div class="col-md-12">
+                        		<div class='form-group'>
+                        			3.	Select all that apply to GMP requirements under the storage of cleaning equipment.
+                        		</div>
+                    		</div>
+                    		<div class="col-md-12">
+                        		<div class='form-group'>
+                        			<input type="checkbox" style="margin-right: 10px; margin-left: 20px;" name="q3" class="" id="q31" value=0.25>a.	Cleaning equipment must be stored in the designated area clean and dry after use. <br>
+
+                        			<input type="checkbox" style="margin-right: 10px;margin-left: 20px;" name="q3" class="" id="q32" value=0.25>b.	Mops and Glass wipers must be kept clean and dry after use. <br>
+
+                        			<input type="checkbox" style="margin-right: 10px;margin-left: 20px;" name="q3" class="" id="q33" value=0.25>c.	Mop buckets must be emptied of all used solutions and allowed to dry.
+
+                        		</div>
+                    		</div>
+                    		<div class="col-md-4">
+                        		<div class='form-group'>
+                        			<button type="button" class="btn btn-success" onclick="getView4()">submit</button>
+                        		</div>
+                    		</div>                    		              		
+                		</div>
+                		<div class="row align-items-center justify-content-center v5" style="display:none;">
+							<div class="col-md-12">
+                        		<div class='form-group'>
+                        			4.	Which of the following is applicable to protective garments? {select all that apply}
+                        		</div>
+                    		</div>
+                    		<div class="col-md-12">
+                        		<div class='form-group'>
+                        			<input type="checkbox" style="margin-right: 10px; margin-left: 20px;" name="q4" class="" id="q41" value=0.25>a.	Protective garments must be maintained in good condition <br>
+
+                        			<input type="checkbox" style="margin-right: 10px;margin-left: 20px;" name="q4" class="" id="q42" value=0.25>b.	Protective garments must be washed at a minimum of once a week. <br>
+
+                        			<input type="checkbox" style="margin-right: 10px;margin-left: 20px;" name="q4" class="" id="q43" value=0.25>c.	Protective garments must be appropriate for the duties performed.
+
+                        		</div>
+                    		</div>
+                    		<div class="col-md-4">
+                        		<div class='form-group'>
+                        			<button type="button" class="btn btn-success" onclick="getView5()">submit</button>
+                        		</div>
+                    		</div>                    		              		
+                		</div>
+                		<div class="row align-items-center justify-content-center v6" style="display:none;">
+							<div class="col-md-12">
+                        		<div class='form-group'>
+                        			5.	Who should approve any deviation from standards/instructions/procedures?
+                        		</div>
+                    		</div>
+                    		<div class="col-md-12">
+                        		<div class='form-group'>
+                        			<input type="radio" style="margin-right: 10px; margin-left: 20px;" name="q5" class="" id="q51" value=0 onchange="getView6()">a.	Operation Leader <br>
+
+                        			<input type="radio" style="margin-right: 10px; margin-left: 20px;" name="q5" class="" id="q52" value=1 onchange="getView6()">b.	Site QA <br>
+
+                        			<input type="radio" style="margin-right: 10px; margin-left: 20px;" name="q5" class="" id="q53" value=0 onchange="getView6()">b.	Plant Manager
+                        			
+                        		</div>
+                    		</div>                    		              		
+                		</div>
+                		<div class="row align-items-center justify-content-center v7" style="display:none;">
+							<div class="col-md-12">
+                        		<div class='form-group'>
+                        			6.	Answer if True or False: Food items/Drinks should not be brought into GMP areas.
+                        		</div>
+                    		</div>
+                    		<div class="col-md-12">
+                        		<div class='form-group'>
+                        			<input type="radio" style="margin-right: 10px; margin-left: 20px;" name="q6" class="" id="q61" value=1 onchange="getView7()">a.	True <br>
+
+                        			<input type="radio" style="margin-right: 10px; margin-left: 20px;" name="q6" class="" id="q62" value=0 onchange="getView7()">b.	False
+                        			
+                        		</div>
+                    		</div>                    		              		
+                		</div>
+                		<div class="row align-items-center justify-content-center v8" style="display:none;">
+							<div class="col-md-12">
+                        		<div class='form-group'>
+                        			7.	Answer if True or False: Housekeeping tools must be kept at designated areas.
+                        		</div>
+                    		</div>
+                    		<div class="col-md-12">
+                        		<div class='form-group'>
+                        			<input type="radio" style="margin-right: 10px; margin-left: 20px;" name="q7" class="" id="q71" value=1 onchange="getView8()">a.	True. <br>
+                        			
+                        			<input type="radio" style="margin-right: 10px;margin-left: 20px;" name="q7" class="" id="q72" value=0 onchange="getView8()">b. False 
+
+                        		</div>
+                    		</div>                    		              		
+                		</div>
+                		<div class="row align-items-center justify-content-center v9" style="display:none;">
+							<div class="col-md-12">
+                        		<div class='form-group'>
+                        			8.	Answer if True or False: All employee must comply with GMP standards.
+
+                        		</div>
+                    		</div>
+                    		<div class="col-md-12">
+                        		<div class='form-group'>
+                        			<input type="radio" style="margin-right: 10px; margin-left: 20px;" name="q8" class="" id="q81" value=0 onchange="getView9()">a.	False<br>
+                        			
+                        			<input type="radio" style="margin-right: 10px;margin-left: 20px;" name="q8" class="" id="q82" value=1 onchange="getView9()">b. True 
+                        			
+                        		</div>
+                    		</div>                    		              		
+                		</div>
+                		<div class="row align-items-center justify-content-center v10" style="display:none;">
+							<div class="col-md-12">
+                        		<div class='form-group'>
+                        			9.	Answer if True or False: Hands should be washed and dried each time the toilet is used.
+
+                        		</div>
+                    		</div>
+                    		<div class="col-md-12">
+                        		<div class='form-group'>
+                        			<input type="radio" style="margin-right: 10px; margin-left: 20px;" name="q9" class="" id="q91" value=1 onchange="getView10()">a. True <br>
+                        			
+                        			<input type="radio" style="margin-right: 10px;margin-left: 20px;" name="q9" class="" id="q92" value=0 onchange="getView10()">b.	False 
+                        			
+                        		</div>
+                    		</div>                    		              		
+                		</div>
+                		<div class="row align-items-center justify-content-center v11" style="display:none;">
+							<div class="col-md-12">
+                        		<div class='form-group'>
+                        			10.	Answer if True or False: Wear clean protective garment/clothing appropriate to GMP requirement for all areas.
+ 
+                        		</div>
+                    		</div>
+                    		<div class="col-md-12">
+                        		<div class='form-group'>
+                        			<input type="radio" style="margin-right: 10px; margin-left: 20px;" name="q10" class="" id="q101" value=0 onchange="getView11()">a. False <br>
+
+                        			<input type="radio" style="margin-right: 10px;margin-left: 20px;" name="q10" class="" id="q102" value=1 onchange="getView11()">b. True
+
+                        		</div>
+                    		</div>
+                    		<div class="col-md-4">
+                        		<div class='form-group'>
+                        			<button type="button" class="btn btn-success" onclick="getResult('{{qid}}','{{pass_mark}}','{{tid}}')">Get Result</button>
+                        		</div>
+                    		</div>                    		              		
+                		</div>              		       		
+						
+					</form>
+				</div>
+				
+			</div>
+			
+		</div>
+		
+	</div>
+	          
+</div>
+
+{% endblock %}
+
+{% block tail %}
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@9"></script>
+<script type="text/javascript">
+
+
+function getView1()
+{
+	$('.v1').fadeOut('slow');
+	$('.v2').fadeIn('slow');
+}
+
+function getView2()
+{
+	$('.v2').fadeOut('slow');
+	var ans = $("input[type='radio'][name='q1']:checked").val(); 
+
+	if (ans == 1)
+	{
+		Swal.fire({
+                   	icon: 'success',
+                    title: 'Correct!',                                         
+                }).then(function(){
+			                
+							$('.v3').fadeIn('slow');
+
+			            })
+	} else
+	{
+		Swal.fire({
+                   	icon: 'error',
+                    title: 'Wrong Answer!',                                         
+                }).then(function(){
+			                
+							$('.v3').fadeIn('slow');
+
+			            })
+	}
+	
+}
+
+function getView3()
+{
+	$('.v3').fadeOut('slow');
+	var ans = $("input[type='radio'][name='q2']:checked").val(); 
+
+	if (ans == 1)
+	{
+		Swal.fire({
+                   	icon: 'success',
+                    title: 'Correct!',                                         
+                }).then(function(){
+			                
+							$('.v4').fadeIn('slow');
+
+			            })
+	} else
+	{
+		Swal.fire({
+                   	icon: 'error',
+                    title: 'Wrong Answer!',                                         
+                }).then(function(){
+			                
+							$('.v4').fadeIn('slow');
+
+			            })
+	}
+	
+}
+
+function getView4()
+{
+	var checked = document.querySelectorAll('input[name="q3"]:checked');
+	var count = document.querySelectorAll('input[name="q3"]:checked').length;
+
+	if (count == 0)
+	{
+		alert('Please choose at least one option.');
+		return false;
+	}
+
+	$('.v4').fadeOut('slow');
+
+	var ans = 0;
+
+	for (var x = 0; x < count; x++)
+	{
+		ans += parseFloat(checked[x].value);
+	}		
+	
+
+	if (ans == 0.75)
+	{
+		Swal.fire({
+                   	icon: 'success',
+                    title: 'Correct!',                                         
+                }).then(function(){
+			                
+							$('.v5').fadeIn('slow');
+
+			            })
+	} else
+	{
+		Swal.fire({
+                   	icon: 'error',
+                    title: 'Wrong Answer!',                                         
+                }).then(function(){
+			                
+							$('.v5').fadeIn('slow');
+
+			            })
+	}
+
+	
+}
+
+
+function getView5()
+{
+	var checked = document.querySelectorAll('input[name="q4"]:checked');
+	var count = document.querySelectorAll('input[name="q4"]:checked').length;
+
+	if (count == 0)
+	{
+		alert('Please choose at least one option.');
+		return false;
+	}
+
+	$('.v5').fadeOut('slow');
+
+	var ans = 0;
+
+	for (var x = 0; x < count; x++)
+	{
+		ans += parseFloat(checked[x].value);
+	}		
+	
+
+	if (ans == 0.75)
+	{
+		Swal.fire({
+                   	icon: 'success',
+                    title: 'Correct!',                                         
+                }).then(function(){
+			                
+							$('.v6').fadeIn('slow');
+
+			            })
+	} else
+	{
+		Swal.fire({
+                   	icon: 'error',
+                    title: 'Wrong Answer!',                                         
+                }).then(function(){
+			                
+							$('.v6').fadeIn('slow');
+
+			            })
+	}
+
+	
+}
+
+
+function getView6()
+{
+	$('.v6').fadeOut('slow');
+	var ans = $("input[type='radio'][name='q5']:checked").val(); 
+
+	if (ans == 1)
+	{
+		Swal.fire({
+                   	icon: 'success',
+                    title: 'Correct!',                                         
+                }).then(function(){
+			                
+							$('.v7').fadeIn('slow');
+
+			            })
+	} else
+	{
+		Swal.fire({
+                   	icon: 'error',
+                    title: 'Wrong Answer!',                                         
+                }).then(function(){
+			                
+							$('.v7').fadeIn('slow');
+
+			            })
+	}
+	
+}
+
+function getView7()
+{
+	$('.v7').fadeOut('slow');
+	var ans = $("input[type='radio'][name='q6']:checked").val(); 
+
+	if (ans == 1)
+	{
+		Swal.fire({
+                   	icon: 'success',
+                    title: 'Correct!',                                         
+                }).then(function(){
+			                
+							$('.v8').fadeIn('slow');
+
+			            })
+	} else
+	{
+		Swal.fire({
+                   	icon: 'error',
+                    title: 'Wrong Answer!',                                         
+                }).then(function(){
+			                
+							$('.v8').fadeIn('slow');
+
+			            })
+	}
+	
+}
+
+function getView8()
+{
+	$('.v8').fadeOut('slow');
+	var ans = $("input[type='radio'][name='q7']:checked").val(); 
+
+	if (ans == 1)
+	{
+		Swal.fire({
+                   	icon: 'success',
+                    title: 'Correct!',                                         
+                }).then(function(){
+			                
+							$('.v9').fadeIn('slow');
+
+			            })
+	} else
+	{
+		Swal.fire({
+                   	icon: 'error',
+                    title: 'Wrong Answer!',                                         
+                }).then(function(){
+			                
+							$('.v9').fadeIn('slow');
+
+			            })
+	}
+	
+}
+
+function getView9()
+{
+	$('.v9').fadeOut('slow');
+	var ans = $("input[type='radio'][name='q8']:checked").val(); 
+
+	if (ans == 1)
+	{
+		Swal.fire({
+                   	icon: 'success',
+                    title: 'Correct!',                                         
+                }).then(function(){
+			                
+							$('.v10').fadeIn('slow');
+
+			            })
+	} else
+	{
+		Swal.fire({
+                   	icon: 'error',
+                    title: 'Wrong Answer!',                                         
+                }).then(function(){
+			                
+							$('.v10').fadeIn('slow');
+
+			            })
+	}
+	
+}
+
+function getView10()
+{
+	$('.v10').fadeOut('slow');
+	var ans = $("input[type='radio'][name='q9']:checked").val(); 
+
+	if (ans == 1)
+	{
+		Swal.fire({
+                   	icon: 'success',
+                    title: 'Correct!',                                         
+                }).then(function(){
+			                
+							$('.v11').fadeIn('slow');
+
+			            })
+	} else
+	{
+		Swal.fire({
+                   	icon: 'error',
+                    title: 'Wrong Answer!',                                         
+                }).then(function(){
+			                
+							$('.v11').fadeIn('slow');
+
+			            })
+	}
+	
+}
+
+function getView11()
+{
+	//$('.v11').fadeOut('slow');
+	var ans = $("input[type='radio'][name='q10']:checked").val(); 
+
+	if (ans == 1)
+	{
+		Swal.fire({
+                   	icon: 'success',
+                    title: 'Correct!',                                         
+                })
+	} else
+	{
+		Swal.fire({
+                   	icon: 'error',
+                    title: 'Wrong Answer!',                                         
+                })
+	}
+	
+}
+
+function getResult(id,mark,tid)
+{	
+	//check if the last question has been amswered//
+	check = $("input[type='radio'][name='q10']").is(':checked');
+	if (!check){alert('Please choose an option.'); return false;}
+
+	triggerProcessing();
+setTimeout(function(){
+	//compute result
+	var ans1 = $("input[type='radio'][name='q1']:checked").val();
+	var ans2 = $("input[type='radio'][name='q2']:checked").val();
+	var ans3 = getCheckboxValue('q3',0.75); 
+	var ans4 = getCheckboxValue('q4',0.75);
+	var ans5 = $("input[type='radio'][name='q5']:checked").val();
+	var ans6 = $("input[type='radio'][name='q6']:checked").val();
+	var ans7 = $("input[type='radio'][name='q7']:checked").val();
+	var ans8 = $("input[type='radio'][name='q8']:checked").val();
+	var ans9 = $("input[type='radio'][name='q9']:checked").val();
+	var ans10 = $("input[type='radio'][name='q10']:checked").val();
+
+	var ans11 = parseInt(ans1) + parseInt(ans2) + parseInt(ans3) + parseInt(ans4) + parseInt(ans5);
+	var ans12 = parseInt(ans6) + parseInt(ans7) + parseInt(ans8) + parseInt(ans9) + parseInt(ans10);
+	var ans = ans11 + ans12;
+	var percent = (ans / 10) * 100;
+	percent = percent.toFixed(2);
+
+	//alert('You are doing well');
+	//save result to database
+	const update = {
+						score:parseInt(percent),
+						quizid:id,
+						tid:tid,
+					};
+
+    const options = {
+                    	method: 'POST',
+                    	headers: {'Content-Type': 'application/json',},
+                    	body: JSON.stringify(update),
+                };
+
+	fetch(`/e_learning?action=${'POST-RESULT'}`, options)
+                    .then(function (response) {
+                            return response.json();
+                        }).then(function (text) {
+                                
+             if (percent >= parseInt(mark))
+				{
+					Swal.fire({
+			                   	icon: 'success',
+			                    title: 'Congratulations!',
+			                    html: "<div class='alert alert-success'>You scored "+percent+"% <br>You have successfully completed this Course.</div>",
+			                                                             
+			                }).then(function(){
+
+			                	setTimeout(function(){
+			                		location.reload()
+			                	},1000);
+
+			                })
+				} else
+				{
+					Swal.fire({
+			                   	icon: 'error',
+			                    title: 'Sorry!',
+			                    html: "<div class='alert alert-danger'>You scored "+percent+"% <br>You did not meet the pass mark for this Course. Please go through the material again and attempt the quiz once more.</div>",
+			                                                             
+			                }).then(function(){
+
+			                	setTimeout(function(){
+			                		location.reload()
+			                	},1000);
+
+			                })
+				}
+
+				        })
+
+},3000);	
+
+	
+}
+
+function getCheckboxValue(name,base)
+{
+	var checked = document.querySelectorAll('input[name="'+name+'"]:checked');
+	var count = document.querySelectorAll('input[name="'+name+'"]:checked').length;
+
+	if (count == 0)
+	{
+		return parseInt(0);
+	}
+
+	var ans = 0;
+
+	for (var x = 0; x < count; x++)
+	{
+		ans += parseFloat(checked[x].value);
+	}
+
+	if (ans < base)
+	{
+		return parseInt(0);
+	} else
+	{
+		return parseInt(1);
+	}
+
+}
+</script>
+
+{% endblock %}
+
