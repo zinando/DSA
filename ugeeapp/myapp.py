@@ -6,7 +6,7 @@ from ugeeapp.forms import LoginForm,PSGProductionReportForm,UTILITY_SAFETYBOSFor
 from ugeeapp.models import Trainings,MyQualification
 import pycomm3
 import os
-import time 
+import time  
 import json
 import datetime
 from datetime import datetime,timedelta
@@ -362,6 +362,7 @@ def index():
 def login():
 	response=''
 	form = LoginForm()
+	url = url_for('login')
 
 	if request.method =='POST':
 		if form.validate_on_submit():
@@ -384,12 +385,13 @@ def login():
 		else:
 			response='Form error, please try again!'	 
 
-	return render_template('userlogin.html',form=form,resp=response)
+	return render_template('userlogin.html',form=form,resp=response,url=url)
 
 @app.route('/changetemppass',methods=['GET','POST'])
 def changetemppass():
 	response=''
 	form = ChangePasswordForm()
+	url = url_for('changetemppass')
 	userid = request.args.get("userid",int)
 
 	if request.method =='POST':
@@ -418,7 +420,7 @@ def changetemppass():
 		else:
 			response='Form error, please try again!'	 
 
-	return render_template('changetemppass.html',form=form,resp=response,userid=userid)	
+	return render_template('changetemppass.html',form=form,resp=response,userid=userid,url=url)	
 
 @app.route('/logout',methods=['GET'])
 @login_required

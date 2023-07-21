@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 
-<head>
+<head> 
 
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -82,12 +82,37 @@
 
                     <!-- Topbar Search -->                    
                     <a class="sidebar-brand d-flex align-items-center justify-content-center" href="/">
-                        <div class="sidebar-brand-icon"><!-- rotate-n-15">-->
-                                <!-- <i class="fas fa-laugh-wink"></i>-->
+                        <div class="sidebar-brand-icon">
                             <img src="/static/img/logo/ugee.png" alt="UGEE CHEMICALS LOGO" width="50px" height="50px">
                         </div>
                         <div class="sidebar-brand-text mx-3">Welcome to UGEE CHEMICALS</div>
                     </a>
+                    {% if url == url_for('login')%}
+                    <div class="d-sm-flex" style="background-color:transparent;float: right;">
+                        <form id="loginForm" style="" method="POST" action="">
+                            {{form.csrf_token }}
+                        <div class="row" style="margin-left:300px; margin-top:25px">
+                            <div class="col col-md-4">
+                                <div class='form-group'>
+                                    {{form.username(class="form-control")}}
+                                </div>
+                            </div>
+                            <div class="col col-md-4">
+                                <div class='form-group'>
+                                    {{form.password(class="form-control")}}
+                                </div>
+                            </div>
+                            <div class="col col-md-4">
+                                <div class='form-group'>
+                                    {{form.submit(class="btn btn-info")}} <a href="/reset_password" style="text-decoration: none;"><span><samll style="font-size: 12px;color: red;">Forgot<br> Password</samll></span></a>
+                                </div>
+                            </div>
+                            
+                        </div>    
+                            
+                        </form>
+                    </div>
+                {%endif%}
                     <!-- Topbar Navbar -->
                     
                 </nav> 
@@ -114,7 +139,7 @@
             <footer class="sticky-footer bg-white">
                 <div class="container my-auto">
                     <div class="copyright text-center my-auto">
-                        <span>Copyright &copy; UGEE CHEMICALS LIMITED 2022</span>
+                        <span>Copyright &copy; UGEE CHEMICALS LIMITED 2023</span>
                     </div>
                 </div>
             </footer>
