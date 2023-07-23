@@ -8,15 +8,15 @@ from wtforms.fields.datetime import DateTimeField
 
  
 
-class StopsForm(FlaskForm):
+class StopsForm(FlaskForm): 
     reason_one = SelectField('', coerce=int)
     reason_two= SelectField('', coerce=int)
     reason_three = SelectField('', coerce=int)
     reason_four = SelectField('', coerce=int)
 
 class LoginForm(FlaskForm):
-    username = StringField('User ID', validators=[InputRequired("UGEE CHEMICALS user ID is required."), Length(max=50)])
-    password = PasswordField('Password', validators=[InputRequired("Password is required")])
+    username = StringField('User ID', validators=[InputRequired("UGEE CHEMICALS user ID is required."), Length(max=50)],render_kw={"placeholder":'User ID'})
+    password = PasswordField('Password', validators=[InputRequired("Password is required")],render_kw={"placeholder":'Password'})
     remember = BooleanField('remember me')
     submit=SubmitField('Login') 
 
@@ -63,6 +63,8 @@ class PassResetForm(FlaskForm):
 
 class ChangePasswordForm(FlaskForm):
     #old_password = PasswordField('Old Password', validators=[InputRequired("Old Password is required")])
+    username = StringField('User ID')
+    password = PasswordField('New Password')
     password1 = PasswordField('New Password', validators=[InputRequired("Password is required")])
     password2 = PasswordField('Repeat Password', validators=[InputRequired("Password is required")])
     submit=SubmitField('Change password')
