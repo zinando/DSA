@@ -2,7 +2,7 @@
 
 
 
-{% block content %}
+{% block content %} 
 
 <div class="container">
 	<div class="row align-items-center justify-content-center">
@@ -17,7 +17,7 @@
 		<div class="col-md-12 " style="backgound: red;">
 			<div class="row">
 				<div class="col-md-12">
-					<form id="" style="margin-top:20px" method="POST" action="/e_learning?action=PROCESS-DATA">
+					<form id="" style="margin-top:20px" method="POST" action="/e_learning?action=PROCESS-DATA" enctype = "multipart/form-data">
 						
 						<div class="row align-items-center justify-content-center">
 							<div class="col-md-12 head1">
@@ -103,21 +103,28 @@
                         			</select>
                         		</div>
                     		</div>
-                    		<div class="col-md-2" id="suc-div">
+                    		<div class="col-md-2" id="pasmk-div">
                         		<div class='form-group'>
                         			<label>Pass Mark</label>
-                        			<input type="number" name="pasmk" id="pasmk" class="form-control" required>
+                        			<input type="number" name="pasmk" id="pasmk" class="form-control">
                         		</div>
                     		</div>		                    		                    		
                 		</div>
                 		<div class="row align-items-center justify-content-center">
-					<!--		<div class="col-md-6">
+							<div class="col-md-4" id="material-div">
                         		<div class='form-group'>
-                        			<label>Upload Main Training Material</label>
-                        			<input type="file" id="material" name="material" class="form-control" accept=".doc, .ppt, .pdf, .txt" required>
+                        			<label>Training Material</label>
+                        			<input type="file" id="material" name="main_obj" class="form-control" accept=".csv, .xls, .xlsx, .doc, .ppt, .pdf, .txt" >
                         		</div>
                     		</div>
-                    		<div class="col-md-6">
+                    		<div class="col-md-4" id="suc-div" style="display: none;">
+                        		<div class='form-group'>
+                        			<label>Upload SUC</label>
+                        			<input type="file" id="succ" name="suc_obj" accept=".csv, .xls, .xlsx, .doc, .ppt, .pdf, .txt" class="form-control">
+                        			                       			
+                        		</div>
+                    		</div>
+                    	<!--	<div class="col-md-6">
                         		<div class='form-group'>
                         			<label>Quiz Link</label>
                         			<select class="form-control" id="quiz" name="quiz" required>
@@ -125,17 +132,11 @@
                         				
                         			</select>                       			
                         		</div>
-                    		</div>
-                    		<div class="col-md-6">
-                        		<div class='form-group'>
-                        			<label>Upload SUCs</label>
-                        			<input type="file" id="succ" name="succ" accept=".doc, .ppt, .pdf, .txt" class="form-control" multiple>                       			
-                        		</div>
-                    		</div>                    		
+                    		</div>                    		                    		
                     		<div class="col-md-6">
                         		<div class='form-group'>
                         			<label>Other Usefull Documents</label>
-                        			<input type="file" id="other_file" name="other_file" class="form-control" accept=".doc, .ppt, .pdf, .txt" style="bakground-color: lavenda" multiple>                       			
+                        			<input type="file" id="other_file" name="other_file" class="form-control" accept=".csv, .xls, .xlsx, .doc, .ppt, .pdf, .txt" style="bakground-color: lavenda" multiple>                       			
                         		</div>
                     		</div>
                     	-->
@@ -201,12 +202,19 @@ function addTraining()
 function checksuc(selector)
 {
 	var suc = $(selector).children(':selected').val();
-	if (suc == 1)
+	if (suc == 1) //only stepup card required
 	{
-		$('#suc-div').css('display','none');
-	} else
+		$('#pasmk-div').css('display','none');
+		$('#suc-div').css('display','block');		
+	} else if (suc == 2) //stepup card and quiz
 	{
 		$('#suc-div').css('display','block');
+		$('#pasmk-div').css('display','block');
+		
+	} else //stepup card not required
+	{
+		$('#suc-div').css('display','none');
+		$('#pasmk-div').css('display','block');		
 	}
 }
 

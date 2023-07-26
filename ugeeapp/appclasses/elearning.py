@@ -1,24 +1,25 @@
 from flask import Blueprint,Flask,redirect,url_for,request,render_template,session,flash,abort,jsonify,Markup,send_file
 from flask_sqlalchemy  import SQLAlchemy
 from sqlalchemy.sql import func
-from ugeeapp.models import StopEvent,MyQualification,Trainings,StopCode,ReasonOne,ReasonTwo,ReasonTri,ReasonFour,Equipment,User,Production
+from ugeeapp.models import StopEvent,MyQualification,StepupCards,Trainings,StopCode,ReasonOne,ReasonTwo,ReasonTri,ReasonFour,Equipment,User,Production
 import time
 import json
 import os
 import datetime
-#from ugeeapp.appclasses.production import PRODUCTION
 from datetime import datetime,timedelta
 from flask_login import LoginManager, current_user,login_user,logout_user,login_required
+from werkzeug.utils import secure_filename
 from werkzeug.security import generate_password_hash, check_password_hash
 from ugeeapp import db,app
 from ugeeapp.helpers import myfunctions as myfunc
+from ugeeapp import APP_ROOT
 import hmac,hashlib
 import xlsxwriter
 from io import BytesIO
 import numpy as np
 import pandas as pd
 import calendar
-#from ugeeapp.appclasses.adminclass import AdminRoles
+import shutil
 
 
 
@@ -26,7 +27,7 @@ class MYSCHOOL():
 
 	def __init__(self):
 		pass
-
+	
 	def get_user(self,userid=0):
 		if userid == 0:
 			user = User.query.filter_by(block_stat=0).order_by(User.sname.asc()).all()
@@ -463,62 +464,6 @@ class MYSCHOOL():
 			
 			return {"total":total_completion,"m":mandatory_completion,"a":prio_a_completion,"b":prio_b_completion}
 
-	def get_user_reportxxx(self,userid,tid=0):
-		"""	This function will get user completion report for a training when training id is provided
-			else it will generate total completion report for the user for all trainings based on the
-			skill priority classifications.
-		"""
-		if tid > 0:
-			##get report for a single training## 
-			complete = db.session.query(MyQualification).filter(MyQualification.training_id==tid,MyQualification.userid==userid,MyQualification.status=="PASSED").first()
-			if complete:
-				return 100
-			else:
-				return 0.0
-		else:
-			##get report for all trainings#
-			mandatory_passed = []
-			prio_a_passed = []
-			prio_b_passed = []
-			total_passed = []
-
-			trainings = self.get_user_trainings(userid)
-			mandatory = self.get_user_mandatories(userid) #[x for x in Trainings.query.filter_by(priority="M").all()]
-			prio_a = self.get_user_priority_a(userid) #[x for x in Trainings.query.filter_by(priority="A").all()]
-			prio_b = self.get_user_priority_b(userid) #[x for x in Trainings.query.filter_by(priority="B").all()]
-
-			for training in trainings:
-				complete = db.session.query(MyQualification).filter(MyQualification.training_id==training.tid,MyQualification.userid==userid,MyQualification.status=="PASSED").first()
-				if complete:
-					total_passed.append(training) 
-
-					if training.priority == "A":
-						prio_a_passed.append(training)
-					elif training.priority == "M":
-						mandatory_passed.append(training)
-					elif training.priority == "B":
-						prio_b_passed.append(training)
-
-			if trainings is not None:
-				total_completion = float("{:0.2f}".format((len(total_passed)/len(trainings))*100))
-			else:
-				total_completion = -1.0	
-			if 	len(mandatory) >0:
-				mandatory_completion = float("{:0.2f}".format((len(mandatory_passed)/len(mandatory))*100))
-			else:
-				mandatory_completion = -1.0
-			if len(prio_a) > 0:
-				prio_a_completion = float("{:0.2f}".format((len(prio_a_passed)/len(prio_a))*100))
-			else:
-				prio_a_completion = -1.0
-			if len(prio_b) > 0:
-				prio_b_completion = float("{:0.2f}".format((len(prio_b_passed)/len(prio_b))*100))
-			else:
-				prio_b_completion = -1.0
-
-			
-			return {"total":total_completion,"m":mandatory_completion,"a":prio_a_completion,"b":prio_b_completion}
-
 	def get_user_mandatories(self,userid):
 		tr = Trainings.query.filter_by(priority="M").all()
 		return  tr
@@ -552,7 +497,7 @@ class MYSCHOOL():
 		return  tr
 
 	def get_user_trainings(self,userid):
-		#tr = Trainings.query.order_by(Trainings.tid.desc()).all()
+		
 		tr = []
 		for i in self.get_user_mandatories(userid):
 			tr.append(i)
@@ -623,7 +568,6 @@ class MYSCHOOL():
 			b_completion = -1.0			
 
 		return {"total":t_completion,"m":m_completion,"a":a_completion,"b":b_completion}
- 
 
 	def get_teams_report(self,department,team):
 		result = []
@@ -675,73 +619,22 @@ class MYSCHOOL():
 
 		return {"total":t_completion,"m":m_completion,"a":a_completion,"b":b_completion}
 
-	def get_department_reportxxx(self,department_id,tid=0):
-		tid = int(tid)
-		users = User.query.filter_by(department=department_id).all()
+	def add_training(self,form,edit=0,files=None):
 
-		mandatory = 0
-		prio_a = 0
-		prio_b = 0
-		total_passed = 0
-
-		total_mand = 0
-		total_prio_a = 0
-		total_prio_b = 0
-		total_tr = 0
-
-		if tid > 0:
-			for user in users:				
-				if tid in [int(x.tid) for x in self.get_user_trainings(user.userid)]:
-					total_tr += 1
-					if 	self.get_user_report(user.userid,tid) == 100:
-						total_passed += 1
-
-			if total_tr >0:
-				completion = float("{:0.2f}".format((total_passed/total_tr)*100))
-			else:
-				completion = -1.0	
-
-			return 	completion
-
-		for user in users:			
-			trainings = self.get_user_trainings(user.userid)
-			if trainings is not None:
-				for training in trainings:
-					if self.get_user_report(user.userid,training.tid) == 100:
-						total_passed += 1
-						if training.priority ==  "M":
-							mandatory += 1
-						elif training.priority ==  "A":
-							prio_a += 1
-						elif training.priority ==  "B":
-							prio_b += 1	
-			total_mand += len(self.get_user_mandatories(user.userid))
-			total_prio_a += len(self.get_user_priority_a(user.userid))
-			total_prio_b += len(self.get_user_priority_b(user.userid))	
-			total_tr += len(trainings)
-
-		t_completion = float("{:0.2f}".format((total_passed/total_tr)*100))
-		if total_mand >0:
-			m_completion = 	float("{:0.2f}".format((mandatory/total_mand)*100))
-		else:
-			m_completion = -1.0
-		if total_prio_a >0:
-			a_completion = 	float("{:0.2f}".format((prio_a/total_prio_a)*100))
-		else:
-			a_completion = -1.0
-		if total_prio_b >0:
-			b_completion = 	float("{:0.2f}".format((prio_b/total_prio_b)*100))
-		else:
-			b_completion = -1.0			
-
-		return {"total":t_completion,"m":m_completion,"a":a_completion,"b":b_completion}
- 
-
-	def add_training(self,form,edit=0):
+		#check if title already exists for another training
+		check = db.session.query(Trainings).filter(Trainings.title==form['title'].title(),Trainings.tid != edit).count()
+		if check > 0:
+			return {'status':2, 'message':'This course title already exists for another course.'}
 
 		main = "main"
-		#suck = "suc"
-		#extra = "extra"		
+		
+		#document paths
+		main_path = app.config["MAIN_UPLOAD_FOLDER"]
+		suc_path = app.config["SUC_UPLOAD_FOLDER"]
+		other_path = app.config["OTHER_UPLOAD_FOLDER"]
+		main_link = None
+		suc_link = None	
+		other_link = None 	
 
 		title = form['title']
 		department = form['depart']
@@ -751,21 +644,14 @@ class MYSCHOOL():
 		pass_mark = form['pasmk']
 		priority = form['prio']
 		suc = 0 
-		if form['suc']:
-			suc = form['suc']
-
+		if form['suc']:			
+			suc = form['suc']		
 		titles = title.split()
 		for x in titles:
-			main += "_{}".format(x.lower())	
-		
-
-		if edit > 0:
-
-			#check if title already exists for another course
-			check = db.session.query(Trainings).filter(Trainings.title==title.title(),Trainings.tid != edit).count()
-			if check > 0:
-				return {'status':2, 'message':'This course title already exists for another course.'}
-
+			main += "_{}".format(x.lower())
+		if files is not None and 'main_obj' in files.keys():
+			main_link = self.save_file(main_path,files['main_obj'],main)
+		if edit > 0:			
 			#edit course now
 			db.session.query(Trainings).filter(Trainings.tid == edit).update({
 				'title': title.title(),
@@ -783,6 +669,7 @@ class MYSCHOOL():
 			return {'status':1, 'message': 'Course was updated successfully.'}
 
 		#generate training code here with a function
+
 		def generate_tcode():
 			"""
 			This function generates a UNIQUE CODE for each training
@@ -802,17 +689,40 @@ class MYSCHOOL():
 		log.expiry = exp
 		log.last_review = datetime.now()
 		#log.quiz_link = q_link		
-		log.doc_link = "{}{}".format('/static/documents/e_learning/',main)
+		log.doc_link = main_link #"{}{}".format(main_path,main)
 		log.pass_mark = pass_mark
 		log.priority = priority
 		log.t_code = generate_tcode()
 		log.suc = suc
-
 		db.session.add(log)
 		db.session.commit()
 
-
+		if files is not None and 'suc_obj' in files.keys():
+			suc_link = self.save_file(suc_path,files['suc_obj'])
+			if suc_link is not None:
+				self.log_suc_file(suc_link,log.tid)
+			
 		return {'status':1, 'message': 'Training was added successfully.'}
+
+	def save_file(self,path,fileobj,fname=None):
+		"""Saves a file to the given path"""
+		if os.path.exists("{}{}".format(APP_ROOT,path)) and fileobj.filename:
+			if fname:
+				filename = "{}.{}".format(fname,secure_filename(fileobj.filename).split('.')[-1])
+			else:	
+				filename = secure_filename(fileobj.filename)
+			fileobj.save("{}{}{}".format(APP_ROOT,path,filename))
+			return os.path.join(path,filename)
+		return None
+	
+	def log_suc_file(self,filepath,training_id):
+		"""creates a record of the uploaded suc file in the database"""
+		new_entry = StepupCards()
+		new_entry.training_id = training_id
+		new_entry.suc_link = filepath
+		db.session.add(new_entry)
+		db.session.commit()
+		return new_entry.sucid
 
 	def add_trainingxxx(self,form,files):
 
@@ -891,7 +801,6 @@ class MYSCHOOL():
 		return {'status':1, 'message': 'Training was added successfully.'}
 
 	def delete_course(self, data):
-
 		##check if there is atleast one training record for this course
 		check = MyQualification.query.filter_by(training_id=data['tid']).count()
 
@@ -899,7 +808,22 @@ class MYSCHOOL():
 
 			return {'status':2, 'message': 'This course cannot be deleted, there is an existing training record for it.'}
 
-		##delete training
+		#check if suc is associated with course
+		check = StepupCards.query.filter_by(training_id=data['tid']).count()
+		if check > 0:
+			for x in StepupCards.query.filter_by(training_id=data['tid']).all():
+				#delete stepupcard file if exists
+				if os.path.exists("{}{}".format(APP_ROOT,x.suc_link)):
+					os.remove("{}{}".format(APP_ROOT,x.suc_link))
+				#delete stepupcard record	
+				StepupCards.query.filter_by(sucid=x.sucid).delete()
+				db.session.commit()
+
+		##delete training material if exists
+		training =  db.session.query(Trainings).filter(Trainings.tid==data['tid']).first()
+		if os.path.exists("{}{}".format(APP_ROOT,training.doc_link)):
+			os.remove("{}{}".format(APP_ROOT,training.doc_link))
+		##delete training	
 		db.session.query(Trainings).filter(Trainings.tid==data['tid']).delete()
 		db.session.commit()
 
@@ -907,7 +831,6 @@ class MYSCHOOL():
 
 	def check_for_suc(self,tid):
 		get_tr = Trainings.query.filter(Trainings.tid==tid).first()
-
 		if get_tr.suc == 2:
 			stat = 'required'
 		elif get_tr.suc == 1:
@@ -943,7 +866,6 @@ class MYSCHOOL():
 
 		return result
 
-
 	def log_qualification_percent(self,qid):
 		qualz = db.session.query(MyQualification).filter(MyQualification.qid==qid).first()
 		suc_stat = self.check_for_suc(qualz.training_id)
@@ -967,19 +889,22 @@ class MYSCHOOL():
 				db.session.commit()
 
 			else:
+				#if both passed/completed, check training expiry  
 				if qualz.status == 'PASSED' and qualz.suc_status == 'completed':
 					perc = 0
 					if  self.check_training_expiry(qualz.training_id,qualz.q_date) !='expired':
 						perc += 50
 					if  self.check_training_expiry(qualz.training_id,qualz.suc_q_date) !='expired':
 						perc += 50
+				#if both failed/pending  
 				elif qualz.status == 'REPEAT' and qualz.suc_status == 'pending':
 					per = 0
+				#if one is passed while the other is not  
 				else:
 					perc = 0
 					if qualz.status == 'PASSED' and self.check_training_expiry(qualz.training_id,qualz.q_date) !='expired':
 						perc += 50
-					elif qualz.suc_status == 'pending' and self.check_training_expiry(qualz.training_id,qualz.suc_q_date) !='expired':
+					elif qualz.suc_status == 'completed' and self.check_training_expiry(qualz.training_id,qualz.suc_q_date) !='expired':
 						perc += 50
 
 				db.session.query(MyQualification).filter(MyQualification.qid==qid).update({'percent':perc})
@@ -998,8 +923,8 @@ class MYSCHOOL():
 		##check if qualification record already exist for this user on this course#
 		qualz = db.session.query(MyQualification).filter(MyQualification.qid==data['quizid']).first()
 
-		if qualz is not None:
-			##update data otherwise add
+		##update data otherwise add
+		if qualz is not None:			
 			db.session.query(MyQualification).filter(MyQualification.qid==data['quizid']).update({
 				'score':int(data['score']),
 				'q_date': datetime.now(),
@@ -1332,7 +1257,6 @@ class MYSCHOOL():
 
 	def check_file(self,link):
 
-
 		from os.path import exists
 		mylink = '/e_learning?action=GET-QUIZ&template=e_learning/tr_basic_fire_fighting.html&id=1&pass=100&tid=1' #'http://192.168.130.196:5000'+link
 
@@ -1567,9 +1491,6 @@ class MYSCHOOL():
 
 	
 
-
-
-
 class MYSCHOOL_REPORT():
 	def __init__(self):
 		pass
@@ -1699,8 +1620,6 @@ class MYSCHOOL_REPORT():
 		a = info['a'] if info['a'] > 0 else 'Nil'
 
 		return {'status':1,'data':result,'T':t,'A':a,'M':m}
-
-
 
 	def fetch_team_members_report(self,team,department):
 		new = MYSCHOOL()

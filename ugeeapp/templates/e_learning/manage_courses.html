@@ -81,7 +81,7 @@
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@9"></script>
 <script type="text/javascript">
 
-	function deleteCourse(id){
+	function deleteCourse(id){ 
   
   		Swal.fire({
         	title: 'Are you sure you want to delete this Course?',        
@@ -91,12 +91,12 @@
         	cancelButtonColor: '#d33',
         	confirmButtonText: 'Yes, proceed',
         	html: "<div class='alert alert-warning'>Note that courses with training records cannot be deleted. You may consider editing the course instead.</div>"
-      	}).then((result) => {
-
-      	triggerProcessing();
+      	}).then((result) => {  
+        if (result.value) {
+                triggerProcessing();	
 
       	setTimeout( function(){	
-        	if (result.value) {
+
 
             	const update = {tid: id,};
 
@@ -133,8 +133,9 @@
          
             
             
-        	}
-        },2000) //end of settimeout
+
+                    },2000) //end of settimeout
+            } //end of if statement
       	})
 	}
 

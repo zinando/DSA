@@ -1,4 +1,5 @@
 cd OneDrive - SIL Chemicals Limited\PYTHON
+cd Downloads\TECH_PROJECTS\DSA
 virtual\scripts\activate
 set FLASK_APP=ugeeapp
 flask run --host=0.0.0.0 

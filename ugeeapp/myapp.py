@@ -1346,7 +1346,7 @@ def my_e_learning():
 
 		return render_template(template,department=departments)
 
-	elif request.args.get('action') == 'FETCH-USERS':
+	elif request.args.get( 'action') == 'FETCH-USERS':
 
 		kyc = ''
 
@@ -1368,6 +1368,20 @@ def my_e_learning():
 		course = Trainings.query.filter_by(tid=tid).first()
 
 		return render_template(template,pass_mark=pass_mark,qid=qid,tid=tid,training=course)
+
+	elif request.args.get('action') == 'manual_qualification':
+		if session['adminlevel'] < 3:
+			return redirect(url_for('index'))
+
+		template = 'e_learning/manual_qualification.html'
+				
+
+		course = Trainings.query.order_by(Trainings.title.desc())
+		users = new.get_user()
+		q = session['fullname']
+		qid = session['userid']
+
+		return render_template(template,trainings=course,qualifier=q,qualifier_id=qid,users=users)	
 
 	elif request.args.get('action') == 'VIEW-RECORDS':
 		new.run_expiry_report()
@@ -1449,10 +1463,11 @@ def my_e_learning():
 
 		template = 'e_learning/add_training.html'
 		form = request.form
-		#files = request.files
-
+		files = request.files
+		#flash(app.config["SUC_UPLOAD_FOLDER"],"info")
+		#return render_template(template, resp = "")
 		
-		data = new.add_training(form)
+		data = new.add_training(form,0,files)
 
 		if data['status'] == 1:
 
@@ -1460,9 +1475,19 @@ def my_e_learning():
 		else:
 			response = Markup("<div class='alert alert-danger'>{}</div>".format(data['message']))
 
-
-
-		return render_template(template, resp = response)
+		departments = [
+		{'abbr':'PSG','id':1, 'description':'Packing operations department','hod':26},
+		{'abbr':'MSG','id':2, 'description':'Making operations department','hod':74},
+		{'abbr':'QA','id':3, 'description':'Quality Assurance department','hod':67},
+		{'abbr':'WHSE','id':4, 'description':'Warehouse department','hod':28},
+		{'abbr':'HS&E','id':5, 'description':'Healt, Safety & Enveironment department','hod':22},
+		{'abbr':'HR','id':6, 'description':'Human Resources department','hod':31},
+		{'abbr':'STR_ROOM','id':7, 'description':'Store Room department','hod':31},
+		{'abbr':'IT','id':8, 'description':'Information Technology department','hod':31},
+		{'abbr':'FINANCE','id':9, 'description':'Finance department','hod':31}
+		]	
+		flash(response,"info")	
+		return render_template(template,department = departments)
 
 	elif request.method == 'POST' and request.args.get('action') == 'POST-RESULT':
 		

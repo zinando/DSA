@@ -187,6 +187,9 @@
                     {% if session['adminlevel'] >1 %}
                         <a class="collapse-item" href="/e_learning?action=VIEW-RECORDS">View Records</a>                    
                     {% endif %}
+                    {% if session['adminlevel'] >= 3 %}
+                        <a class="collapse-item" href="/e_learning?action=manual_qualification">Qualify User</a>
+                    {% endif %}
                     {% if session['adminlevel'] == 5 %}
                         <a class="collapse-item" href="/e_learning?action=MANAGE">Manage Courses</a>
                     {% endif %}

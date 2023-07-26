@@ -1,0 +1,165 @@
+{% extends 'public/base.html' %}
+{% block content %} 
+
+<div class="container">
+	<div class="row align-items-center justify-content-center">
+		<div class="col-md-12">
+			<div class="login100-form-logo align-items-center justify-content-center">
+									
+				<div class="text-center" style="color:white;background: #179cd7;">
+					WELCOME TO MY e_LEARNING
+				</div>
+			</div>
+		</div>
+		<div class="col-md-12 " style="backgound: red;">
+			<div class="row">
+				<div class="col-md-12">
+					<form id="" style="margin-top:20px" method="POST" action="/e_learning?action=manual_qualification">
+						
+						<div class="row align-items-center justify-content-center">
+							<div class="col-md-12 head1 text-center" >								
+									<span style="color: #000;background: #179CD7;">Manual Qualification by {{qualifier}}</span>								
+							</div>							
+						</div>
+
+						<div class="row">
+							<div class="col-md-6">
+                        		<div class='form-group'>
+                        			<label>Training</label>
+                        			<select name="training" id="training" class="form-control"
+                        			onchange="modify_fields(this)" required>
+                        				<option value="">Select</option>
+                        				{% for tr in trainings%}
+                        				<option value={{tr.tid}} data-pssmk={{tr.pass_mark}} data-suc_status={{tr.suc}}>{{tr.title}}</option>
+                        				{% endfor %}
+                        			</select>
+                        		</div>
+                    		</div>
+                    		<div class="col-md-4">
+                        		<div class='form-group'>
+                        			<label>Trainees</label>
+                        			<select name="trainees" id="trainees" class="form-control" multiple=true required>
+                        				<option value="">Select</option>
+                        				{% for user in users %}
+                        				<option value={{user.userid}}>{{user.sname}} {{user.fname}}</option>
+                        				{% endfor %}
+                        			</select>
+                        		</div>
+                    		</div>		                    		                    		
+                		</div>
+                		<div class="row">
+							<div class="col-md-4">
+                        		<div class='form-group'>
+                        			<label>Trainer/Qualifier</label>
+                        			<input type="text" id="qualifier" name="qualifier" class="form-control" value="{{qualifier}}" disabled=true>
+                        			<input type="hidden" id="qualifier_id" name="qualifier_id" value={{qualifier_id}}>
+                        		</div>
+                    		</div>
+                    		<div class="col-md-4" id="score-div">
+                        		<div class='form-group'>
+                        			<label id="score-text">Score</label>
+                        			<input type="number" id="score" name="score" class="form-control">
+                        		</div>
+                    		</div>                    		
+                    		<div class="col-md-4" id="suc-div">
+                        		<div class='form-group'>
+                        			<label>SUC?</label>
+                        			<select class="form-control" id="suc" name="suc">
+                        				<option value="">Select</option>
+                        				<option value="pending">Pending</option>
+                        				<option value="completed">Completed</option>
+                        				             				
+                        			</select>
+                        		</div>
+                    		</div>            				                    		                    		
+                		</div>
+                		<div class="row align-items-center justify-content-center">
+                    		<div class="col-md-4">                    
+                        		<div class='form-group'>
+                            		<button class="btn btn-sm btn-info" type="submit"> Submit</button>
+                        		</div>
+                    		</div>		                    		                    		
+                		</div>
+                		        
+					</form>
+				</div>
+				
+			</div>
+		</div>
+		
+	</div>
+	{% if enteries %}
+	
+	
+    {% endif %}            
+</div>
+
+{% endblock %}
+
+{% block tail %}
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+<script type="text/javascript">
+
+//this function populates the qualifier field with data/
+
+fetch(`/e_learning?action=${'FETCH-USERS'}`)
+                    .then(function (response) {
+                            return response.json();
+                        }).then(function (text) {
+                                
+                                $('#owner').append(text.data);
+                            })
+
+//this function will validate the form entries and post to backend for processing
+
+function addTraining()
+{
+	var title = $('#title').val();
+	var department = $('#depart').find(":selected").val();
+	var owner = $('#owner').find(":selected").val();
+	var exp = $('#exp').find(":selected").val();
+	var quiz = $('#quiz').find(":selected").val();
+	var main = $('#material').val();
+	var suc = $('#suc').find(":selected").val();
+	var other = $('#other_file').val();
+
+	//validate input
+	if (!title){alert("Provide title");return false;}
+	if (department == 0){alert("Select department");return false;}
+	if (owner == 0){alert("Select Qualifier/Trainer");return false;}
+	if (!main){alert("Upload main training document");return false;}
+	if (quiz == 0){alert("Select Qualifier Link");return false;}
+	if (!suc){alert("Select whether SUC is required for this training or not");return false;}
+}
+
+function modify_fields(selector)
+{
+	var suc_status = $(selector).children(':selected').attr('data-suc_status');
+	var pass_mark = $(selector).children(':selected').attr('data-pssmk');
+	if (suc_status == 1) //only stepup card required
+	{
+		$('#score-div').css('display','none');
+		$('#suc-div').css('display','block');		
+	} else if (suc_status == 2) //stepup card and quiz
+	{		
+		$('#score-text').html('<span>Score </span><span>(pass_mark: </span>'+pass_mark+'%)');
+		$('#score-div').css('display','block');
+		$('#suc-div').css('display','block');
+		
+	} else if (suc_status == 0 || suc_status == 'None')//stepup card not required
+	{		
+		$('#score-text').html('<span>Score </span><span>(pass_mark: </span>'+pass_mark+'%)');
+		$('#score-div').css('display','block');
+		$('#suc-div').css('display','none');		
+	} else 
+	{
+		$('#score-text').html('<span>Score </span>');
+		$('#score-div').css('display','block');
+		$('#suc-div').css('display','block');
+	}
+}
+
+</script>
+
+{% endblock %}
+

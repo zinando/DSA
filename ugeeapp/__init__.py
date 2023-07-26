@@ -3,10 +3,7 @@ from flask_sqlalchemy  import SQLAlchemy
 from sqlalchemy.sql import func
 from flask_migrate import Migrate
 from flask_login import LoginManager, current_user,login_user,logout_user,login_required
-
-
-
-
+import os, os.path
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'xysmbj3mdu34o84nmyjm3085m80mdhi24'
@@ -15,8 +12,16 @@ app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///stopsdatabase.db'
 db = SQLAlchemy(app)
 app.config['CSRF_ENABLED'] = True
 app.config['CSRF_SESSION_KEY'] = "#@32ske32r42#qxxr3tredaer45e23er2d##232322$%%@"
-app.config['UPLOAD_EXTENSIONS'] = ['.doc', '.ppt', '.pdf', '.txt']
+app.config['UPLOAD_EXTENSIONS'] = ['.doc', '.ppt', '.pdf', '.txt','.png','.jpg']
 migrate = Migrate(app, db)
+
+APP_ROOT = 'ugeeapp' #os.path.dirname(os.path.abspath(__file__))
+MAIN_UPLOAD_FOLD = '/static/documents/e_learning/'
+SUC_UPLOAD_FOLD = '/static/documents/e_learning/suc/'
+OTHER_UPLOAD_FOLD = '/static/documents/e_learning/others/'
+app.config['MAIN_UPLOAD_FOLDER'] = MAIN_UPLOAD_FOLD #os.path.join(APP_ROOT, MAIN_UPLOAD_FOLD)
+app.config['SUC_UPLOAD_FOLDER'] = SUC_UPLOAD_FOLD #os.path.join(APP_ROOT, SUC_UPLOAD_FOLD)
+app.config['OTHER_UPLOAD_FOLDER'] = OTHER_UPLOAD_FOLD #os.path.join(APP_ROOT, OTHER_UPLOAD_FOLD)
 
 import ugeeapp.myapp
 

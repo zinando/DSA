@@ -31,7 +31,6 @@ class StopCode(db.Model):
 	cause=db.Column(db.String(225), nullable=True)
 	cause_code = db.Column(db.Integer, nullable=False)
 
-
 class ReasonOne(db.Model):
 	__tablename__ = 'reason_one'
 
@@ -111,7 +110,6 @@ class User(db.Model):
     def is_anonymous(self):
         return False
 
-
 class Alogin(db.Model):
     __tablename__ = 'alogin'
 
@@ -123,7 +121,6 @@ class Alogin(db.Model):
     lcount = db.Column(db.BigInteger, nullable=False)
     loginkey = db.Column(db.Text, nullable=False)
     ip_address = db.Column(db.String(30), nullable=False)
-
 
 class Asession(db.Model):
     __tablename__ = 'asessions'
@@ -144,7 +141,6 @@ class AdminAuditlog(db.Model):
     narration = db.Column(db.String(255), nullable=False)
     ip_address = db.Column(db.String(30), nullable=False)
 
-
 class FailedLogin(db.Model):
     __tablename__ = 'failed_logins'     
 
@@ -162,7 +158,6 @@ class Department(db.Model):
     abbr = db.Column(db.String(45), nullable=False)
     description = db.Column(db.String(255), nullable=False)
     hod = db.Column(db.Integer, nullable=False)
-
 
 class OGC_BOS(db.Model):
     __tablename__ = 'ogc_bos'
@@ -182,9 +177,6 @@ class OGC_BOS(db.Model):
     comment = db.Column(db.String(265), nullable=True)
     action = db.Column(db.String(265), nullable=True)
     regdate = db.Column(db.DateTime, default=func.now())
-    
-
-
 
 class QA_BOS(db.Model):
     __tablename__ = 'qa_bos'
@@ -204,8 +196,6 @@ class QA_BOS(db.Model):
     comment = db.Column(db.String(265), nullable=True)
     action = db.Column(db.String(265), nullable=True)
     regdate = db.Column(db.DateTime, default=func.now())
-    
-
 
 class SAFETY_BOS(db.Model):
     __tablename__ = 'safety_bos'
@@ -225,7 +215,6 @@ class SAFETY_BOS(db.Model):
     comment = db.Column(db.String(265), nullable=True)
     action = db.Column(db.String(265), nullable=True)
     regdate = db.Column(db.DateTime, default=func.now())   
-
 
 class Production(db.Model):
     __tablename__ = 'production'
@@ -276,7 +265,6 @@ class SKU(db.Model):
     brand = db.Column(db.String(50), nullable=True)
     regdate = db.Column(db.DateTime, default=func.now())
     
-    
 class ProcessParams(db.Model):
     __tablename__ = 'process_params'
 
@@ -322,6 +310,13 @@ class MyQualification(db.Model):
     suc_q_date = db.Column(db.DateTime, nullable=True)
     percent = db.Column(db.Integer, nullable=True)
 
+class StepupCards(db.Model):
+    __tablename__ = 'stepup_cards'
+
+    sucid = db.Column(db.Integer, primary_key=True)
+    training_id = db.Column(db.String(250), nullable=False)    
+    last_review = db.Column(db.DateTime, default=func.now())
+    suc_link = db.Column(db.String(650), nullable=True)
 
 class UserRoles(db.Model):
     __tablename__ = 'user_roles'

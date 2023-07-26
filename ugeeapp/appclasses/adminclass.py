@@ -228,13 +228,13 @@ class AdminRoles():
 			log.hod = form['hod']
 			
 			db.session.add(log)
-			db.session.commit()	
+			#db.session.commit()	
 
 		return
 
 	def get_departments(self,id=0):
 		if id == 0:
-			dept = Department.query.order_by(Department.abbr.asc()).all()
+			dept = Department.query.order_by(Department.abbr.asc()) #.all()
 		else:
 			dept = Department.query.filter_by(did=id).first()
 
