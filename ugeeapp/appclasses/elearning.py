@@ -634,7 +634,7 @@ class MYSCHOOL():
 		other_path = app.config["OTHER_UPLOAD_FOLDER"]
 		main_link = None
 		suc_link = None	
-		other_link = None 	
+		other_link = [] 	
 
 		title = form['title']
 		department = form['depart']
@@ -649,17 +649,56 @@ class MYSCHOOL():
 		titles = title.split()
 		for x in titles:
 			main += "_{}".format(x.lower())
-		if files is not None and 'main_obj' in files.keys():
-			main_link = self.save_file(main_path,files['main_obj'],main)
+		if files is not None:
+			if 'main_obj' in files.keys() and files['main_obj'].filename:
+				main_link = self.save_file(main_path,files['main_obj'],main)
+
+			if 'other_file' in files.keys() and files['other_file'].filename:
+				other_docs = files.getlist('other_file')
+				for doc in other_docs:
+					link = self.save_file(other_path,doc)
+					other_link.append(link)
+
 		if edit > 0:			
 			#edit course now
+			training = db.session.query(Trainings).filter(Trainings.tid == edit).first()
+			if main_link is not None and main_link != training.doc_link:
+				self.delete_file(training.doc_link)
+			else:	
+				main_link = training.doc_link
+
+			if len(other_link) == 0:
+				other_link = training.extra_resource
+			else:
+				if training.extra_resource and len(training.extra_resource) > 0:
+					print(training.extra_resource is None)
+					resource = json.loads(training.extra_resource)
+					print(resource is None)
+					for path in resource:
+						if path not in other_link:
+							other_link.append(path)
+					other_link = json.dumps(other_link)
+				else:
+					other_link = json.dumps(other_link)	
+
+			if files is not None and 'suc_obj' in files.keys() and files['suc_obj'].filename:
+				suc_rec = StepupCards.query.filter_by(training_id=edit).first()
+				if suc_rec:
+					self.delete_file(suc_rec.suc_link)
+					StepupCards.query.filter_by(training_id=edit).delete()
+					db.session.commit()
+				suc_link = self.save_file(suc_path,files['suc_obj'])
+				if suc_link:
+					self.log_suc_file(suc_link,edit)	
+
 			db.session.query(Trainings).filter(Trainings.tid == edit).update({
 				'title': title.title(),
 				'department' : department,
 				'owner' : owner,
 				'expiry' : exp,
 				'last_review' : datetime.now(),
-				'doc_link' : form['doc_link'],
+				'extra_resource': other_link,
+				'doc_link' : main_link,
 				'pass_mark' : pass_mark,
 				'priority' : priority,
 				'suc': suc
@@ -692,6 +731,8 @@ class MYSCHOOL():
 		log.doc_link = main_link #"{}{}".format(main_path,main)
 		log.pass_mark = pass_mark
 		log.priority = priority
+		if other_link is not None:
+			log.extra_resource = json.dumps(other_link)
 		log.t_code = generate_tcode()
 		log.suc = suc
 		db.session.add(log)
@@ -715,6 +756,13 @@ class MYSCHOOL():
 			return os.path.join(path,filename)
 		return None
 	
+	def delete_file(self,filepath):
+		"""Deletes the file specified in the filepath"""
+		if os.path.exists("{}{}".format(APP_ROOT,filepath)):
+			os.remove("{}{}".format(APP_ROOT,filepath))
+			return True
+		return False	
+
 	def log_suc_file(self,filepath,training_id):
 		"""creates a record of the uploaded suc file in the database"""
 		new_entry = StepupCards()
@@ -723,82 +771,6 @@ class MYSCHOOL():
 		db.session.add(new_entry)
 		db.session.commit()
 		return new_entry.sucid
-
-	def add_trainingxxx(self,form,files):
-
-		main = "main"
-		suck = "suc"
-		extra = "extra"
-
-		suc_link = []
-		extra_resource = []
-
-		title = form['title']
-		department = form['depart']
-		owner = form['owner']
-		exp = form['exp']
-		q_link = form['quiz']
-
-		titles = title.split()
-		for x in titles:
-			main += "_{}".format(x.lower())
-			suck += "_{}".format(x.lower())
-			extra += "_{}".format(x.lower())
-
-		main_file = files['material']
-
-		if main_file.filename != '':
-			file_ext = os.path.splitext(main_file.filename)[1]
-
-			if file_ext not in app.config['UPLOAD_EXTENSIONS']:
-				return {'status':2, 'message': 'Unsupported file type: Main Training Material.'}
-			else:
-				main_file.save(os.path.join("http://192.168.130.196:5000/",'static/documents/e_learning/', "{}{}".format(main,file_ext)))
-		else:
-			return {'status':2, 'message': 'Main Training Material is not found.'}
-
-		suc_files = files.getlist('suc')
-
-		if len(suc_files) > 0 :
-			for suc in suc_files:
-				if suc.filename != '':
-					file_ext2 = os.path.splitext(suc.filename)[1]
-
-					if file_ext2 not in app.config['UPLOAD_EXTENSIONS']:
-						return {'status':2, 'message': 'Unsupported file type: SUCs.'}
-					else:
-						suc.save(os.path.join('static/documents/e_learning', "{}{}".format(suck,file_ext2)))
-						suc_link.append("{}{}{}".format('static/documents/e_learning/',suck,file_ext2))
-		
-		other_files = files.getlist('other_file')
-
-		if len(other_files) > 0 :
-			for other in other_files:
-				if other.filename != '':
-					file_ext3 = os.path.splitext(other.filename)[1]
-
-					if file_ext3 not in app.config['UPLOAD_EXTENSIONS']:
-						return {'status':2, 'message': 'Unsupported file type: SUCs.'}
-					else:
-						other.save(os.path.join('static/documents/e_learning', "{}{}".format(extra,file_ext3)))
-						extra_resource.append("{}{}{}".format('static/documents/e_learning/',extra,file_ext3))
-
-
-		log = Trainings()
-		log.title = title
-		log.department = department
-		log.owner = owner
-		log.expiry = exp
-		log.last_review = datetime.now()
-		log.quiz_link = q_link
-		log.suc_link = json.dumps(suc_link)
-		log.doc_link = "{}{}{}".format('static/documents/e_learning/',main,file_ext)
-		log.extra_resource = json.dumps(extra_resource)
-	    #db.session.add(log)
-	    #db.session.commit()
-
-
-		return {'status':1, 'message': 'Training was added successfully.'}
 
 	def delete_course(self, data):
 		##check if there is atleast one training record for this course
@@ -911,40 +883,77 @@ class MYSCHOOL():
 				db.session.commit()
 		return
 
-	def record_training_score(self,data):		
+	def record_training_score(self,data,manual:int=0):
+		"""Creates/Updates users training record automatically/manually
+		   Automatically means when the user qualifies through online quiz
+		   Manually means when admin updates users record manually
+		"""		
 
 		get_tr = Trainings.query.filter(Trainings.tid==data['tid']).first()
 
-		if int(data['score']) >= int(get_tr.pass_mark):
-			status = 'PASSED'			
-		else:
-			status = 'REPEAT'
+		if 'score' in data.keys() and data['score']:
+			if int(data['score']) >= int(get_tr.pass_mark):
+				status = 'PASSED'			
+			else:
+				status = 'REPEAT'
 
 		##check if qualification record already exist for this user on this course#
 		qualz = db.session.query(MyQualification).filter(MyQualification.qid==data['quizid']).first()
 
-		##update data otherwise add
-		if qualz is not None:			
-			db.session.query(MyQualification).filter(MyQualification.qid==data['quizid']).update({
-				'score':int(data['score']),
-				'q_date': datetime.now(),
-				'status': status
-				})
-			db.session.commit()
-
+		##update data otherwise add 
+		if qualz is not None:
+			if 'score' in data.keys() and data['score']:
+				if manual == 1:			
+					db.session.query(MyQualification).filter(MyQualification.qid==data['quizid']).update({
+						'score':int(data['score']),
+						'q_date': datetime.now(),					
+						'qualifier': data['qualifier'], 
+						'logged_by': session['userid'],
+						'status': status	
+						})
+				else:
+					db.session.query(MyQualification).filter(MyQualification.qid==data['quizid']).update({
+						'score':int(data['score']),
+						'q_date': datetime.now(),						
+						'status': status	
+						})	
+				db.session.commit()
+			if 'suc' in data.keys() and data['suc']:
+				if manual == 1:
+					db.session.query(MyQualification).filter(MyQualification.qid==data['quizid']).update({
+						'suc_status':data['suc'],					
+						'qualifier': data['qualifier'], 
+						'logged_by': session['userid'],
+						'suc_q_date': datetime.now()
+						})
+				else:
+					db.session.query(MyQualification).filter(MyQualification.qid==data['quizid']).update({
+						'suc_status':data['suc'],
+						'suc_q_date': datetime.now()
+					})
+				db.session.commit()	
 			#log qualification percent
 			self.log_qualification_percent(qualz.qid)
 
 		else:
-
 			log = MyQualification()
-			log.userid = session['userid']
-			log.q_date = datetime.now()
 			log.training_id = get_tr.tid
 			log.title = get_tr.title
 			log.department = get_tr.department
-			log.score = int(data['score'])
-			log.status = status
+				
+			if 'suc' in data.keys() and data['suc']:				 
+				log.suc_status = data['suc']
+				log.suc_q_date = datetime.now()
+			if 'score' in data.keys() and data['score']:	
+				log.q_date = datetime.now()			
+				log.score = int(data['score'])
+				log.status = status
+			if manual == 1:
+				log.userid = data['userid']
+				log.logged_by = session['userid']
+				log.qulifier = data['qualifier']
+			else:
+				log.userid = session['userid']	
 
 			db.session.add(log)
 			db.session.commit()
@@ -1029,20 +1038,37 @@ class MYSCHOOL():
 					html += '<td>'+course.department+'</td>'
 					html += '<td>'+course.priority+'</td>'
 					html += '<td>'+self.get_course_owner(course.owner)+'</td>'
+					html += '<td>'
 
 					if self.check_file(course.doc_link):
-						html += '<td><a href="'+course.doc_link+'" target="_blank">course outline</a></td>'
-					else:
-						html += '<td></td>'
-					
+						html += '<span><a style="font-size:12px" href="'+course.doc_link+'" target="_blank">course outline</a></span><br>'
+					if course.suc and StepupCards.query.filter_by(training_id=course.tid).first():
+						suc_rec = StepupCards.query.filter_by(training_id=course.tid).first()
+						html += '<span><a style="font-size:12px" href="'+suc_rec.suc_link+'" target="_blank">Stepup card</a></span><br>'	
+					if course.extra_resource and len(course.extra_resource) > 0:
+						resource = json.loads(course.extra_resource)
+						for link in resource:							
+							if self.check_file(link):
+								filename = link.split('/')[-1]
+								filename = filename[:-10] if len(filename)<=10 else "{}...".format(filename[:-10])
+								html += '<span><a style="font-size:11px" href="'+link+'" target="_blank">'+filename+'</a></span><br>'						
+					html += '</td>'
 					if get_data :
-						html += '<td><a href="/e_learning?action=GET-QUIZ&template=e_learning/'+main+'.html&id='+str(get_data.qid)+'&pass='+str(course.pass_mark)+'&tid='+str(course.tid)+'" target="_blank">qualify</a></td>'
+						quizlink = "/templates/e_learning/{}.html".format(main)
+						if self.check_file(quizlink):
+							html += '<td><a href="/e_learning?action=GET-QUIZ&template=e_learning/'+main+'.html&id='+str(get_data.qid)+'&pass='+str(course.pass_mark)+'&tid='+str(course.tid)+'" target="_blank">qualify</a></td>'
+						else:
+							html +='<td></td>'
 						if get_data.percent == 100:
 							html += '<td><span style="color:green">'+str(get_data.percent)+'</span></td>'
 						else:
 							html += '<td><span style="color:red">'+str(get_data.percent)+'</span></td>'
 					else:
-						html += '<td><a href="/e_learning?action=GET-QUIZ&template=e_learning/'+main+'.html&id='+str(0)+'&pass='+str(course.pass_mark)+'&tid='+str(course.tid)+'" target="_blank">qualify</a></td>'
+						quizlink = "/templates/e_learning/{}.html".format(main)
+						if self.check_file(quizlink):
+							html += '<td><a href="/e_learning?action=GET-QUIZ&template=e_learning/'+main+'.html&id='+str(0)+'&pass='+str(course.pass_mark)+'&tid='+str(course.tid)+'" target="_blank">qualify</a></td>'
+						else:
+							html +='<td></td>'
 						html += '<td><span style="color:#000">0</span></td>'
 					count += 1
 					html += '</tr>'
@@ -1064,20 +1090,37 @@ class MYSCHOOL():
 						html += '<td>'+course.department+'</td>'
 						html += '<td>'+course.priority+'</td>'
 						html += '<td>'+self.get_course_owner(course.owner)+'</td>'
+						html += '<td>'
 
 						if self.check_file(course.doc_link):
-							html += '<td><a href="'+course.doc_link+'" target="_blank">course outline</a></td>'
-						else:
-							html += '<td></td>'
-						
+							html += '<span><a style="font-size:12px" href="'+course.doc_link+'" target="_blank">course outline</a></span><br>'
+						if course.suc and StepupCards.query.filter_by(training_id=course.tid).first():
+							suc_rec = StepupCards.query.filter_by(training_id=course.tid).first()
+							html += '<span><a style="font-size:12px" href="'+suc_rec.suc_link+'" target="_blank">Stepup card</a></span><br>'	
+						if course.extra_resource and len(course.extra_resource) > 0:
+							resource = json.loads(course.extra_resource)
+							for link in resource:							
+								if self.check_file(link):
+									filename = link.split('/')[-1]
+									filename = filename[:-10] if len(filename)<=10 else "{}...".format(filename[:-10])
+									html += '<span><a style="font-size:11px" href="'+link+'" target="_blank">'+filename+'</a></span><br>'						
+						html += '</td>'
 						if get_data :
-							html += '<td><a href="/e_learning?action=GET-QUIZ&template=e_learning/'+main+'.html&id='+str(get_data.qid)+'&pass='+str(course.pass_mark)+'&tid='+str(course.tid)+'" target="_blank">qualify</a></td>'
+							quizlink = "/templates/e_learning/{}.html".format(main)
+							if self.check_file(quizlink):
+								html += '<td><a href="/e_learning?action=GET-QUIZ&template=e_learning/'+main+'.html&id='+str(get_data.qid)+'&pass='+str(course.pass_mark)+'&tid='+str(course.tid)+'" target="_blank">qualify</a></td>'
+							else:
+								html +='<td></td>'
 							if get_data.percent == 100:
 								html += '<td><span style="color:green">'+str(get_data.percent)+'</span></td>'
 							else:
 								html += '<td><span style="color:red">'+str(get_data.percent)+'</span></td>'
 						else:
-							html += '<td><a href="/e_learning?action=GET-QUIZ&template=e_learning/'+main+'.html&id='+str(0)+'&pass='+str(course.pass_mark)+'&tid='+str(course.tid)+'" target="_blank">qualify</a></td>'
+							quizlink = "/templates/e_learning/{}.html".format(main)
+							if self.check_file(quizlink):
+								html += '<td><a href="/e_learning?action=GET-QUIZ&template=e_learning/'+main+'.html&id='+str(0)+'&pass='+str(course.pass_mark)+'&tid='+str(course.tid)+'" target="_blank">qualify</a></td>'
+							else:
+								html +='<td></td>'
 							html += '<td><span style="color:#000">0</span></td>'
 						count += 1
 						html += '</tr>'
@@ -1099,20 +1142,37 @@ class MYSCHOOL():
 						html += '<td>'+course.department+'</td>'
 						html += '<td>'+course.priority+'</td>'
 						html += '<td>'+self.get_course_owner(course.owner)+'</td>'
+						html += '<td>'
 
 						if self.check_file(course.doc_link):
-							html += '<td><a href="'+course.doc_link+'" target="_blank">course outline</a></td>'
-						else:
-							html += '<td></td>'
-						
-						if get_data:
-							html += '<td><a href="/e_learning?action=GET-QUIZ&template=e_learning/'+main+'.html&id='+str(get_data.qid)+'&pass='+str(course.pass_mark)+'&tid='+str(course.tid)+'" target="_blank">qualify</a></td>'
+							html += '<span><a style="font-size:12px" href="'+course.doc_link+'" target="_blank">course outline</a></span><br>'
+						if course.suc and StepupCards.query.filter_by(training_id=course.tid).first():
+							suc_rec = StepupCards.query.filter_by(training_id=course.tid).first()
+							html += '<span><a style="font-size:12px" href="'+suc_rec.suc_link+'" target="_blank">Stepup card</a></span><br>'
+						if course.extra_resource and len(course.extra_resource) > 0:
+							resource = json.loads(course.extra_resource)
+							for link in resource:							
+								if self.check_file(link):
+									filename = link.split('/')[-1]
+									filename = filename[:-10] if len(filename)<=10 else "{}...".format(filename[:-10])
+									html += '<span><a style="font-size:11px" href="'+link+'" target="_blank">'+filename+'</a></span><br>'						
+						html += '</td>'
+						if get_data :
+							quizlink = "/templates/e_learning/{}.html".format(main)
+							if self.check_file(quizlink):
+								html += '<td><a href="/e_learning?action=GET-QUIZ&template=e_learning/'+main+'.html&id='+str(get_data.qid)+'&pass='+str(course.pass_mark)+'&tid='+str(course.tid)+'" target="_blank">qualify</a></td>'
+							else:
+								html +='<td></td>'
 							if get_data.percent == 100:
 								html += '<td><span style="color:green">'+str(get_data.percent)+'</span></td>'
 							else:
 								html += '<td><span style="color:red">'+str(get_data.percent)+'</span></td>'
 						else:
-							html += '<td><a href="/e_learning?action=GET-QUIZ&template=e_learning/'+main+'.html&id='+str(0)+'&pass='+str(course.pass_mark)+'&tid='+str(course.tid)+'" target="_blank">qualify</a></td>'
+							quizlink = "/templates/e_learning/{}.html".format(main)
+							if self.check_file(quizlink):
+								html += '<td><a href="/e_learning?action=GET-QUIZ&template=e_learning/'+main+'.html&id='+str(0)+'&pass='+str(course.pass_mark)+'&tid='+str(course.tid)+'" target="_blank">qualify</a></td>'
+							else:
+								html +='<td></td>'
 							html += '<td><span style="color:#000">0</span></td>'
 						count += 1
 						html += '</tr>'
@@ -1256,15 +1316,12 @@ class MYSCHOOL():
 		return {'status':1, 'data':data, 'title':title,"overall":overall}
 
 	def check_file(self,link):
+		"""Checks if a file exists"""
+		mylink = "{}{}".format(APP_ROOT,link)
 
-		from os.path import exists
-		mylink = '/e_learning?action=GET-QUIZ&template=e_learning/tr_basic_fire_fighting.html&id=1&pass=100&tid=1' #'http://192.168.130.196:5000'+link
-
-		if exists(mylink) :
-
+		if os.path.exists(mylink) :
 			return True
-
-		return True
+		return False
 
 	def fetch_total_training_percent(self, query,userid=0):
 		if userid == 0:
@@ -1282,32 +1339,6 @@ class MYSCHOOL():
 			passed = sum(passed)
 			total = len(query)
 			percent = (passed/total)
-			percent = "{:0.2f}%".format(percent)
-
-		else:
-			percent = "{}".format('N/A')
-
-
-
-		return percent
-
-	def fetch_total_training_percentxxx(self, query,userid=0):
-		if userid == 0:
-			userid = session['userid']
-
-		passed = []
-
-		if query and len(query) >0:
-			for course in query:
-				get_data = db.session.query(MyQualification).filter(MyQualification.userid==userid,MyQualification.training_id==course.tid).first()
-
-				if get_data:
-					if get_data.score >= course.pass_mark:
-						passed.append(1)
-
-			passed = len(passed)
-			total = len(query)
-			percent = (passed/total) * 100
 			percent = "{:0.2f}%".format(percent)
 
 		else:
@@ -1349,37 +1380,6 @@ class MYSCHOOL():
 
 		return percent
 
-	def fetch_mandatory_training_percentxxx(self, query,userid=0):
-		if userid == 0:
-			userid = session['userid']
-
-		passed = []
-		man = []
-
-		if query and len(query) >0:
-			for course in query:
-				if course.priority == 'M':
-					man.append(1)
-
-					get_data = db.session.query(MyQualification).filter(MyQualification.userid==userid,MyQualification.training_id==course.tid).first()
-
-					if get_data:
-						if get_data.score >= course.pass_mark:
-							passed.append(1)
-
-			if len(man) > 0:
-				passed = len(passed)
-				total = len(man)
-				percent = (passed/total) * 100
-				percent = "{:0.2f}%".format(percent)
-
-		else:
-			percent = "{}".format('N/A')
-
-
-
-		return percent
-
 	def fetch_priority_a_training_percent(self, query,userid=0):
 		if userid == 0:
 			userid = session['userid']
@@ -1402,34 +1402,6 @@ class MYSCHOOL():
 				passed = sum(passed)
 				total = len(man)
 				percent = (passed/total)
-				percent = "{:0.2f}%".format(percent)
-
-
-		return percent
-
-	def fetch_priority_a_training_percentxxx(self, query,userid=0):
-		if userid == 0:
-			userid = session['userid']
-
-		percent = "{}".format('N/A')
-		passed = []
-		man = []
-
-		if query and len(query) >0:
-			for course in query:
-				if course.priority == 'A':
-					man.append(1)
-
-					get_data = db.session.query(MyQualification).filter(MyQualification.userid==userid,MyQualification.training_id==course.tid).first()
-
-					if get_data:
-						if get_data.score >= course.pass_mark:
-							passed.append(1)
-
-			if len(man) > 0:
-				passed = len(passed)
-				total = len(man)
-				percent = (passed/total) * 100
 				percent = "{:0.2f}%".format(percent)
 
 
@@ -1461,34 +1433,6 @@ class MYSCHOOL():
 				percent = "{:0.2f}%".format(percent)
 
 		return percent
-
-	def fetch_priority_b_training_percentxxx(self, query, userid=0):
-		if userid == 0:
-			userid = session['userid']
-
-		percent = "{}".format('N/A')
-		passed = []
-		man = []
-
-		if query and len(query) >0:
-			for course in query:
-				if course.priority == 'B':
-					man.append(1)
-
-					get_data = db.session.query(MyQualification).filter(MyQualification.userid==userid,MyQualification.training_id==course.tid).first()
-
-					if get_data:
-						if get_data.score >= course.pass_mark:
-							passed.append(1)
-
-			if len(man) > 0:
-				passed = len(passed)
-				total = len(man)
-				percent = (passed/total) * 100
-				percent = "{:0.2f}%".format(percent)
-
-		return percent
-
 	
 
 class MYSCHOOL_REPORT():

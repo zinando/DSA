@@ -1,7 +1,7 @@
 from flask import Blueprint,Flask,redirect,url_for,request,render_template,session,flash,abort,jsonify,Markup
 from flask_sqlalchemy  import SQLAlchemy
 from sqlalchemy.sql import func
-from ugeeapp.models import StopEvent,Production,UserRoles,MaterialLoss,SKU,ProcessParams,StopCode,ReasonOne,ReasonTwo,ReasonTri,ReasonFour,Equipment,User,SAFETY_BOS,QA_BOS,OGC_BOS
+from ugeeapp.models import StopEvent,Production,StepupCards,UserRoles,MaterialLoss,SKU,ProcessParams,StopCode,ReasonOne,ReasonTwo,ReasonTri,ReasonFour,Equipment,User,SAFETY_BOS,QA_BOS,OGC_BOS
 from ugeeapp.forms import LoginForm,PSGProductionReportForm,UTILITY_SAFETYBOSForm,LAB_QABOSForm,LAB_SAFETYBOSForm,AddRoles,PSGProductionEntryForm,WHSE_RPMBOSForm,ViewPSGResultForm,PSGProductionForm,SKUEntryForm,EquipmentEntryForm,EditUserForm,ChangePasswordForm,StopsForm,AddUserForm,forgotPasswordForm,OGCBOSForm,QABOSForm,SAFETYBOSForm,ViewBOSForm,LeadershipBOSForm,MSG_OGCBOSForm,MSG_QABOSForm,MSG_SAFETYBOSForm,WHSE_QABOSForm,WHSE_SAFETYBOSForm
 from ugeeapp.models import Trainings,MyQualification
 import pycomm3
@@ -15,7 +15,7 @@ import threading
 from pycomm3 import LogixDriver
 from pylogix import PLC
 from flask_migrate import Migrate
-from ugeeapp import app,db
+from ugeeapp import app,db,APP_ROOT
 from flask_login import LoginManager, current_user,login_user,logout_user,login_required
 from ugeeapp.appclasses.userclass import USERACCOUNT
 from ugeeapp.appclasses.bosclass import BOSCLASS
@@ -1340,6 +1340,8 @@ def my_e_learning():
 		new.run_expiry_report(session['userid'])
 
 	if request.args.get('action') == 'ADD-TRAINING':
+		if session['adminlevel'] < 3:
+			return redirect(url_for('index'))
 
 		template = 'e_learning/add_training.html'
 		departments = new2.get_departments()
@@ -1349,14 +1351,18 @@ def my_e_learning():
 	elif request.args.get( 'action') == 'FETCH-USERS':
 
 		kyc = ''
+		depart = ''
 
-		users = User.query.filter(User.adminlevel >= 2).order_by(User.sname.asc())
+		users = User.query.filter(User.adminlevel > 2).order_by(User.sname.asc())
+		departments = new2.get_departments()
 
 		for user in users:
 			fullname = "{} {}".format(user.sname, user.fname)
 			kyc += '<option value='+str(user.userid)+'>'+fullname+'</option>'
-
-		return json.dumps({'status':1, 'data':kyc})
+		for department in departments:
+			depart += '<option value="SAFETY">'+department.abbr+'</option>' if department.abbr == 'HS&E' else '<option value="'+department.abbr+'">'+department.abbr+'</option>'
+			
+		return json.dumps({'status':1, 'data':kyc,"departments":depart})
 
 	elif request.args.get('action') == 'GET-QUIZ':
 
@@ -1373,15 +1379,31 @@ def my_e_learning():
 		if session['adminlevel'] < 3:
 			return redirect(url_for('index'))
 
-		template = 'e_learning/manual_qualification.html'
-				
+		template = 'e_learning/manual_qualification.html'				
 
 		course = Trainings.query.order_by(Trainings.title.desc())
 		users = new.get_user()
-		q = session['fullname']
-		qid = session['userid']
+		q = [x for x in users if x.adminlevel > 2 ]		
 
-		return render_template(template,trainings=course,qualifier=q,qualifier_id=qid,users=users)	
+		if request.method == 'POST':
+			form = request.form
+			mlist = request.form.getlist('trainees')
+			new_form = {}
+			new_form['tid'] = int(form['tid'])
+			new_form['qualifier'] = int(form['qualifier'])
+			new_form['score'] = form['score']
+			new_form['suc'] = form['suc']
+						
+			for trainee in mlist:
+				new_form['userid'] = int(trainee)				
+				get_data = db.session.query(MyQualification).filter(MyQualification.userid==new_form['userid'],MyQualification.training_id==new_form['tid']).first()
+				new_form['quizid'] = get_data.qid if get_data else 0				
+				new.record_training_score(new_form,1)			
+			response = Markup("<div class='alert alert-success'>{}</div>".format('Training records updated successfully for users.'))
+			
+			flash(response,"info")
+
+		return render_template(template,trainings=course,qualifier_list=q,users=users)	
 
 	elif request.args.get('action') == 'VIEW-RECORDS':
 		new.run_expiry_report()
@@ -1414,6 +1436,8 @@ def my_e_learning():
 		return json.dumps({'status':1, 'data':data, 'message':''})
 
 	elif request.args.get('action') == 'MANAGE':
+		if session['adminlevel'] < 3:
+			return redirect(url_for('index'))
 		
 		template = 'e_learning/manage_courses.html'
 		courses = Trainings.query.order_by(Trainings.title.asc())
@@ -1433,16 +1457,50 @@ def my_e_learning():
 			
 			return json.dumps({'status':data['status'], 'message':response})
 
+		if request.method == 'POST' and request.args.get('what') =='DELETE-FILE':
+			data = request.get_json()
+
+			try:
+				os.remove("{}{}".format(APP_ROOT,data["link"]))				
+				if data['doc_type'] == 'extra':
+					training = Trainings.query.filter_by(tid=data['tid']).first()
+					if len(training.extra_resource) > 1:
+						extra_resource = json.loads(training.extra_resource)
+						extra_resource = json.dumps([x for x in extra_resource if x != data['link']])
+					else:
+						extra_resource = None	
+					Trainings.query.filter_by(tid=data['tid']).update({'extra_resource':extra_resource})
+					db.session.commit()
+				elif data['doc_type'] == 'doc':
+					Trainings.query.filter_by(tid=data['tid']).update({'doc_link':None})
+					db.session.commit()
+				elif data['doc_type'] == 'suc':
+					StepupCards.query.filter_by(training_id=data['tid']).delete()
+					db.session.commit()				
+				response = Markup("<div class='alert alert-success'>File deleted successfully.</div>")
+				status = 1
+			except:
+				response = Markup("<div class='alert alert-danger'>Could not delete file.</div>")
+				status = 2
+
+			return json.dumps({'status':status, 'message':response})		
+
 		return render_template(template,records=records,courses=courses)
 
 	elif request.args.get('action') == 'EDIT-COURSE':
+		if session['adminlevel'] < 3:
+			return redirect(url_for('index'))
 		resp = ''
+		extra_resource = ''
+		suc_link = ''
+		doc_link = ''
 		template = 'e_learning/edit_training.html'
 		tid = request.args.get('tid')
 
 		if request.method == 'POST':
 			form = request.form
-			data = new.add_training(form,int(tid))
+			files = request.files 
+			data = new.add_training(form,int(tid),files)
 
 			if data['status'] == 1:
 				mess = Markup("<div class='alert alert-success'>{}</div>".format(data['message']))
@@ -1450,21 +1508,32 @@ def my_e_learning():
 				return redirect('/e_learning?action=MANAGE')
 			else:
 				resp = Markup("<div class='alert alert-danger'>{}</div>".format(data['message']))
+			flash(response,"information")	
 
-		
-		
 		##get the course
 		course = Trainings.query.filter_by(tid=tid).first()
+		if course.extra_resource and len(course.extra_resource) > 0:
+			resource = json.loads(course.extra_resource)
+			for link in resource:
+				extra_resource += Markup('<label style="font-size:12px;color:red">'+link.split('/')[-1].split('.')[0][0:35]+'<span style="color: #179cd7;" onclick="deleteFile(\''+link+'\',\'extra\')">......x</span></label><br>')
+		if course.suc:
+			stepup = StepupCards.query.filter_by(training_id=course.tid).first()
+			if stepup and stepup.suc_link:
+				suc_link = Markup('<label style="font-size:12px;color:red">'+stepup.suc_link.split('/')[-1].split('.')[0][0:35]+'<span style="color: #179cd7;" onclick="deleteFile(\''+stepup.suc_link+'\',\'suc\')">......x</span></label>')
+		if course.doc_link:
+			doc_link = 	Markup('<label style="font-size:12px;color:red">'+course.doc_link.split('/')[-1].split('.')[0][0:35]+'<span style="color: #179cd7;" onclick="deleteFile(\''+course.doc_link+'\',\'doc\')">......x</span></label>')
 		
-		return render_template(template, course = course, resp= resp)
+		return render_template(template, course = course,extra_resource=extra_resource,suc_link=suc_link,doc_link=doc_link)
 
 
 	if request.method == 'POST' and request.args.get('action') == 'PROCESS-DATA':
+		if session['adminlevel'] < 3:
+			return redirect(url_for('index'))
 
 		template = 'e_learning/add_training.html'
 		form = request.form
-		files = request.files
-		#flash(app.config["SUC_UPLOAD_FOLDER"],"info")
+		files = request.files		
+		#flash('Done!',"info")
 		#return render_template(template, resp = "")
 		
 		data = new.add_training(form,0,files)
@@ -1474,20 +1543,9 @@ def my_e_learning():
 			response = Markup("<div class='alert alert-success'>{}</div>".format(data['message']))
 		else:
 			response = Markup("<div class='alert alert-danger'>{}</div>".format(data['message']))
-
-		departments = [
-		{'abbr':'PSG','id':1, 'description':'Packing operations department','hod':26},
-		{'abbr':'MSG','id':2, 'description':'Making operations department','hod':74},
-		{'abbr':'QA','id':3, 'description':'Quality Assurance department','hod':67},
-		{'abbr':'WHSE','id':4, 'description':'Warehouse department','hod':28},
-		{'abbr':'HS&E','id':5, 'description':'Healt, Safety & Enveironment department','hod':22},
-		{'abbr':'HR','id':6, 'description':'Human Resources department','hod':31},
-		{'abbr':'STR_ROOM','id':7, 'description':'Store Room department','hod':31},
-		{'abbr':'IT','id':8, 'description':'Information Technology department','hod':31},
-		{'abbr':'FINANCE','id':9, 'description':'Finance department','hod':31}
-		]	
+		
 		flash(response,"info")	
-		return render_template(template,department = departments)
+		return render_template(template)
 
 	elif request.method == 'POST' and request.args.get('action') == 'POST-RESULT':
 		

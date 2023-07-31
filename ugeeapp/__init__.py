@@ -12,7 +12,7 @@ app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///stopsdatabase.db'
 db = SQLAlchemy(app)
 app.config['CSRF_ENABLED'] = True
 app.config['CSRF_SESSION_KEY'] = "#@32ske32r42#qxxr3tredaer45e23er2d##232322$%%@"
-app.config['UPLOAD_EXTENSIONS'] = ['.doc', '.ppt', '.pdf', '.txt','.png','.jpg']
+app.config['UPLOAD_EXTENSIONS'] = ['.doc', '.ppt', '.pdf', '.txt','.png','.jpg','.html']
 migrate = Migrate(app, db)
 
 APP_ROOT = 'ugeeapp' #os.path.dirname(os.path.abspath(__file__))

@@ -20,16 +20,8 @@
 					<form id="" style="margin-top:20px" method="POST" action="/e_learning?action=PROCESS-DATA" enctype = "multipart/form-data">
 						
 						<div class="row align-items-center justify-content-center">
-							<div class="col-md-12 head1">
-								<span class="login100-form-logo">
-									{% if resp %}
-									<div style="colr: #000;backgound: #179CD7;">
-											{{resp}}
-									</div>
-									{% else %}
-									<span style="color: #000;background: #179CD7;">Add Training</span>
-									{% endif %}
-								</span>
+							<div class="col-md-12 head1 text-center">
+								<span style="color: #000;background: #179CD7;padding: 5px 16px;">Add Training</span>
 							</div>							
 						</div>
 
@@ -45,15 +37,7 @@
                         			<label>Department</label>
                         			<select class="form-control" id="depart" name="depart" required>
                         				<option value="">Select</option>
-                        			{% for depart in department %}
-                        			{%if depart.abbr == 'HS&E'%}
-                        			<option value='SAFETY'>{{depart.abbr}}
-                        				</option>
-                        			{% else %}
-                        				<option value='{{depart.abbr}}'>{{depart.abbr}}
-                        				</option>
-                        			{% endif %}
-                        			{% endfor %}
+                        			
                         			</select>
                         		</div>
                     		</div>		                    		                    		
@@ -124,26 +108,17 @@
                         			                       			
                         		</div>
                     		</div>
-                    	<!--	<div class="col-md-6">
-                        		<div class='form-group'>
-                        			<label>Quiz Link</label>
-                        			<select class="form-control" id="quiz" name="quiz" required>
-                        				<option value=0>Select</option>
-                        				
-                        			</select>                       			
-                        		</div>
-                    		</div>                    		                    		
-                    		<div class="col-md-6">
+                    		<div class="col-md-4">
                         		<div class='form-group'>
                         			<label>Other Usefull Documents</label>
                         			<input type="file" id="other_file" name="other_file" class="form-control" accept=".csv, .xls, .xlsx, .doc, .ppt, .pdf, .txt" style="bakground-color: lavenda" multiple>                       			
                         		</div>
-                    		</div>
-                    	-->
-
+                    		</div>                    	
+                    	</div>
+                    	<div class="row align-items-center justify-content-center">	
                     		<div class="col-md-4">                    
                         		<div class='form-group'>
-                            		<button class="btn btn-sm btn-info" type="submit" onclick="addTrainin()"> Submit</button>
+                            		<button class="btn btn-sm btn-info" type="submit"> Submit</button>
                         		</div>
                     		</div>		                    		                    		
                 		</div>
@@ -167,37 +142,17 @@
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
 <script type="text/javascript">
 
-//this function populates the qualifier field with data/
+//this function populates the qualifier and the department fields with data/
 
 fetch(`/e_learning?action=${'FETCH-USERS'}`)
                     .then(function (response) {
                             return response.json();
                         }).then(function (text) {
-                                
+                                $('#depart').append(text.departments);
                                 $('#owner').append(text.data);
                             })
 
-//this function will validate the form entries and post to backend for processing
-
-function addTraining()
-{
-	var title = $('#title').val();
-	var department = $('#depart').find(":selected").val();
-	var owner = $('#owner').find(":selected").val();
-	var exp = $('#exp').find(":selected").val();
-	var quiz = $('#quiz').find(":selected").val();
-	var main = $('#material').val();
-	var suc = $('#suc').find(":selected").val();
-	var other = $('#other_file').val();
-
-	//validate input
-	if (!title){alert("Provide title");return false;}
-	if (department == 0){alert("Select department");return false;}
-	if (owner == 0){alert("Select Qualifier/Trainer");return false;}
-	if (!main){alert("Upload main training document");return false;}
-	if (quiz == 0){alert("Select Qualifier Link");return false;}
-	if (!suc){alert("Select whether SUC is required for this training or not");return false;}
-}
+//this function hides or dispay certain fields when certain conditions are fulfilled 
 
 function checksuc(selector)
 {

@@ -18,7 +18,7 @@
 						
 						<div class="row align-items-center justify-content-center">
 							<div class="col-md-12 head1 text-center" >								
-									<span style="color: #000;background: #179CD7;">Manual Qualification by {{qualifier}}</span>								
+									<span style="color: #000;background: #179CD7;padding: 5px 16px">Manual Qualification by {{session["fullname"]}}</span>								
 							</div>							
 						</div>
 
@@ -26,7 +26,7 @@
 							<div class="col-md-6">
                         		<div class='form-group'>
                         			<label>Training</label>
-                        			<select name="training" id="training" class="form-control"
+                        			<select name="tid" id="training" class="form-control"
                         			onchange="modify_fields(this)" required>
                         				<option value="">Select</option>
                         				{% for tr in trainings%}
@@ -51,8 +51,12 @@
 							<div class="col-md-4">
                         		<div class='form-group'>
                         			<label>Trainer/Qualifier</label>
-                        			<input type="text" id="qualifier" name="qualifier" class="form-control" value="{{qualifier}}" disabled=true>
-                        			<input type="hidden" id="qualifier_id" name="qualifier_id" value={{qualifier_id}}>
+                        			<select id="qualifier" name="qualifier" class="form-control" required>
+                        				<option value="">Select</option>
+                        				{% for user in qualifier_list %}
+                        				<option value={{user.userid}}>{{user.sname}} {{user.fname}}</option>
+                        				{% endfor %}
+                        			</select>
                         		</div>
                     		</div>
                     		<div class="col-md-4" id="score-div">

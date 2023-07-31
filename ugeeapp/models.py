@@ -300,15 +300,18 @@ class MyQualification(db.Model):
 
     qid = db.Column(db.Integer, primary_key=True)
     userid = db.Column(db.Integer, nullable=True)
-    q_date = db.Column(db.DateTime, nullable=False)
+    q_date = db.Column(db.DateTime, nullable=True)
     training_id = db.Column(db.Integer, nullable=True)
     title = db.Column(db.String(250), nullable=False)
     department = db.Column(db.String(50), nullable=False) #e.g PSG, QA
-    score = db.Column(db.Integer, nullable=False)
-    status = db.Column(db.Enum('PASSED','REPEAT'), nullable=False)    
+    score = db.Column(db.Integer, nullable=True)
+    status = db.Column(db.Enum('PASSED','REPEAT'), nullable=True)    
     suc_status = db.Column(db.Enum('completed','pending','na'), default='na')
     suc_q_date = db.Column(db.DateTime, nullable=True)
     percent = db.Column(db.Integer, nullable=True)
+    #attr for manual qualification
+    qualifier = db.Column(db.Integer, nullable=True) #person that qualified the user on paper
+    logged_by = db.Column(db.Integer, nullable=True) #person who logged the manual qualification
 
 class StepupCards(db.Model):
     __tablename__ = 'stepup_cards'
