@@ -1,0 +1,342 @@
+{% extends 'public/base.html' %}
+{% block head %}
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/css/bootstrap.min.css" integrity="sha384-rwoIResjU2yc3z8GV/NPeZWAv56rSmLldC3R/AZzGRnGxQQKnKkoFVhFQhNUwEyJ" crossorigin="anonymous">
+
+<style>
+.custom-control-input:checked~.custom-control-indicator{
+color:white;
+background-color:red;
+}
+</style>
+{% endblock %}
+
+{% block content %}
+
+<div class="container">
+	<div class="row align-items-center justify-content-center">
+		<div class="col-md-12">
+			<div class="login100-form-logo align-items-center justify-content-center">
+									
+				<div class="text-center" style="color:white;background: #179cd7;">
+					WELCOME TO MY e_LEARNING
+				</div>
+			</div>
+		</div>
+		<div class="col-md-12 " style="backgound: red;">
+			<div class="row align-items-center justify-content-center">
+				<div class="col-md-12">
+					<form id="" style="margin-top:20px" method="POST" action="/e_learning?action=ADD-QUIZ&what=UPDATE-SETTINGS&tid={{course.tid}}" enctype = "multipart/form-data">						
+						<div class="row align-items-center justify-content-center">
+							<div class="col-md-12 head1 text-center">
+								<div class="alert alert-info"> Adding Quiz Questions to: {{course.title}} </div>
+							</div>							
+						</div>
+						<!-- General quiz page settings -->
+						
+						<div class="row align-items-center justify-content-center">
+							<div class="col-md-3">
+                        		<div class='form-group'>
+                        			<label>Qualification Type</label>                        			
+                        			<select onchange="activateButton()" class="form-control" id="qualification_type" name="qualification_type" required>
+                        				<option value="">Select</option>
+                        				<option value="questionaire">Questionaire</option>
+                        				<option value="acknowledgement">Acknowledgement</option>
+                        			</select>                      				
+                        		</div>
+                    		</div>
+							<div class="col-md-4">
+                        		<div class='form-group' id="attempt-div">
+                        			<label>Number of Questions to Attempt</label>
+                        			<input onchange="activateButton()" type="number" name="attempt" id="attempt" class="form-control"
+                        			{%if quiz_infor%} value={{quiz_infor.attempt}} {%endif%} placeholder="put zero for All Questions">                      				
+                        		</div>
+                    		</div>
+                    		<div class="col-md-5">
+                        		<div class='form-group'>
+                        			<label>Page Banner Image <small style="color:#179cd7;">Image dimension: w>=800, h>=250</small></label>
+                        			<input onchange="activateButton()" type="file" id="banner_img" name="banner_img" class="form-control" accept=".JPG,.JPEG,.jpg,.jpeg,.png,.PNG,.webp" >                        			
+                        		</div>
+                    		</div>		                    		                    		
+                		</div>
+                		<div class="row">
+                    		<div class="col-md-2">                    
+                        		<div class='form-group'>
+                            		<button class="btn btn-sm btn-danger" type="submit" id="settings_butt" disabled> Update Settings</button>
+                        		</div>
+                    		</div>		                    		                    		
+                		</div>
+                		<!--//end of general page settings -->
+                		<div class="row align-items-center justify-content-center">
+                			<div class="col-md-12">
+                				<hr style="height:3px;background: #179cd7;">
+                			</div>
+                		</div>
+                	{%if quiz_infor and qualification_type !="acknowledgement" %}
+                		<div class="row align-items-center justify-content-center">
+                			<div class="col-md-8 text-center">
+                				<h2 style="background: #179cd7; color: #000000;">Add Question Bellow</h2>
+                			</div>
+                		</div>	
+						<div class="row align-items-center justify-content-center">
+							<div class="col-md-8">
+                        		<div class='form-group'>
+                        			<label>Question</label>
+                        			<input type="text" name="question" id="question" class="form-control">
+                        		</div>
+                    		</div>
+                    		<div class="col-md-4">
+                        		<div class='form-group'>
+                        			<label>Type of Options</label>
+                        			<select class="form-control" id="type" name="type">
+                        				<option value="">Select</option>
+                        				<option value="radio">Radio Button</option>
+                        				<option value="checkbox">Checkbox</option>                    				
+                        			</select>
+                        		</div>
+                    		</div>		                    		                    		
+                		</div>
+                		<div class="row align-items-center justify-content-center">
+							<div class="col-md-12">
+                        		<div class='form-group'>
+                        			<label>Options <small style="color:#179cd7;">separate options by a semi-colon (;) </small></label>
+                        			<input type="text" name="options" id="options" class="form-control" onblur="getOptions(this)">
+                        		</div>
+                    		</div>
+                    	</div>	
+                    	<div class="row align-items-center justify-content-center">	
+                    		<div class="col-md-12">
+                        		<div class='form-group'>
+                        			<label>Answer <small style="color:#179cd7;">You can select multiple options as asnwers if applicable.</small></label>
+                        			<div class="" id="answer-div">
+                        				
+                        			</div>
+
+                        		</div>
+                    		</div>
+                    			                    		                    		
+                		</div>                		
+                		<div class="row align-items-center justify-content-center">
+                    		<div class="col-md-4">                    
+                        		<div class='form-group'>
+                            		<button class="btn btn-sm btn-info" type="button" onclick="addQuestion()">Submit Question</button>
+                        		</div>
+                    		</div>		                    		                    		
+                		</div>
+                	{%endif%}	
+                		        
+					</form>
+				</div>
+				
+			</div>
+		</div>
+		
+	</div>
+	<div class="row align-items-center justify-content-center">
+	{% if quiz_infor.questions %}
+	{% set counter = 0 %}
+		<div class="col-md-12">
+				<hr style="border: 2px #0074CC solid">
+		</div>
+                    
+        <div class="col-md-12 text-center">
+            <h3 style="background:#179cd7">Added Questions to this Training</h3>
+            
+            <div class="table-responsive">
+                <table class="table table-bordered table-striped">
+                    <thead>
+                        <tr>               
+                            <th scope="col">S/N</th>
+                            <th scope="col">Question</th>
+                            <th scope="col">Options</th>
+                            <th scope="col">Type</th> 
+                            <th scope="col">Answer</th>                                       
+                            <th scope="col">Actions</th>
+                                                                    
+                        </tr>
+                    </thead>
+                    <tbody>
+                    {% for  entry in quiz_infor.questions %}
+                        <tr>
+                                    <td>{{counter + 1}}</td>
+                                    <td>{{entry.question}}</td>
+                                    <td>
+                                    {% for  option in entry.options %}
+                                    <div>{{option}}</div>
+                                    {% endfor %}
+                                    </td>                                    
+                                    <td>{{entry.question_type}}</td>
+                                    <td>
+                                    	{% for  ans in entry.answer %}
+                                    	<div>{{ans}}</div>
+                                    	{% endfor %}
+                                    </td>
+                                    <td>	
+                                       		<div class="btn btn-sm" style="font-size: 11px;color: #179cd7;" onclick="deleteQuestion('{{entry.question}}')">DELETE</div>
+                                    </td>                           
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>                        
+        </div>
+                
+	
+    {% endif %}
+	</div>
+	                
+</div>
+
+{% endblock %}
+
+{% block tail %}
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@9"></script>
+<script type="text/javascript">
+
+function addQuestion() {
+		var valid;
+		valid = validate_inputs();
+		if (!valid){return false;}
+
+		triggerProcessing();		
+		
+		setTimeout(function(){
+			const update = {question: valid.question,questionType:valid.questionType,options:valid.options,answers:valid.answers,tid:{{course.tid}},};
+        	const options = {
+                            method: 'POST',
+                            headers: {'Content-Type': 'application/json',},
+                            body: JSON.stringify(update),
+                        };
+			fetch(`/e_learning?action=${'ADD-QUIZ'}&what=${'ADD-QUIZ_QUESTION'}&tid={{course.tid}}`,options)
+				.then((res)=>{
+                    return res.json();
+	            }).then(function (result) {
+	                   	if (result.status==1){
+                                Swal.fire({
+                                icon: 'success',
+                                title: 'Success',
+                                html: result.message
+
+                                }).then((value) => {
+                                    setTimeout(location.reload(), 2000);
+                                });
+                        }else{
+                                Swal.fire({
+                                    icon: 'error',
+                                    title: 'Error',
+                                    html: result.message                     
+                                	})
+                            }                                
+	                })
+    },2000)  //end of setTimeout      	
+}
+
+function validate_inputs()
+{
+	var question, questionType, options, answers;
+	const arr = []; var i = 0;
+	question = $('#question').val();
+ 	questionType = $('#type').children(':selected').val();
+ 	options =  $('#options').val();	
+    $('.answer:checked').each(function () {arr[i++] = $(this).val();});
+
+    if (!question){alert('Please fill out the Question field');return false;}
+    if (!questionType){alert('Please select options type');return false;} 
+    if (!options){alert('Please provide options for your question');return false;}
+    if (arr.length == 0){alert('Please select atleast one option as the correct answer to your question');return false;}
+    
+    return {'question':question,'questionType':questionType,'options':options,'answers':arr}       
+}
+
+function getOptions(selectr)
+{
+	var options = $(selectr).val();
+	var options_list;
+	$('#answer-div').html('');
+	if (options){
+		options_list = options.split(';');
+		for (var i=0; i<options_list.length;i++)
+		{
+			indx = 'option' + toString(1+i);		
+			
+			$('#answer-div').append('<div><label class="custom-control custom-checkbox"><input type="checkbox" class="custom-control-input answer" id='+indx+' name="answer" value="'+options_list[i]+'"><span class="custom-control-indicator"></span><span class="custom-control-description">'+options_list[i]+'</span></label></div>');
+		}
+	} else
+	{
+		alert("You have not provided options for the question.");
+		return false;
+	}
+}   
+
+ function activateButton()
+ {
+ 	$('#settings_butt').attr('disabled',false);
+ 	checkQualificationType();
+ }
+
+ function checkQualificationType()
+{
+	var q_type = $('#qualification_type').children(':selected').val();
+	if (q_type == 'acknowledgement')
+	{
+		$('#attempt-div').css('display','none');				
+	} else
+	{
+		$('#attempt-div').css('display','block');		
+	}
+}
+$('#qualification_type').val('{{qualification_type}}');
+checkQualificationType();
+
+function deleteQuestion(question)
+{
+	Swal.fire({
+        	title: 'Are you sure you want to delete this question?',        
+        	icon: 'warning',
+        	showCancelButton: true,
+        	confirmButtonColor: '#3085d6',
+        	cancelButtonColor: '#d33',
+        	confirmButtonText: 'Yes, proceed'        	
+      	}).then((result)=>{
+      		if (result.value)
+      		{
+      			triggerProcessing();      			
+      			setTimeout(function(){
+      				const update = {question: question,tid:{{course.tid}},};
+            		const options = {
+                                method: 'POST',
+                                headers: {'Content-Type': 'application/json',},
+                                body: JSON.stringify(update),
+                            };
+                    fetch(`/e_learning?action=${'ADD-QUIZ'}&what=${'DELETE-QUESTION'}`,options)
+                    	.then((result)=>{
+                    		return result.json();
+                    	}).then(function(response){
+
+                    		if (response.status==1){
+                                    Swal.fire({
+                                    icon: 'success',
+                                    title: 'Success',
+                                    html: response.message
+
+                                    }).then((value) => {
+                                        setTimeout(location.reload(), 2000);
+                                    });
+                            }else{
+                                    Swal.fire({
+                                        icon: 'error',
+                                        title: 'Error',
+                                        html: response.message                     
+                                    	})
+                                }
+                    	})        
+      			},2000) //end of setTimeout 
+      		}
+      	})
+}
+
+
+</script>
+
+{% endblock %}
+

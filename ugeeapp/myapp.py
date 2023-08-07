@@ -1348,6 +1348,72 @@ def my_e_learning():
 
 		return render_template(template,department=departments)
 
+	elif request.args.get( 'action') == 'ADD-QUIZ':
+		if session['adminlevel'] < 3:
+			return redirect(url_for('index'))
+		response = ''
+		qualification_type = ''	
+
+		quiz_infor = None	
+
+		template = 'e_learning/add_quiz.html'
+		tid = request.args.get('tid')
+
+		course = new.get_training(tid)		
+
+		if request.method == 'POST':
+			if request.args.get('what') == 'UPDATE-SETTINGS':
+				form = {}
+				form["attempt"] = request.form["attempt"]
+				form["qualification_type"] = request.form["qualification_type"]
+				form["banner"] = request.files["banner_img"]
+				form["tid"] = request.args.get("tid")
+				data = new.update_quiz_questions(form,'settings')
+
+				if data['status'] == 1:
+					response = Markup("<div class='alert alert-success'>{}</div>".format(data['message']))
+				else:
+					response = Markup("<div class='alert alert-danger'>{}</div>".format(data['message']))
+
+				flash(response,'information')
+
+			elif request.args.get('what') == 'ADD-QUIZ_QUESTION':
+				info = request.get_json()
+				form = {}
+				form["question"] = info["question"]
+				form["question_type"] = info["questionType"]
+				form["options"] = info["options"].split(";")
+				form["answer"] = info["answers"]
+				form["tid"] = request.args.get("tid")
+				data = new.update_quiz_questions(form,'question')
+
+				if data['status'] == 1:
+					response = Markup("<div class='alert alert-success'>{}</div>".format(data['message']))
+				else:
+					response = Markup("<div class='alert alert-danger'>{}</div>".format(data['message']))
+
+				return json.dumps({'status':data['status'], 'message':response})
+
+			elif request.args.get('what') == 'DELETE-QUESTION':
+				info = request.get_json()
+				form = {}
+				form["question"] = info["question"]				
+				form["tid"] = info["tid"]
+				data = new.delete_quiz_question(form)
+
+				if data['status'] == 1:
+					response = Markup("<div class='alert alert-success'>{}</div>".format(data['message']))
+				else:
+					response = Markup("<div class='alert alert-danger'>{}</div>".format(data['message']))
+
+				return json.dumps({'status':data['status'], 'message':response})	
+
+		if course.quiz_link is not None:
+			quiz_infor = json.loads(course.quiz_link)
+			qualification_type = quiz_infor['qualification_type'] #if 'qualification_type' in quiz_infor.keys() else ''	
+
+		return render_template(template,course=course,quiz_infor=quiz_infor,qualification_type=qualification_type)	
+
 	elif request.args.get( 'action') == 'FETCH-USERS':
 
 		kyc = ''
@@ -1364,7 +1430,9 @@ def my_e_learning():
 			
 		return json.dumps({'status':1, 'data':kyc,"departments":depart})
 
-	elif request.args.get('action') == 'GET-QUIZ':
+	elif request.args.get('action') == 'GET-QUIZ':			
+		quiz_infor = None
+		page_banner = None
 
 		template = request.args.get('template')
 		pass_mark = request.args.get('pass')
@@ -1373,7 +1441,13 @@ def my_e_learning():
 
 		course = Trainings.query.filter_by(tid=tid).first()
 
-		return render_template(template,pass_mark=pass_mark,qid=qid,tid=tid,training=course)
+		if course.quiz_link is not None:
+			quiz_infor = json.loads(course.quiz_link)			
+			page_banner = quiz_infor['banner_image']
+			if quiz_infor['qualification_type'] == 'acknowledgement':
+				template = 	'e_learning/tr_acknowledge_template.html'		
+
+		return render_template(template,page_banner=page_banner,pass_mark=pass_mark,qid=qid,tid=tid,training=course,quiz_infor=quiz_infor)
 
 	elif request.args.get('action') == 'manual_qualification':
 		if session['adminlevel'] < 3:

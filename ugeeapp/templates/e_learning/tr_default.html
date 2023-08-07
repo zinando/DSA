@@ -13,15 +13,15 @@
 					WELCOME TO MY e_LEARNING
 				</div>
 			</div>
-		</div><hr>
-	<!--	<div class="col-md-12">
-			<div class="login100-form-logo align-items-center justify-content-center">
-									
-				<div class="text-center" style="color:#000;background: #fff;">
-					ISOLATION OF HAZARDOUS ENERGY (loto)
-				</div>
-			</div>
-		</div>-->
+		</div>
+		{%if page_banner%}		
+		<div class="col-md-12" style="margin-bottom:10px">
+            <img src="{{page_banner}}" height="200px" width="100%">
+        </div>
+        {%endif%}		
+		<div class="col-md-12" style="position:relative;display: none;" id="counter-parent-div">
+			<div class="text-center" style="border: 1px #ffffff solid;position: absolute; right: 20px;top: 5px; border-radius: 50%;height:40px;width: 40px;padding-top: 8px; background-color: #179cd7;color: #ffffff;font-size: 12px;" id="counter-div"></div>
+		</div>
 		<div class="col-md-12 " style="backgound: red;">
 			<div class="row">
 				<div class="col-md-10">
@@ -30,108 +30,47 @@
 						<div class="row align-items-center justify-content-center v1">
 							<div class="col-md-12">
                         		<div class='form-group'>
-                        			<div>INSTRUCTIONS:</div>
-                        			<p>This Trainig Quiz is not available yet. Please check back later.</p>
-                        		<!--	<ol>                        				
+                        			<div>INSTRUCTIONS:</div>                        			
+                        			<ol>                        				
                         				<li>Download the course outline by clicking on the link provided in your skills matrix page</li>
-                        				<li>Open the outline from your device</li><br>
-                        				<li>Study the outline thoroughly</li><br>
+                        				<li>Open the outline from your device</li>
+                        				<li>Study the outline thoroughly</li>
                         				<li>Then return here to attempt this quiz.</li><br>
-                        			</ol>-->
+                        			</ol>
 
-                        		</div>
-                    		</div>
-                    	<!--	<div class="col-md-4">
-                        		<div class='form-group'>
-                        			<button type="button" class="btn btn-secondary" onclick="getView1()">Start Quiz</button>
-                        		</div>
-                    		</div> -->             		
-                		</div>
-                	<!--	<div class="row align-items-center justify-content-center v2" style="display:none;">
-							<div class="col-md-12">
-                        		<div class='form-group'>
-                        			1.	These are components of fire except?
-                        		</div>
-                    		</div>
-                    		<div class="col-md-12">
-                        		<div class='form-group'>
-                        			<input type="radio" style="margin-right: 10px; margin-left: 20px;" name="q1" class="" id="q11" value=0 onchange="getView2()"> a. Oxygen
-
-                        			<input type="radio" style="margin-right: 10px; margin-left: 20px;" name="q1" class="" id="q12" value=0 onchange="getView2()">b. Heat
-
-                        			<input type="radio" style="margin-right: 10px; margin-left: 20px;" name="q1" class="" id="q13" value=1 onchange="getView2()">c. Water
-                        		</div>
-                    		</div>
-                    		              		
-                		</div> 
-                		<div class="row align-items-center justify-content-center v3" style="display:none;">
-							<div class="col-md-12">
-                        		<div class='form-group'>
-                        			2.	Which of these is not a class of fire?
-                        		</div>
-                    		</div>
-                    		<div class="col-md-12">
-                        		<div class='form-group'>
-                        			<input type="radio" style="margin-right: 10px; margin-left: 20px;" name="q2" class="" id="q21" value=1 onchange="getView3()"> a.	Class Z
-
-                        			<input type="radio" style="margin-right: 10px; margin-left: 20px;" name="q2" class="" id="q22" value=0 onchange="getView3()">b.	Class A
-
-                        			<input type="radio" style="margin-right: 10px; margin-left: 20px;" name="q2" class="" id="q23" value=0 onchange="getView3()">c.	Class B
-                        		</div>
-                    		</div>                    		              		
-                		</div>
-                		<div class="row align-items-center justify-content-center v4" style="display:none;">
-							<div class="col-md-12">
-                        		<div class='form-group'>
-                        			3.	Another name for dry chemical powder is universal fire extinguisher?
-                        		</div>
-                    		</div>
-                    		<div class="col-md-12">
-                        		<div class='form-group'>
-                        			<input type="radio" style="margin-right: 10px; margin-left: 20px;" name="q3" class="" id="q31" value=1 onchange="getView4()"> a. Yes
-
-                        			<input type="radio" style="margin-right: 10px;margin-left: 20px;" name="q3" class="" id="q32" value=0 onchange="getView4()">b. No
-                        		</div>
-                    		</div>                    		              		
-                		</div>
-                		<div class="row align-items-center justify-content-center v5" style="display:none;">
-							<div class="col-md-12">
-                        		<div class='form-group'>
-                        			4.	One of these is not a Fire Fighting Equipment?
-                        		</div>
-                    		</div>
-                    		<div class="col-md-12">
-                        		<div class='form-group'>
-                        			<input type="radio" style="margin-right: 10px; margin-left: 20px;" name="q4" class="" id="q41" value=0 onchange="getView5()"> a. Hydrant
-                        			
-                        			<input type="radio" style="margin-right: 10px;margin-left: 20px;" name="q4" class="" id="q42" value=0 onchange="getView5()">b. Hose Reel
-
-                        			<input type="radio" style="margin-right: 10px; margin-left: 20px;" name="q4" class="" id="q43" value=0 onchange="getView5()"> c. Smoke detector
-
-                        			<input type="radio" style="margin-right: 10px;margin-left: 20px;" name="q4" class="" id="q44" value=1 onchange="getView5()">d. Cooking oil
-                        		</div>
-                    		</div>                    		              		
-                		</div>
-                		<div class="row align-items-center justify-content-center v6" style="display:none;">
-							<div class="col-md-12">
-                        		<div class='form-group'>
-                        			5.	UGEE chemicals Emergency number is 07043319020?
-                        		</div>
-                    		</div>
-                    		<div class="col-md-12">
-                        		<div class='form-group'>
-                        			<input type="radio" style="margin-right: 10px; margin-left: 20px;" name="q5" class="" id="q51" value=1 onchange="getView6()"> a. Yes
-
-                        			<input type="radio" style="margin-right: 10px;margin-left: 20px;" name="q5" class="" id="q52" value=0 onchange="getView6()">b. No
                         		</div>
                     		</div>
                     		<div class="col-md-4">
                         		<div class='form-group'>
-                        			<button type="button" class="btn btn-success" onclick="getResult('{{qid}}','{{pass_mark}}','{{tid}}')">Get Result</button>
+                        			<button type="button" class="btn btn-secondary" onclick="startQuiz()">Start Quiz</button>
+                        		</div>
+                    		</div>             		
+                		</div>
+                		<div class="row align-items-center justify-content-center v2" style="display:none;">
+							<div class="col-md-12">
+                        		<div class='form-group' id="question-div">
+                        			
+                        		</div>
+                    		</div>
+                    		<div class="col-md-12" id="options-div">
+                        		<div class='form-group' id="options-sub-div">
+                        			
+                        		</div>
+                    		</div>
+                    		<div class="col-md-4" id="checkbox-submit-butt" style="display:none;">
+                        		<div class='form-group'>
+                        			<button type="button" class="btn btn-success" onclick="validateAnswer('checkbox')">submit</button>
+                        		</div>
+                    		</div>
+                    		              		
+                		</div>
+                		<div class="row align-items-center justify-content-center" id="getResult-div" style="display:none;">
+                    		<div class="col-md-4">
+                        		<div class='form-group'>
+                        			<button type="button" class="btn btn-success" onclick="getResult({{qid}},{{pass_mark}},{{tid}})">Get Result</button>
                         		</div>
                     		</div>                    		              		
-                		</div> -->              		       		
-						
+                		</div>
 					</form>
 				</div>
 				
@@ -149,181 +88,227 @@
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@9"></script>
 <script type="text/javascript">
+var None = null;	
+class quizRecord 
+{
+	constructor(pass_mark,qualification_id,training_id)
+	{
+		this.psmk = pass_mark;
+		this.qid = qualification_id;
+		this.tid = training_id;
+		this.quiz_infor = {{quiz_infor | safe}};					
+		this.current_score = 0;
+		this.attempt = 0;
+		this.questions = null;
+		this.answer = null;
+		this.counter = 0;
+		this.current_question = null; 	
+		if (this.quiz_infor){
+			if (this.quiz_infor.attempt == 0){
+				this.attempt=this.quiz_infor.questions.length;
+			} else{
+				this.attempt=this.quiz_infor.attempt;
+			}
+		}
+	}
 
+	getQuestions()
+	{
+		if (this.current_question == null && this.quiz_infor && this.quiz_infor.questions)
+		{
+			var attempt; 
+			//if (this.attempt == 0){attempt=this.quiz_infor.questions.length;}else{attempt=this.attempt;}
+			this.questions = getRandomQuestions(this.quiz_infor.questions,this.attempt);
+			return this.questions;  
+		} else if (this.current_question){
 
-function getView1()
+			const new_questions = [];
+			var quest;  
+			for (var i=0; i<this.questions.length; i++)
+			{
+				quest = this.questions[i] 
+				if (quest != this.current_question){new_questions.push(quest);}
+			}
+			this.questions = new_questions;
+			return this.questions;
+		}
+		return false;
+	}
+
+	getCurrentQuestion()
+	{
+
+		if (this.getQuestions())
+		{
+			if (this.questions.length != 0)
+			{
+				this.current_question = this.questions[0];				
+				return this.current_question;
+			}
+			return 1; //end of questions
+		}
+		return 0; //no questions available
+	}
+
+	getOptions()
+	{
+		var random_options = getRandomQuestions(this.current_question.options,this.current_question.options.length);
+		return random_options;
+	}
+
+	getAnswer()
+	{
+		this.answer = this.current_question.answer;
+		return this.answer;
+	}
+}
+
+function getRandomItem(items){
+	return items[Math.floor(Math.random()*items.length)];
+}
+
+function getRandomQuestions(items,no_of_items){
+	const arr = [];    
+    for (var i=0; i<no_of_items;i++){
+    	new_item = getRandomItem(items);
+    	if (arr.includes(new_item)){
+    			i -= 1
+          }else {arr[i] = new_item;}  
+    }
+	return arr;
+}
+
+const record = new quizRecord({{pass_mark}},{{qid}},{{tid}});
+var question, options; 
+
+function startQuiz()
 {
 	$('.v1').fadeOut('slow');
-	$('.v2').fadeIn('slow');
+	getQuestionView();
 }
 
-function getView2()
+function getQuestionView()
 {
-	$('.v2').fadeOut('slow');
-	var ans = $("input[type='radio'][name='q1']:checked").val(); //document.querySelector('input[name="component"]:checked').value;
-
-	if (ans == 1)
+	var view = $('.v2').css('display');
+	var alpha = ['a.','b.','c.','d.','e.','f.','g.','h.','i.','j.','k.','l.','m.','n.','o.','p.'];
+	//if (view == 'block'){$('.v2').css('display','none');}
+	question = record.getCurrentQuestion();
+	if (question == 0 )
 	{
+		//question is not available
+		html = '';
+		html += '<div class="alert alert-info">Qualification Questions are not available for this Training yet.</div>';
+		$('.v2').html(html);
+		$('.v2').fadeIn('slow');
+
+	} else if (question == 1)
+	{
+		//end of questions
+		$("#checkbox-submit-butt").css("display","none");
+		$('input[name=radio]').attr("disabled",true);
+		$('input[name=checkbox]').attr("disabled",true);		
+		$('#getResult-div').fadeIn('slow');
+	} else
+	{
+		record.counter += 1;
+		$('#counter-parent-div').css('display','block');
+		$('#counter-div').html(record.counter.toString()+'/'+record.attempt.toString());
+		
+		//questions available
+		$('.v2').fadeOut('slow');		
+		$('#question-div').html(question.question);
+		options = record.getOptions();
+
+		if (question.question_type == 'checkbox')
+		{
+			html = '';
+			for (var x=0; x<options.length; x++)
+			{
+				html += '<input class="checkbx" type="checkbox" style="margin-right: 10px; margin-left: 20px;" name="checkbox" id="checkbox'+x+'" value="'+options[x]+'">'+alpha[x]+" "+ options[x] +'<br>';
+			}
+			$('#options-sub-div').html(html);
+			$("#checkbox-submit-butt").css("display","block");
+			$('.v2').fadeIn('slow');			
+
+		} else 
+		{
+			var boxButt = $("#checkbox-submit-butt").css("display");
+			if (boxButt == "block"){$("#checkbox-submit-butt").css("display","none");}
+			html = '';
+
+			for (var x=0; x<options.length; x++)
+			{
+				html += '<input type="radio" style="margin-right: 10px; margin-left: 20px;" name="radio" id="radio'+x+'" value="'+[options[x]]+'" onchange="validateAnswer(\'radio\')">'+alpha[x]+" "+ options[x] +'<br>';
+			}
+			$('#options-sub-div').html(html);
+			$('.v2').fadeIn('slow');
+		}
+	}
+}
+
+function validateAnswer(question_type)
+{
+	var ans; const checkd = []; var i = 0; var val;	
+	if (question_type == "radio"){
+		val = $("input[type='radio'][name='radio']:checked").val();
+		if (val.toString() == record.getAnswer().toString()){
+			ans = true;
+		} else {
+			ans = false;
+		}
+		
+	} else if (question_type == "checkbox")
+	{
+		$('.checkbx:checked').each(function () {checkd[i++] = $(this).val();});
+
+		if (checkd.length==0){
+			alert('Please tick at least one of the checkboxes that corresponds to the answer to the question.');
+			return false;
+		}
+		const val2 = (checkd.length === record.getAnswer().length) && checkd.every(elem =>record.getAnswer().includes(elem));
+		ans = val2;
+	}
+		
+	if (ans)
+	{
+		record.current_score += (100/record.attempt);
 		Swal.fire({
                    	icon: 'success',
-                    title: 'Correct!',                                         
+                    title: 'Correct!',
+                    //html: record.answer.toString() +'<<---->>'+ ans.toString(),                                         
                 }).then(function(){
 			                
-							$('.v3').fadeIn('slow');
+							getQuestionView();
 
 			            })
 	} else
 	{
 		Swal.fire({
                    	icon: 'error',
-                    title: 'Wrong Answer!',                                         
+                    title: 'Wrong Answer!', 
+                    //html: record.answer.toString() +'<<---->>'+ ans.toString(),                                        
                 }).then(function(){
 			                
-							$('.v3').fadeIn('slow');
+							getQuestionView();
 
 			            })
 	}
 	
 }
 
-function getView3()
-{
-	$('.v3').fadeOut('slow');
-	var ans = $("input[type='radio'][name='q2']:checked").val(); //document.querySelector('input[name="component"]:checked').value;
-
-	if (ans == 1)
-	{
-		Swal.fire({
-                   	icon: 'success',
-                    title: 'Correct!',                                         
-                }).then(function(){
-			                
-							$('.v4').fadeIn('slow');
-
-			            })
-	} else
-	{
-		Swal.fire({
-                   	icon: 'error',
-                    title: 'Wrong Answer!',                                         
-                }).then(function(){
-
-			                $('.v4').fadeIn('slow');
-
-			            })
-	}
-
-	
-}
-
-function getView4()
-{
-	$('.v4').fadeOut('slow');
-	var ans = $("input[type='radio'][name='q3']:checked").val(); //document.querySelector('input[name="component"]:checked').value;
-
-	if (ans == 1)
-	{
-		Swal.fire({
-                   	icon: 'success',
-                    title: 'Correct!',                                         
-                }).then(function(){
-			                
-							$('.v5').fadeIn('slow');
-
-			            })
-	} else
-	{
-		Swal.fire({
-                   	icon: 'error',
-                    title: 'Wrong Answer!',                                         
-                }).then(function(){
-			                
-							$('.v5').fadeIn('slow');
-
-			            })
-	}
-
-
-}
-
-function getView5()
-{
-	$('.v5').fadeOut('slow');
-	var ans = $("input[type='radio'][name='q4']:checked").val(); 
-
-	if (ans == 1)
-	{
-		Swal.fire({
-                   	icon: 'success',
-                    title: 'Correct!',                                         
-                }).then(function(){
-			                
-							$('.v6').fadeIn('slow');
-
-			            })
-	} else
-	{
-		Swal.fire({
-                   	icon: 'error',
-                    title: 'Wrong Answer!',                                         
-                }).then(function(){
-			                
-							$('.v6').fadeIn('slow');
-
-			            })
-	}
-
-
-}
-function getView6()
-{
-
-	var ans = $("input[type='radio'][name='q5']:checked").val(); //document.querySelector('input[name="component"]:checked').value;
-
-	if (ans == 1)
-	{
-		Swal.fire({
-                   	icon: 'success',
-                    title: 'Correct!',                                         
-                })
-	} else
-	{
-		Swal.fire({
-                   	icon: 'error',
-                    title: 'Wrong Answer!',                                         
-                })
-	}
-	return false;
-	//$('.v5').fadeOut('slow');
-	//$('.v6').fadeIn('slow');
-}
 
 function getResult(id,mark,tid)
-{	
-	//check if the last question has been amswered//
-	check = $("input[type='radio'][name='q5']").is(':checked');
-	if (!check){alert('Please choose an option.'); return false;}
-
+{		
 	triggerProcessing();
-setTimeout(function(){
-	//compute result
-	var ans1 = $("input[type='radio'][name='q1']:checked").val(); 
-	var ans2 = $("input[type='radio'][name='q2']:checked").val();
-	var ans3 = $("input[type='radio'][name='q3']:checked").val();
-	var ans4 = $("input[type='radio'][name='q4']:checked").val();
-	var ans5 = $("input[type='radio'][name='q5']:checked").val();
-
-	var ans = parseInt(ans1) + parseInt(ans2) + parseInt(ans3) + parseInt(ans4) + parseInt(ans5);
-	var percent = (ans / 5) * 100;
+	setTimeout(function(){
+	
+	var percent = Math.round(record.current_score);
 	percent = percent.toFixed(2);
-
-	//alert('You are doing well');
-	//save result to database
+	
 	const update = {
 						score:parseInt(percent),
-						quizid:id,
-						tid:tid,
-					};
+						quizid:{{qid}},
+						tid:{{tid}}};					
 
     const options = {
                     	method: 'POST',
@@ -368,8 +353,7 @@ setTimeout(function(){
 
 				        })
 
-},3000);	
-
+	},3000);	
 	
 }
 </script>

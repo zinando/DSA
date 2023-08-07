@@ -676,7 +676,7 @@ class MYSCHOOL():
 					print(resource is None)
 					for path in resource:
 						if path not in other_link:
-							other_link.append(path)
+							 other_link.append(path)
 					other_link = json.dumps(other_link)
 				else:
 					other_link = json.dumps(other_link)	
@@ -756,6 +756,79 @@ class MYSCHOOL():
 			return os.path.join(path,filename)
 		return None
 	
+	def update_quiz_questions(self,form,what):
+		"""Updates the quiz_link attr of Trainings table"""
+
+		training = Trainings.query.filter_by(tid = form["tid"]).first()
+
+		data = {}
+		data["attempt"] = None
+		data["banner_image"] = None
+		data["qualification_type"] = None
+		data["questions"] = None
+		
+		if what == "settings":			
+			if form["banner"].filename:				
+				filename = ""
+				title = training.title.lower().split()
+				for x in title:
+					filename += "{}_".format(x)
+				file_path = "/static/img/images/quiz_templates/"
+				data["banner_image"] = self.save_file(file_path,form["banner"],filename)
+			if form["attempt"]:
+				data["attempt"] = form["attempt"]
+			if form["qualification_type"]:
+				data["qualification_type"] = form["qualification_type"]
+
+		elif what == "question":
+			mr = {}
+			mr["question"] = form["question"] #string
+			mr["question_type"] = form["question_type"] #string
+			mr["options"] = form["options"] #list of strings
+			mr["answer"] = form["answer"] #list of strings
+			data["questions"] = []
+			data["questions"].append(mr) 					
+
+		if training.quiz_link is not None:
+			quiz_data = json.loads(training.quiz_link)
+			if what == "question":				
+				if quiz_data["questions"] is not None and len(quiz_data["questions"]) > 0:
+					quiz_data["questions"].append(mr)
+				else:
+					quiz_data["questions"] = []
+					quiz_data["questions"].append(mr)	
+
+			elif what == "settings":	
+				quiz_data["attempt"] = data["attempt"]
+				quiz_data["banner_image"] = data["banner_image"]
+				quiz_data["questions"] = data["questions"]
+				quiz_data["qualification_type"] = data["qualification_type"]
+
+			Trainings.query.filter_by(tid = form["tid"]).update({"quiz_link":json.dumps(quiz_data)})
+			db.session.commit()
+		else:						 
+			Trainings.query.filter_by(tid = form["tid"]).update({"quiz_link":json.dumps(data)})
+			db.session.commit()
+			
+		return {"status":1, "message":"Updated Successsfully."}
+
+	def delete_quiz_question(self,form):
+		"""Deletes the specified question record from the question list"""
+
+		training = Trainings.query.filter_by(tid = form["tid"]).first()
+
+		if training.quiz_link is not None:
+			quiz_data = json.loads(training.quiz_link)
+			question_list = [x for x in quiz_data["questions"] if x["question"] != form["question"]] 
+			quiz_data["questions"] = question_list
+
+			Trainings.query.filter_by(tid = form["tid"]).update({"quiz_link":json.dumps(quiz_data)})
+			db.session.commit()
+		else:
+			return {"status":2, "message":"No records found."}	
+
+		return {"status":1, "message":"Question deleted successsfully."}
+
 	def delete_file(self,filepath):
 		"""Deletes the file specified in the filepath"""
 		if os.path.exists("{}{}".format(APP_ROOT,filepath)):
@@ -1054,11 +1127,13 @@ class MYSCHOOL():
 								html += '<span><a style="font-size:11px" href="'+link+'" target="_blank">'+filename+'</a></span><br>'						
 					html += '</td>'
 					if get_data :
-						quizlink = "/templates/e_learning/{}.html".format(main)
+						quizlink = "/templates/e_learning/{}.html".format(main)													
 						if self.check_file(quizlink):
 							html += '<td><a href="/e_learning?action=GET-QUIZ&template=e_learning/'+main+'.html&id='+str(get_data.qid)+'&pass='+str(course.pass_mark)+'&tid='+str(course.tid)+'" target="_blank">qualify</a></td>'
+						elif course.suc !=1:							
+							html += '<td><a href="/e_learning?action=GET-QUIZ&template=e_learning/tr_default.html&id='+str(get_data.qid)+'&pass='+str(course.pass_mark)+'&tid='+str(course.tid)+'" target="_blank">qualify</a></td>'
 						else:
-							html +='<td></td>'
+							html +='<td></td>'	
 						if get_data.percent == 100:
 							html += '<td><span style="color:green">'+str(get_data.percent)+'</span></td>'
 						else:
@@ -1067,6 +1142,9 @@ class MYSCHOOL():
 						quizlink = "/templates/e_learning/{}.html".format(main)
 						if self.check_file(quizlink):
 							html += '<td><a href="/e_learning?action=GET-QUIZ&template=e_learning/'+main+'.html&id='+str(0)+'&pass='+str(course.pass_mark)+'&tid='+str(course.tid)+'" target="_blank">qualify</a></td>'
+						elif course.suc !=1:
+							#html +='<td></td>'
+							html += '<td><a href="/e_learning?action=GET-QUIZ&template=e_learning/tr_default.html&id='+str(0)+'&pass='+str(course.pass_mark)+'&tid='+str(course.tid)+'" target="_blank">qualify</a></td>'
 						else:
 							html +='<td></td>'
 						html += '<td><span style="color:#000">0</span></td>'
@@ -1109,8 +1187,10 @@ class MYSCHOOL():
 							quizlink = "/templates/e_learning/{}.html".format(main)
 							if self.check_file(quizlink):
 								html += '<td><a href="/e_learning?action=GET-QUIZ&template=e_learning/'+main+'.html&id='+str(get_data.qid)+'&pass='+str(course.pass_mark)+'&tid='+str(course.tid)+'" target="_blank">qualify</a></td>'
+							elif course.suc !=1:								
+								html += '<td><a href="/e_learning?action=GET-QUIZ&template=e_learning/tr_default.html&id='+str(get_data.qid)+'&pass='+str(course.pass_mark)+'&tid='+str(course.tid)+'" target="_blank">qualify</a></td>'
 							else:
-								html +='<td></td>'
+								html +='<td></td>'	
 							if get_data.percent == 100:
 								html += '<td><span style="color:green">'+str(get_data.percent)+'</span></td>'
 							else:
@@ -1119,8 +1199,10 @@ class MYSCHOOL():
 							quizlink = "/templates/e_learning/{}.html".format(main)
 							if self.check_file(quizlink):
 								html += '<td><a href="/e_learning?action=GET-QUIZ&template=e_learning/'+main+'.html&id='+str(0)+'&pass='+str(course.pass_mark)+'&tid='+str(course.tid)+'" target="_blank">qualify</a></td>'
+							elif course.suc !=1:								
+								html += '<td><a href="/e_learning?action=GET-QUIZ&template=e_learning/tr_default.html&id='+str(0)+'&pass='+str(course.pass_mark)+'&tid='+str(course.tid)+'" target="_blank">qualify</a></td>'
 							else:
-								html +='<td></td>'
+								html +='<td></td>'	
 							html += '<td><span style="color:#000">0</span></td>'
 						count += 1
 						html += '</tr>'
@@ -1161,8 +1243,10 @@ class MYSCHOOL():
 							quizlink = "/templates/e_learning/{}.html".format(main)
 							if self.check_file(quizlink):
 								html += '<td><a href="/e_learning?action=GET-QUIZ&template=e_learning/'+main+'.html&id='+str(get_data.qid)+'&pass='+str(course.pass_mark)+'&tid='+str(course.tid)+'" target="_blank">qualify</a></td>'
+							elif course.suc !=1:								
+								html += '<td><a href="/e_learning?action=GET-QUIZ&template=e_learning/tr_default.html&id='+str(get_data.qid)+'&pass='+str(course.pass_mark)+'&tid='+str(course.tid)+'" target="_blank">qualify</a></td>'
 							else:
-								html +='<td></td>'
+								html +='<td></td>'	
 							if get_data.percent == 100:
 								html += '<td><span style="color:green">'+str(get_data.percent)+'</span></td>'
 							else:
@@ -1171,8 +1255,10 @@ class MYSCHOOL():
 							quizlink = "/templates/e_learning/{}.html".format(main)
 							if self.check_file(quizlink):
 								html += '<td><a href="/e_learning?action=GET-QUIZ&template=e_learning/'+main+'.html&id='+str(0)+'&pass='+str(course.pass_mark)+'&tid='+str(course.tid)+'" target="_blank">qualify</a></td>'
+							elif course.suc !=1:								
+								html += '<td><a href="/e_learning?action=GET-QUIZ&template=e_learning/tr_default.html&id='+str(0)+'&pass='+str(course.pass_mark)+'&tid='+str(course.tid)+'" target="_blank">qualify</a></td>'
 							else:
-								html +='<td></td>'
+								html +='<td></td>'	
 							html += '<td><span style="color:#000">0</span></td>'
 						count += 1
 						html += '</tr>'

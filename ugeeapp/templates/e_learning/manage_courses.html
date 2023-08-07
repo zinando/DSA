@@ -53,6 +53,10 @@
                                                 	</div>
                                                 	<div class="btn btn-sm" style="font-size: 11px;color: #179cd7;" onclick="editCourse('{{entry.tid}}')">EDIT
                                                 	</div>
+                                                {%if entry.suc != 1 %}    
+                                                    <div class="btn btn-sm" style="font-size: 11px;color: red;" onclick="addQuizQuestion('{{entry.tid}}')">Add Quiz Question
+                                                    </div>
+                                                {%endif%}    
                                                 </td>
                                                 <td>{{entry.t_code}}</td>              
                                                 <td>{{entry.title}}</td>
@@ -96,7 +100,6 @@
                 triggerProcessing();	
 
       	setTimeout( function(){	
-
 
             	const update = {tid: id,};
 
@@ -143,6 +146,11 @@
 
 		location.href = '/e_learning?action=EDIT-COURSE&tid='+id;
 	}
+
+    function addQuizQuestion(id){
+
+        location.href = '/e_learning?action=ADD-QUIZ&tid='+id;
+    }
 
 </script>
 
