@@ -84,7 +84,7 @@ class MYSCHOOL():
 		return dept				
 
 	def get_training_report(self,form):
-		"""This function returns trainng report for all trainings on the platform. 			
+		"""This function returns training report for all trainings on the platform. 			
 		"""
 
 		users = self.get_user()
@@ -670,10 +670,8 @@ class MYSCHOOL():
 			if len(other_link) == 0:
 				other_link = training.extra_resource
 			else:
-				if training.extra_resource and len(training.extra_resource) > 0:
-					print(training.extra_resource is None)
-					resource = json.loads(training.extra_resource)
-					print(resource is None)
+				if training.extra_resource and len(training.extra_resource) > 0:					
+					resource = json.loads(training.extra_resource)					
 					for path in resource:
 						if path not in other_link:
 							 other_link.append(path)
@@ -779,6 +777,9 @@ class MYSCHOOL():
 				data["attempt"] = form["attempt"]
 			if form["qualification_type"]:
 				data["qualification_type"] = form["qualification_type"]
+			if training.quiz_link is not None:
+				_data = json.loads(training.quiz_link)
+				data["questions"] = _data["questions"]	
 
 		elif what == "question":
 			mr = {}
@@ -806,6 +807,14 @@ class MYSCHOOL():
 
 			Trainings.query.filter_by(tid = form["tid"]).update({"quiz_link":json.dumps(quiz_data)})
 			db.session.commit()
+
+			#temp = Trainings.query.filter_by(tid = form["tid"]).first()
+			#if temp.quiz_link is not None:
+				#link = json.loads(temp.quiz_link)
+				#print(link["questions"])
+			#else:
+				#print("nothing here")	
+			
 		else:						 
 			Trainings.query.filter_by(tid = form["tid"]).update({"quiz_link":json.dumps(data)})
 			db.session.commit()
@@ -902,8 +911,7 @@ class MYSCHOOL():
 			days_in_year = calendar.isleap(end_date.year) and 366 or 365
 
 			difference_in_years = diffyears + (difference.days + difference.seconds/86400.0)/days_in_year
-
-			print(difference_in_years)
+			
 			if difference_in_years <= expiry:
 				result = 'valid'
 		#else:
@@ -960,7 +968,8 @@ class MYSCHOOL():
 		"""Creates/Updates users training record automatically/manually
 		   Automatically means when the user qualifies through online quiz
 		   Manually means when admin updates users record manually
-		"""		
+		"""
+		f_path = None		
 
 		get_tr = Trainings.query.filter(Trainings.tid==data['tid']).first()
 
@@ -975,20 +984,25 @@ class MYSCHOOL():
 
 		##update data otherwise add 
 		if qualz is not None:
+			if manual == 1 and data['certificate'].filename:
+				certificate_title = '{}_certificate'.format(get_tr.t_code)
+				f_path = self.save_file(data['certificate_path'],data['certificate'],certificate_title)
+				
 			if 'score' in data.keys() and data['score']:
-				if manual == 1:			
+				if manual == 1:					
 					db.session.query(MyQualification).filter(MyQualification.qid==data['quizid']).update({
 						'score':int(data['score']),
 						'q_date': datetime.now(),					
 						'qualifier': data['qualifier'], 
 						'logged_by': session['userid'],
-						'status': status	
+						'status': status,
+						'certificate_link': f_path	
 						})
 				else:
 					db.session.query(MyQualification).filter(MyQualification.qid==data['quizid']).update({
 						'score':int(data['score']),
 						'q_date': datetime.now(),						
-						'status': status	
+						'status': status
 						})	
 				db.session.commit()
 			if 'suc' in data.keys() and data['suc']:
@@ -997,7 +1011,8 @@ class MYSCHOOL():
 						'suc_status':data['suc'],					
 						'qualifier': data['qualifier'], 
 						'logged_by': session['userid'],
-						'suc_q_date': datetime.now()
+						'suc_q_date': datetime.now(),
+						'certificate_link': f_path
 						})
 				else:
 					db.session.query(MyQualification).filter(MyQualification.qid==data['quizid']).update({
@@ -1008,8 +1023,12 @@ class MYSCHOOL():
 			#log qualification percent
 			self.log_qualification_percent(qualz.qid)
 
-		else:
+		else:							 
 			log = MyQualification()
+			if manual == 1 and data['certificate'].filename:
+				certificate_title = '{}_certificate'.format(get_tr.t_code)
+				f_path = self.save_file(data['certificate_path'],data['certificate'],certificate_title)
+				log.certificate_link = f_path
 			log.training_id = get_tr.tid
 			log.title = get_tr.title
 			log.department = get_tr.department
@@ -1085,7 +1104,7 @@ class MYSCHOOL():
 			html += '<th scope="col">Outline</th>'
 			html += '<th scope="col">Quiz</th>'
 			html += '<th scope="col">Completion (%)</th>'
-			#html += '<th scope="col">Expiry</th>'
+			html += '<th scope="col">Certificate</th>'
 			html += '</tr></thead>'
 			html += '<tbody>'
 
@@ -1126,7 +1145,7 @@ class MYSCHOOL():
 								filename = filename[:-10] if len(filename)<=10 else "{}...".format(filename[:-10])
 								html += '<span><a style="font-size:11px" href="'+link+'" target="_blank">'+filename+'</a></span><br>'						
 					html += '</td>'
-					if get_data :
+					if get_data :						
 						quizlink = "/templates/e_learning/{}.html".format(main)													
 						if self.check_file(quizlink):
 							html += '<td><a href="/e_learning?action=GET-QUIZ&template=e_learning/'+main+'.html&id='+str(get_data.qid)+'&pass='+str(course.pass_mark)+'&tid='+str(course.tid)+'" target="_blank">qualify</a></td>'
@@ -1138,6 +1157,11 @@ class MYSCHOOL():
 							html += '<td><span style="color:green">'+str(get_data.percent)+'</span></td>'
 						else:
 							html += '<td><span style="color:red">'+str(get_data.percent)+'</span></td>'
+						if self.check_file(get_data.certificate_link):
+							html += '<td><span><a style="font-size:12px" href="'+get_data.certificate_link+'" target="_blank">certificate</a></span></td>'
+						else:
+							html +='<td></td>'
+
 					else:
 						quizlink = "/templates/e_learning/{}.html".format(main)
 						if self.check_file(quizlink):
@@ -1148,6 +1172,7 @@ class MYSCHOOL():
 						else:
 							html +='<td></td>'
 						html += '<td><span style="color:#000">0</span></td>'
+						html +='<td></td>'
 					count += 1
 					html += '</tr>'
 
@@ -1195,6 +1220,10 @@ class MYSCHOOL():
 								html += '<td><span style="color:green">'+str(get_data.percent)+'</span></td>'
 							else:
 								html += '<td><span style="color:red">'+str(get_data.percent)+'</span></td>'
+							if self.check_file(get_data.certificate_link):
+								html += '<td><span><a style="font-size:12px" href="'+get_data.certificate_link+'" target="_blank">certificate</a></span></td>'
+							else:
+								html +='<td></td>'	
 						else:
 							quizlink = "/templates/e_learning/{}.html".format(main)
 							if self.check_file(quizlink):
@@ -1204,6 +1233,7 @@ class MYSCHOOL():
 							else:
 								html +='<td></td>'	
 							html += '<td><span style="color:#000">0</span></td>'
+							html +='<td></td>'
 						count += 1
 						html += '</tr>'
 
@@ -1245,12 +1275,16 @@ class MYSCHOOL():
 								html += '<td><a href="/e_learning?action=GET-QUIZ&template=e_learning/'+main+'.html&id='+str(get_data.qid)+'&pass='+str(course.pass_mark)+'&tid='+str(course.tid)+'" target="_blank">qualify</a></td>'
 							elif course.suc !=1:								
 								html += '<td><a href="/e_learning?action=GET-QUIZ&template=e_learning/tr_default.html&id='+str(get_data.qid)+'&pass='+str(course.pass_mark)+'&tid='+str(course.tid)+'" target="_blank">qualify</a></td>'
-							else:
+							else: 
 								html +='<td></td>'	
 							if get_data.percent == 100:
 								html += '<td><span style="color:green">'+str(get_data.percent)+'</span></td>'
 							else:
 								html += '<td><span style="color:red">'+str(get_data.percent)+'</span></td>'
+							if self.check_file(get_data.certificate_link):
+								html += '<td><span><a style="font-size:12px" href="'+get_data.certificate_link+'" target="_blank">certificate</a></span></td>'
+							else:
+								html +='<td></td>'	
 						else:
 							quizlink = "/templates/e_learning/{}.html".format(main)
 							if self.check_file(quizlink):
@@ -1260,6 +1294,7 @@ class MYSCHOOL():
 							else:
 								html +='<td></td>'	
 							html += '<td><span style="color:#000">0</span></td>'
+							html +='<td></td>'
 						count += 1
 						html += '</tr>'
 

@@ -54,7 +54,7 @@ background-color:red;
                     		<div class="col-md-5">
                         		<div class='form-group'>
                         			<label>Page Banner Image <small style="color:#179cd7;">Image dimension: w>=800, h>=250</small></label>
-                        			<input onchange="activateButton()" type="file" id="banner_img" name="banner_img" class="form-control" accept=".JPG,.JPEG,.jpg,.jpeg,.png,.PNG,.webp" >                        			
+                        			<input onchange="activateButton()" type="file" id="banner_img" name="banner_img" class="form-control" accept=".JPG,.JPEG,.jpg,.jpeg,.png,.PNG,.webp">                        			
                         		</div>
                     		</div>		                    		                    		
                 		</div>
@@ -74,7 +74,7 @@ background-color:red;
                 	{%if quiz_infor and qualification_type !="acknowledgement" %}
                 		<div class="row align-items-center justify-content-center">
                 			<div class="col-md-8 text-center">
-                				<h2 style="background: #179cd7; color: #000000;">Add Question Bellow</h2>
+                				<h2 style="background: #179cd7; color: #000000;">Add Question Below</h2>
                 			</div>
                 		</div>	
 						<div class="row align-items-center justify-content-center">
@@ -99,7 +99,7 @@ background-color:red;
 							<div class="col-md-12">
                         		<div class='form-group'>
                         			<label>Options <small style="color:#179cd7;">separate options by a semi-colon (;) </small></label>
-                        			<input type="text" name="options" id="options" class="form-control" onblur="getOptions(this)">
+                        			<textarea rows="5" cols="85" name="options" id="options" class="form-control" onblur="getOptions(this)"></textarea>
                         		</div>
                     		</div>
                     	</div>	
@@ -132,10 +132,9 @@ background-color:red;
 		
 	</div>
 	<div class="row align-items-center justify-content-center">
-	{% if quiz_infor.questions %}
-	{% set counter = 0 %}
+	{% if quiz_infor.questions and qualification_type !="acknowledgement" %}
 		<div class="col-md-12">
-				<hr style="border: 2px #0074CC solid">
+				<hr style="border: 2px #179cd7 solid">
 		</div>
                     
         <div class="col-md-12 text-center">
@@ -149,7 +148,7 @@ background-color:red;
                             <th scope="col">Question</th>
                             <th scope="col">Options</th>
                             <th scope="col">Type</th> 
-                            <th scope="col">Answer</th>                                       
+                            <th scope="col">Answer</th>    
                             <th scope="col">Actions</th>
                                                                     
                         </tr>
@@ -157,7 +156,7 @@ background-color:red;
                     <tbody>
                     {% for  entry in quiz_infor.questions %}
                         <tr>
-                                    <td>{{counter + 1}}</td>
+                                    <td>{{loop.index}}</td>
                                     <td>{{entry.question}}</td>
                                     <td>
                                     {% for  option in entry.options %}
@@ -218,7 +217,7 @@ function addQuestion() {
                                 html: result.message
 
                                 }).then((value) => {
-                                    setTimeout(location.reload(), 2000);
+                                    setTimeout(location.href = '/e_learning?action=ADD-QUIZ&tid='+{{course.tid}}, 2000);
                                 });
                         }else{
                                 Swal.fire({
@@ -320,7 +319,7 @@ function deleteQuestion(question)
                                     html: response.message
 
                                     }).then((value) => {
-                                        setTimeout(location.reload(), 2000);
+                                        setTimeout(location.href = '/e_learning?action=ADD-QUIZ&tid='+{{course.tid}}, 2000);
                                     });
                             }else{
                                     Swal.fire({

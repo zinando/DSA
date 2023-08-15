@@ -309,6 +309,7 @@ class MyQualification(db.Model):
     suc_status = db.Column(db.Enum('completed','pending','na'), default='na')
     suc_q_date = db.Column(db.DateTime, nullable=True)
     percent = db.Column(db.Integer, nullable=True)
+    certificate_link = db.Column(db.String(650), nullable=True)
     #attr for manual qualification
     qualifier = db.Column(db.Integer, nullable=True) #person that qualified the user on paper
     logged_by = db.Column(db.Integer, nullable=True) #person who logged the manual qualification

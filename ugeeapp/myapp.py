@@ -15,7 +15,7 @@ import threading
 from pycomm3 import LogixDriver
 from pylogix import PLC
 from flask_migrate import Migrate
-from ugeeapp import app,db,APP_ROOT
+from ugeeapp import app,db,APP_ROOT,CERTIFICATE_FOLDER
 from flask_login import LoginManager, current_user,login_user,logout_user,login_required
 from ugeeapp.appclasses.userclass import USERACCOUNT
 from ugeeapp.appclasses.bosclass import BOSCLASS
@@ -71,7 +71,6 @@ def format_datetime_prime(time):
 	#t['time']=str(end.hour)+":"+str(end.minute)+":"+str(end.second)+"."+str(0) 
 	return t	
 
-##this function will check and process all the necessary conditions for a new stop to be created
 def insertstop(machine,startTime,endTime,data):
 	#get all the stops whose end_time are beyond the start_time of the new stop and and whose start_time are below the end_time of new stop	
 	event1=db.session.query(StopEvent).filter(StopEvent.machine==machine,(StopEvent.end_time>startTime) | (StopEvent.end_time==None),StopEvent.start_time<endTime ).order_by(StopEvent.start_time.desc())
@@ -618,7 +617,6 @@ def reset_password():
 				
 	return render_template('passwordreset.html',resp=response,form=form)
 
-
 @app.route('/bos',methods=['GET','POST'])
 @login_required
 def bos_observation():
@@ -1121,7 +1119,6 @@ def equipment():
 	return render_template('psg/machines.html', form=form,resp=response,codes=codes,action='ADD',id=0)
 
 
-
 @app.route('/viewpsgproduction',methods=['GET','POST'])
 @login_required
 def psgproduction_result():
@@ -1457,21 +1454,27 @@ def my_e_learning():
 
 		course = Trainings.query.order_by(Trainings.title.desc())
 		users = new.get_user()
-		q = [x for x in users if x.adminlevel > 2 ]		
+		q = users #[x for x in users if x.adminlevel > 2 ]		
 
 		if request.method == 'POST':
-			form = request.form
-			mlist = request.form.getlist('trainees')
+			form = request.form			
+			mlist = [int(form['trainee'])] #request.form.getlist('trainees')
 			new_form = {}
 			new_form['tid'] = int(form['tid'])
 			new_form['qualifier'] = int(form['qualifier'])
 			new_form['score'] = form['score']
 			new_form['suc'] = form['suc']
+			new_form['certificate'] = request.files['certifikate']
 						
 			for trainee in mlist:
-				new_form['userid'] = int(trainee)				
+				new_form['userid'] = trainee				
 				get_data = db.session.query(MyQualification).filter(MyQualification.userid==new_form['userid'],MyQualification.training_id==new_form['tid']).first()
-				new_form['quizid'] = get_data.qid if get_data else 0				
+				new_form['quizid'] = get_data.qid if get_data else 0
+				user = new.get_user(trainee)				
+				folder_name = "{}_{}/".format(user.userid,user.sname)
+				new_form['certificate_path'] = "{}{}".format(CERTIFICATE_FOLDER,folder_name)
+				if not new.check_file(new_form['certificate_path']):
+					os.mkdir("{}{}".format(APP_ROOT,new_form['certificate_path']))			
 				new.record_training_score(new_form,1)			
 			response = Markup("<div class='alert alert-success'>{}</div>".format('Training records updated successfully for users.'))
 			
@@ -1480,6 +1483,8 @@ def my_e_learning():
 		return render_template(template,trainings=course,qualifier_list=q,users=users)	
 
 	elif request.args.get('action') == 'VIEW-RECORDS':
+		if session['adminlevel'] < 2:
+			return redirect(url_for('index'))
 		new.run_expiry_report()
 
 		template = 'e_learning/record_view.html'

@@ -19,6 +19,7 @@ APP_ROOT = 'ugeeapp' #os.path.dirname(os.path.abspath(__file__))
 MAIN_UPLOAD_FOLD = '/static/documents/e_learning/'
 SUC_UPLOAD_FOLD = '/static/documents/e_learning/suc/'
 OTHER_UPLOAD_FOLD = '/static/documents/e_learning/others/'
+CERTIFICATE_FOLDER = '/static/documents/e_learning/certificates/'
 app.config['MAIN_UPLOAD_FOLDER'] = MAIN_UPLOAD_FOLD #os.path.join(APP_ROOT, MAIN_UPLOAD_FOLD)
 app.config['SUC_UPLOAD_FOLDER'] = SUC_UPLOAD_FOLD #os.path.join(APP_ROOT, SUC_UPLOAD_FOLD)
 app.config['OTHER_UPLOAD_FOLDER'] = OTHER_UPLOAD_FOLD #os.path.join(APP_ROOT, OTHER_UPLOAD_FOLD)
