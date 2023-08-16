@@ -1104,7 +1104,7 @@ class MYSCHOOL():
 			html += '<th scope="col">Outline</th>'
 			html += '<th scope="col">Quiz</th>'
 			html += '<th scope="col">Completion (%)</th>'
-			html += '<th scope="col">Certificate</th>'
+			#html += '<th scope="col">Certificate</th>'
 			html += '</tr></thead>'
 			html += '<tbody>'
 
@@ -1152,15 +1152,15 @@ class MYSCHOOL():
 						elif course.suc !=1:							
 							html += '<td><a href="/e_learning?action=GET-QUIZ&template=e_learning/tr_default.html&id='+str(get_data.qid)+'&pass='+str(course.pass_mark)+'&tid='+str(course.tid)+'" target="_blank">qualify</a></td>'
 						else:
-							html +='<td></td>'	
-						if get_data.percent == 100:
-							html += '<td><span style="color:green">'+str(get_data.percent)+'</span></td>'
-						else:
-							html += '<td><span style="color:red">'+str(get_data.percent)+'</span></td>'
-						if self.check_file(get_data.certificate_link):
-							html += '<td><span><a style="font-size:12px" href="'+get_data.certificate_link+'" target="_blank">certificate</a></span></td>'
-						else:
 							html +='<td></td>'
+						html += '<td>'		
+						if get_data.percent == 100:
+							html += '<span style="color:green">'+str(get_data.percent)+'</span><br>'
+						else:
+							html += '<span style="color:red">'+str(get_data.percent)+'</span><br>'						
+						if self.check_file(get_data.certificate_link):
+							html += '<span><a style="font-size:12px" href="'+get_data.certificate_link+'" target="_blank">certificate</a></span>'
+						html +='</td>'
 
 					else:
 						quizlink = "/templates/e_learning/{}.html".format(main)
@@ -1171,8 +1171,7 @@ class MYSCHOOL():
 							html += '<td><a href="/e_learning?action=GET-QUIZ&template=e_learning/tr_default.html&id='+str(0)+'&pass='+str(course.pass_mark)+'&tid='+str(course.tid)+'" target="_blank">qualify</a></td>'
 						else:
 							html +='<td></td>'
-						html += '<td><span style="color:#000">0</span></td>'
-						html +='<td></td>'
+						html += '<td><span style="color:#000">0</span></td>'						
 					count += 1
 					html += '</tr>'
 
@@ -1215,15 +1214,15 @@ class MYSCHOOL():
 							elif course.suc !=1:								
 								html += '<td><a href="/e_learning?action=GET-QUIZ&template=e_learning/tr_default.html&id='+str(get_data.qid)+'&pass='+str(course.pass_mark)+'&tid='+str(course.tid)+'" target="_blank">qualify</a></td>'
 							else:
-								html +='<td></td>'	
+								html +='<td></td>'
+							html += '<td>'		
 							if get_data.percent == 100:
-								html += '<td><span style="color:green">'+str(get_data.percent)+'</span></td>'
+								html += '<span style="color:green">'+str(get_data.percent)+'</span><br>'
 							else:
-								html += '<td><span style="color:red">'+str(get_data.percent)+'</span></td>'
+								html += '<span style="color:red">'+str(get_data.percent)+'</span><br>'
 							if self.check_file(get_data.certificate_link):
-								html += '<td><span><a style="font-size:12px" href="'+get_data.certificate_link+'" target="_blank">certificate</a></span></td>'
-							else:
-								html +='<td></td>'	
+								html += '<span><a style="font-size:12px" href="'+get_data.certificate_link+'" target="_blank">certificate</a></span>'
+							html +='</td>'	
 						else:
 							quizlink = "/templates/e_learning/{}.html".format(main)
 							if self.check_file(quizlink):
@@ -1233,7 +1232,7 @@ class MYSCHOOL():
 							else:
 								html +='<td></td>'	
 							html += '<td><span style="color:#000">0</span></td>'
-							html +='<td></td>'
+							
 						count += 1
 						html += '</tr>'
 
@@ -1276,15 +1275,15 @@ class MYSCHOOL():
 							elif course.suc !=1:								
 								html += '<td><a href="/e_learning?action=GET-QUIZ&template=e_learning/tr_default.html&id='+str(get_data.qid)+'&pass='+str(course.pass_mark)+'&tid='+str(course.tid)+'" target="_blank">qualify</a></td>'
 							else: 
-								html +='<td></td>'	
+								html +='<td></td>'
+							html += '<td>'		
 							if get_data.percent == 100:
-								html += '<td><span style="color:green">'+str(get_data.percent)+'</span></td>'
+								html += '<span style="color:green">'+str(get_data.percent)+'</span><br>'
 							else:
-								html += '<td><span style="color:red">'+str(get_data.percent)+'</span></td>'
+								html += '<span style="color:red">'+str(get_data.percent)+'</span><br>'
 							if self.check_file(get_data.certificate_link):
-								html += '<td><span><a style="font-size:12px" href="'+get_data.certificate_link+'" target="_blank">certificate</a></span></td>'
-							else:
-								html +='<td></td>'	
+								html += '<span><a style="font-size:12px" href="'+get_data.certificate_link+'" target="_blank">certificate</a></span>'
+							html +='</td>'	
 						else:
 							quizlink = "/templates/e_learning/{}.html".format(main)
 							if self.check_file(quizlink):
@@ -1294,7 +1293,7 @@ class MYSCHOOL():
 							else:
 								html +='<td></td>'	
 							html += '<td><span style="color:#000">0</span></td>'
-							html +='<td></td>'
+							
 						count += 1
 						html += '</tr>'
 
