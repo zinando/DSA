@@ -1,0 +1,284 @@
+VMware Workstation 10 delivers best-in-class Windows 8 support, and innovative
+new features that transform the way technical professionals work with virtual
+machines, whether they reside on their PCs or on private enterprise clouds.
+   
+*New Operating System Support
+ Support has been added for: 
+-Windows 8.1
+-Windows 8.1 Enterprise
+-Windows Server 2012 R2
+-Ubuntu 13.10
+As well as for the latest Fedora, CentOS, Red Hat and OpenSUSE releases.
+
+
+*VMware Hardware Version 10
+This version of VMware Workstation includes VMware hardware Version 10 and is
+compatible with vSphere 5.5. Hardware versions introduce new virtual hardware
+functionality and new features while enabling VMware to run legacy operating
+systems in our virtual machines. New features included in this hardware
+version:
+
+*16 vCPUs
+Virtual machines can now run with up to 16 virtual CPUs. This enables very
+processor intensive applications to be run in a virtual machine.
+Note: Running virtual machines with 16 vCPUs requires that both your host
+and guest operating system support 16 logical processors. Your physical
+machine must have at least 8 cores with hyper-threading enabled to power
+on a virtual machine with this configuration.
+
+*8 Terabyte Disks 
+Virtual machines can now include virtual disks greater than 2 Terabytes.
+Given the limitations of most operating systems to boot from disks greater
+than 2 Terabytes, These large disks are most useful as secondary drives for
+file storage.
+
+Note: To use a disk greater than 2TB for a boot disk, your guest operating
+system would need to boot using EFI in order to read a GPT formatted disk
+which is required to access all of the sectors on a disk of this size.
+Additionally, the Buslogic controller is not capable of supporting a disk
+greater than 2TB.
+
+Extra murphy78 note: To enable EFI boot mode, edit the .VMX file and add:
+firmware = "efi"
+Alternatively, to set it back to bios (legacy) boot, change to:
+firmware = "bios"
+
+*Virtual SATA Disk Controller
+A SATA I/O controller can now be selected during the creation of a custom
+virtual machine in addition to an IDE and SCSI controller. This enables use
+of in-box SATA drivers that are shipped with operation systems.
+
+
+*USB Improvements 
+USB 3 Streams have been implemented to enable high speed transfer of files
+from USB 3 external storage devices that support this technology. For
+customers running Workstation 10 on laptops with small hard disks, large
+data files, video files etc., can be stored on an external USB 3 storage
+device and accessed quickly from within the virtual machine.
+
+VMware has also addressed issues Intel, NEC, AMD, TI and Linux Kernel host
+xHCI drivers to improve overall USB 3 compatibility and performance.
+
+*More VMnets
+Due to demand, VMware has doubled the number of VMnets in Workstation 10
+to twenty! This provides you with more virtual networks to dedicate to
+specific uses, and it enables more complex networked virtual environments
+to be built.
+
+*SSD Pass-through 
+Windows 8 is capable of detecting when it is being run from a solid state
+drive (SSD) and optimizes itself for this hardware. In Workstation 10, the
+guest operating system will be able to detect when the virtual machine Disk
+file is being stored on an SSD drive and the operating system can make the
+same optimizations when it is running in a virtual machine.
+
+Many additional changes have been made to this Hardware Version including
+some performance improvements, power savings, and compatibility with new
+processors. We have also made significant improvements in the startup time
+of VMware Workstation and in Windows boot time when running Windows virtual
+machines. 
+
+*Expiring Virtual Machines
+VMware has enhanced the capabilities of Restricted Virtual Machines to
+include the ability to expire a virtual machine on a specified date and
+time. This feature enables our customers to create virtual machines to be
+shared with employees, students, customers, contractors, etc. The
+restricted virtual machine will run until their contract terminates,
+demo runs out, or course ends.
+
+The expiring capability establishes a secure connection to a web server
+to validate the current date and time and prevent users from rolling back
+their system clock to circumvent the logic. The ability to set the
+synchronization frequency has been added to allow customers to balance the
+need for timely expiration and the load on their network. Expiring virtual
+machines also include the ability to display a custom message for virtual
+machines about to expire and after a virtual machine has expired. Finally,
+a lease period can be defined to allow users to run offline for plane trips
+and remote work.
+
+*Virtual Tablet Sensors
+Workstation runs very well on the new tablet and convertible PCs. Last year
+VMware enabled touch screen input to be passed through to the virtual
+machine. Workstation 10 introduces a virtual Accelerometer, Gyroscope,
+Compass and Ambient Light sensor.
+
+Customers who run Workstation 10 on a Windows 8 tablet and install Windows
+8 in a VM, will be able to shake, twirl, tilt, and spin their tablet and
+sensor aware applications running in a virtual machine will respond
+accordingly.
+
+*User Interface Enhancements
+There are many user interface improvements that we have included in the
+Workstation 10 release. The highlights include:
+
+*Windows 8 Unity Mode Support 
+We are continuing to improve how the Workstation Unity user-interface works
+with Microsoft's "Modern UI" or the "Microsoft Design Language"
+(The new tile interface in Windows 8 formerly known as Metro).
+Microsoft Store applications are now available in the Unity menu and can be
+launched directly from it.
+
+*Multiple Monitor Navigation 
+When running with 2, 3, 4 or more monitors it has been frustrating to use
+the full screen mode in Workstation and toggle through each combination of
+monitors to get to the one you want. The full screen toolbar now has an
+option to choose your configuration from a menu and jump to it immediately.
+
+*Power Off Suspended Virtual Machines 
+Workstation 10 lets you simply power off a suspended Virtual Machine in
+order to make changes to the configuration without powering it on and then
+off first. Powering off a suspended virtual machine will lose any
+information stored in memory, but will not lose anything saved to the
+virtual disk.
+
+*Remote Hardware Upgrade 
+When working with virtual machines running remotely on vSphere or on
+another instance of Workstation, you can now remotely upgrade the virtual
+hardware version.
+
+*Localized into Simplified Chinese 
+The Workstation user interface and online help has been translated into
+Simplified Chinese.
+
+*New Converter 
+This release includes the latest version of the VMware Standalone Converter.
+The Converter enables users to turn a physical machine into a virtual
+machine. This version of the Converter includes the ability to convert
+machines running Windows 8, Windows Server 2012, and RHEL 6 operating
+systems. It supports virtual and physical machines with Unified Extensible
+Firmware Interfaces (UEFI) and EXT4 file systems as well as GUID Partition
+Table (GPT) disks.
+
+*OVFTool 
+The Open Virtual Machine Format (OVF) is a virtual machine distribution
+format that supports sharing virtual machines between products and
+organizations. The VMware OVF Tool is a command-line utility that
+enables a user to import and export OVF packages to and from a wide
+variety of VMware products. The latest release of the OVFTool is included
+with VMware Workstation 10 and is used to upload and download virtual
+machines to and from vSphere. The OVFTool is also used to import an .OVF
+file which may come in handy when importing virtual machines created using
+desktop virtualization software developed by Oracle.
+
+*VMRun Enhancements 
+The VMRun command line utility has been enhanced with two new options
+getGuestIPAddress and checkToolsState to retrieve the IP address of the
+guest operating system and determine the state of VMware Tools in a guest.
+
+*Cloud Management Tools 
+The VMware Workstation team has been making enhancements and working with
+partners to enable cloud management tools to be used with virtual machines
+running in VMware Workstation 10.
+*We would like to thank Mitchell Hashimoto at Vagrant for his development
+of the Vagrant VMware Provider. See http://www.vagrantup.com/vmware for more
+information.
+*VMware would also like to thank Christian Hammond for the development of a
+Chef knife plug-in for VMware Workstation. See
+https://github.com/chipx86/knife-wsfusion for more information.
+
+*Embedded 30-day Trial 
+Workstation 10 can now be evaluated for 30-days by simply entering your
+email address the first time you run the application. This change is
+intended to make it much easier for our customers to learn about the
+latest release of VMware Workstation without their license keys being
+trapped by spam filters.
+
+*VMware KVM 
+Many of our customers have asked for a way to run a virtual machine so that
+their users do not realize they are running in a virtual machine. VMware
+Workstation 10 includes a new executable (on Windows only for now) called
+VMware KVM. Run vmware-kvm.exe vmx-file.vmx from the command line and your
+virtual machine will launch in full screen with no toolbar or any other
+indicator that you are running a VM. You can use Ctrl-Alt to ungrab from the
+virtual machine and the Pause/Break key to toggle between multiple virtual
+machines running under VMware KVM, or between a virtual machine and the host
+system. The user experience should be just like that of using a KVM switch -
+hence the name.
+
+If you simply type vmware-kvm.exe from the command line you will get some
+options that can be used in this format:
+vmware-kvm.exe [OPTIONS] vmx-file.vmx
+If you run vmware-kvm.exe --preferences you will presented with an interface
+that allows you to configure certain behaviors such as the key used to cycle
+between virtual machines.
+
+This is the latest generation of an executable previously called
+VMware-fullscreen.exe that previously shipped with Workstation 8 with a
+major upgrade in display handling.
+
+*WSX 1.1 
+Try out the latest version of WSX which can be found on the VMware
+Communities page at: https://communities.vmware.com/community/vmtn/wsx.
+
+Resolved Issues
+
+The following issues are resolved in this release of VMware Workstation.
+ 
+*Easy Install supports RTM versions of Windows 8.1 and Windows Server 2012 R2
+Easy Install now supports RTM versions of Windows 8.1 and
+Windows Server 2012 R2.
+
+*Workstation or Player on Windows freezes if another application is frozen.
+Other stuck Windows applications could cause Workstation or Player to freeze
+while waiting for the application to respond.
+
+*Virtual machine hangs when powering off
+Rarely, virtual machines will cease functioning (hang) while powering off,
+particularly if the guest OS was in the middle of a BSOD or kernel panic.
+
+*Improved compatibility with some AMD CPUs
+Updated masking to match capabilities of certain AMD PileDriver CPUs.
+
+*Virtual machines displayed incorrectly on a multi-monitor Windows host when
+the displays have differing pixel density (DPI.)
+
+*Boot from CD/DVD when Legacy Floppy is disabled
+
+Known Issues
+
+Known issues from prior releases of VMware Workstation 10 also might apply
+to VMware Workstation 10.0.1.
+ 
+*Workstation UI may crash when creating full clones of very large virtual
+machines
+
+Workstation for Windows may run out of memory creating a full clone of a
+virtual machine with virtual disks many terabytes in size.
+
+Workaround: Copy the virtual machine outside VMware Workstation or use
+VMware Workstation for Linux.
+ 
+*Cannot launch Workstation in Red Hat Enterprise Linux 6.4
+If you cannot launch Workstation on a Red Hat Enterprise Linux 6.4 host,
+you may not have sudo access in gksu.
+
+Workaround: Change your gksu settings in /etc/vmware/config, using
+gksu.rootMethod. Set gksu.rootMethod to sudo or su.
+
+*Hot-plug operations involving SATA virtual disks do not work
+VMware Workstation allows you to add virtual disks connected to the SATA
+adapter while the virtual machine is powered on. When you do this,
+Workstation shows the operation was successfully completed, but disks are
+not visible to the operating system installed in the virtual machine.
+
+Workaround: Power off the virtual machine, connect the disk, then power the
+virtual machine back on.
+
+*ODBC driver creation shuts down when shared folders are enabled on a
+Windows 2008 guest
+
+When creating an ODBC driver for use in mapping a drive, the ODBC dialog
+disappears during the step when you select a Workbook and choose a folder
+and Workstation crashes.
+
+Workaround: Do not map any VMware shared folders as drive letters. Use the
+Universal Naming Convention (UNC) paths instead, for example:
+\\vmware-host\Shared Folders\
+
+*VMware Tools changes cause black screen in virtual machine
+After VMware Tools are uninstalled or automatically upgraded for a
+Windows 8.0 virtual machine, the virtual machine may display as a black
+screen for two minutes.
+
+Workaround: Install Windows 8.0 update KB2836988 or upgrade to Windows 8.1.
+Do not shut down the virtual machine when it is in black screen.
