@@ -18,6 +18,15 @@
 		<div class="col-md-12" style="margin-bottom:10px">
             <img src="{{page_banner}}" height="200px" width="100%">
         </div>
+        {%else%}
+        <hr><div class="col-md-12" style="margin:10px">
+			<div class="login100-form-logo align-items-center justify-content-center">
+									
+				<div class="text-center" style="color:#000000;background: #ff7728;">
+					{{training.title}}
+				</div>
+			</div>
+		</div><hr>
         {%endif%}		
 		<div class="col-md-12" style="position:relative;display: none;" id="counter-parent-div">
 			<div class="text-center" style="border: 1px #ffffff solid;position: absolute; right: 20px;top: 5px; border-radius: 50%;height:40px;width: 40px;padding-top: 8px; background-color: #179cd7;color: #ffffff;font-size: 12px;" id="counter-div"></div>
@@ -331,7 +340,7 @@ function getResult(id,mark,tid)
 			                }).then(function(){
 
 			                	setTimeout(function(){
-			                		location.reload()
+			                		location.href= "/e_learning?action=";
 			                	},1000);
 
 			                })
@@ -345,7 +354,7 @@ function getResult(id,mark,tid)
 			                }).then(function(){
 
 			                	setTimeout(function(){
-			                		location.reload()
+			                		location.href= "/e_learning?action=";
 			                	},1000);
 
 			                })
