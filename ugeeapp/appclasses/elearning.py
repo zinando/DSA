@@ -477,6 +477,8 @@ class MYSCHOOL():
 
 		if len(new.get_user_roles(userid)) >0 :
 			for role in new.get_user_roles(userid):
+				print(role.rname)
+				print(role.trainings)
 				if role.trainings:
 					trs = json.loads(role.trainings)
 					t_codes.extend(trs)
@@ -487,8 +489,9 @@ class MYSCHOOL():
 			#get trainings by tcodes
 			for x in t_codes:
 				tr = self.get_training_by_t_code(x)
-				if tr.priority != 'M':
-					prio_a_trs.append(tr)
+				if tr:
+					if tr.priority != 'M':
+						prio_a_trs.append(tr)
 
 		return  prio_a_trs
 
@@ -973,7 +976,7 @@ class MYSCHOOL():
 
 		get_tr = Trainings.query.filter(Trainings.tid==data['tid']).first()
 
-		if 'score' in data.keys() and data['score']:
+		if get_tr.suc < 3 and 'score' in data.keys() and data['score']:
 			if int(data['score']) >= int(get_tr.pass_mark):
 				status = 'PASSED'			
 			else:
@@ -1043,7 +1046,7 @@ class MYSCHOOL():
 			if manual == 1:
 				log.userid = data['userid']
 				log.logged_by = session['userid']
-				log.qulifier = data['qualifier']
+				log.qualifier = data['qualifier']
 			else:
 				log.userid = session['userid']	
 

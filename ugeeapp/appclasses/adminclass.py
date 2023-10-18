@@ -76,11 +76,18 @@ class AdminRoles():
 			for i in tr:
 				mr = {}
 				x = new.get_training_by_t_code(i)
-				mr['tid'] = x.tid
-				mr['title'] = x.title
-				mr['t_code'] = x.t_code
-				mr['priority'] = x.priority
-				trainings.append(mr)
+				if x:
+					mr['tid'] = x.tid
+					mr['title'] = x.title
+					mr['t_code'] = x.t_code
+					mr['priority'] = x.priority
+					trainings.append(mr)
+				else:
+					mr['tid'] = 0
+					mr['title'] = None
+					mr['t_code'] = i
+					mr['priority'] = ''
+					trainings.append(mr)
 		else:
 			trainings = None
 		
@@ -134,10 +141,10 @@ class AdminRoles():
 		return json.dumps({'status':1,'message':response})
 
 	def delete_skill_from_role(self,rid,tcode):
-		role = self.get_admin_roles(rid)
-
-		#tcode = "{}".format(tcode)
-	
+		print(rid)
+		print(tcode)
+		role = self.get_admin_roles(rid) 
+			
 		tr_json = json.loads(role.trainings)
 		if tcode not in tr_json:
 			response = Markup("<div class='alert alert-danger'>Skill not in the list.</div>")

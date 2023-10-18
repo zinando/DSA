@@ -250,6 +250,9 @@ function viewSkillset(selector,roleid)
 
 function deleteSkill(tcode,rid){
 	tcode = String(tcode).padStart(6, "0"); //preserves leading zeros in tcode
+	alert(tcode);
+	return false;
+	
 	Swal.fire({
         title: 'Are you sure you wan to delete this Item?',        
         icon: 'warning',
