@@ -4,7 +4,7 @@ from wtforms import  TextAreaField, PasswordField, validators,ValidationError,Da
 from wtforms.validators import InputRequired, Length, Email,NumberRange
 from wtforms.widgets import html_params 
 from wtforms.widgets import ListWidget, CheckboxInput,TextArea
-from wtforms.fields.datetime import DateTimeField
+from wtforms.fields.datetime import DateTimeField 
 
  
 
@@ -69,7 +69,7 @@ class ChangePasswordForm(FlaskForm):
     password2 = PasswordField('Repeat Password', validators=[InputRequired("Password is required")])
     submit=SubmitField('Change password')
 
-class OGCBOSForm(FlaskForm):
+class OGCBOSForm(FlaskForm): #PSG OGCBOS
      
     observer = StringField('Full Name', validators=[InputRequired("Full name is required.")])
     department = SelectField("Department",coerce=int,choices=[(1,"PSG"),(2,"MSG"),(3,"QA")],validators=[InputRequired("Department is required.")])
@@ -139,7 +139,7 @@ class OGCBOSForm(FlaskForm):
     comment = TextAreaField('General Comment')
     submit=SubmitField('Submit')
 
-class SAFETYBOSForm(FlaskForm):
+class SAFETYBOSForm(FlaskForm): #PSG BOS
      
     observer = StringField('Full Name', validators=[InputRequired("Full name is required.")])
     department = SelectField("Department",coerce=int,choices=[(1,"PSG"),(2,"MSG"),(3,"QA")],validators=[InputRequired("Department is required.")])
@@ -154,8 +154,8 @@ class SAFETYBOSForm(FlaskForm):
             render_kw={"title":"Employees apply individual locks on local disconnects before working on machines and equipment. Locks have name & phone number."})    
     point2=  SelectField("Waste Bin Usage",coerce=int,choices=[(0,"Select"),(1,"SAFE"),(0,"AT RISK")],validators=[InputRequired("This is required.")],
             render_kw={"title":"Employees and contractors dispose waste in the right bin. Only waste on the bin label is found inside the waste bin."})    
-    point3=  SelectField("Use of PPE while attending to spills",coerce=int,choices=[(0,"Select"),(1,"SAFE"),(0,"AT RISK")],validators=[InputRequired("This is required.")],
-            render_kw={"title":"Employees and contractors wear 3M nose mask and Safety Gloves while attending to powder spills."})    
+    point3=  SelectField("Truck Docking Inspection Checklist",coerce=int,choices=[(0,"Select"),(1,"SAFE"),(0,"AT RISK")],validators=[InputRequired("This is required.")],
+            render_kw={"title":"Security fills the Truck Docking Inspection checklist for Inra-site and shipment trucks."})    
     point4=  SelectField("Use of Scissors Lift",coerce=int,choices=[(0,"Select"),(1,"SAFE"),(0,"AT RISK")],validators=[InputRequired("This is required.")],
             render_kw={"title":"Daily and previous week Scissors Lift inspections are done, and ALL doors are closed and Locked during lifting operation."})    
     point5=  SelectField("Broken Pallets On The Floor",coerce=int,choices=[(0,"Select"),(1,"SAFE"),(0,"AT RISK")],validators=[InputRequired("This is required.")],
@@ -387,8 +387,8 @@ class WHSE_SAFETYBOSForm(FlaskForm): #SNO FP BOS
     team = SelectField("Team on Duty",coerce=str,choices=[("N/A","N/A")])    
     bos_time =  DateField('BOS Date', format="%Y-%m-%d", description = 'Date that you did the BOS')    
     percent = StringField('Score',render_kw={"readonly":True})
-    point1=  SelectField("Forklift Operators",coerce=int,choices=[(0,"Select"),(1,"SAFE"),(0,"AT RISK")],validators=[InputRequired("This is required.")],
-            render_kw={"title":"Contractors operating forklift in the warehouse wear seat belt"})    
+    point1=  SelectField("Truck Docking Inspection Checklist",coerce=int,choices=[(0,"Select"),(1,"SAFE"),(0,"AT RISK")],validators=[InputRequired("This is required.")],
+            render_kw={"title":"Security fills the Truck Docking Inspection checklist for Inra-site and shipment trucks."})    
     point2=  SelectField("Trucks",coerce=int,choices=[(0,"Select"),(1,"SAFE"),(0,"AT RISK")],validators=[InputRequired("This is required.")],
             render_kw={"title":"Trucks are chocked  with a pair of chock at the wheel."})    
     point3=  SelectField("Motor Boys",coerce=int,choices=[(0,"Select"),(1,"SAFE"),(0,"AT RISK")],validators=[InputRequired("This is required.")],
@@ -412,8 +412,8 @@ class WHSE_RPMBOSForm(FlaskForm): #SNO RPM BOS
     percent = StringField('Score',render_kw={"readonly":True})
     point1=  SelectField("Trucks",coerce=int,choices=[(0,"Select"),(1,"SAFE"),(0,"AT RISK")],validators=[InputRequired("This is required.")],
             render_kw={"title":"Trucks are chocked  with a pair of chock at the wheel."})    
-    point2=  SelectField("Forklift Operators",coerce=int,choices=[(0,"Select"),(1,"SAFE"),(0,"AT RISK")],validators=[InputRequired("This is required.")],
-            render_kw={"title":"Contractors operating forklift in the warehouse wear seat belt"})    
+    point2=  SelectField("Truck Docking Inspection Checklist",coerce=int,choices=[(0,"Select"),(1,"SAFE"),(0,"AT RISK")],validators=[InputRequired("This is required.")],
+            render_kw={"title":"Security fills the Truck Docking Inspection checklist for Inra-site and shipment trucks."})    
     point3=  SelectField("Spills",coerce=int,choices=[(0,"Select"),(1,"SAFE"),(0,"AT RISK")],validators=[InputRequired("This is required.")],
             render_kw={"title":"Employees and contractors clean powder and liquid spills immediately they occur."})                                              
     point4=  SelectField("Pallets Outside 5S",coerce=int,choices=[(0,"Select"),(1,"SAFE"),(0,"AT RISK")],validators=[InputRequired("This is required.")],

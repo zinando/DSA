@@ -1,7 +1,7 @@
 cd OneDrive - SIL Chemicals Limited\PYTHON\DSA
 virtual\scripts\activate
 set FLASK_APP=ugeeapp
-flask run --host=0.0.0.0 
+flask run --host=0.0.0.0  
 
 "C:\Users\Administrator\Desktop\PYTHON\virtual\Scripts\python.
 istrator\Desktop\PYTHON\virtual\lib\site-packages\wfastcgi.py"

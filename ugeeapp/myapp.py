@@ -6,7 +6,7 @@ from ugeeapp.forms import LoginForm,PSGProductionReportForm,UTILITY_SAFETYBOSFor
 from ugeeapp.models import Trainings,MyQualification
 import pycomm3
 import os
-import time  
+import time 
 import json
 import datetime
 from datetime import datetime,timedelta
@@ -1587,7 +1587,7 @@ def my_e_learning():
 				return redirect('/e_learning?action=MANAGE')
 			else:
 				resp = Markup("<div class='alert alert-danger'>{}</div>".format(data['message']))
-			flash(response,"information")	
+				flash(resp,"information")	
 
 		##get the course
 		course = Trainings.query.filter_by(tid=tid).first()

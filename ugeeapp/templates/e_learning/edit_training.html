@@ -117,6 +117,14 @@
                     			                    		                    		
                 		</div>
                 		<div class="row align-items-center justify-content-center">
+                			<div class="col-md-4">                    
+                        		<div class='form-check'>
+                        			<input class="form-check-input" type="checkbox" id="expire_checkbox" name="expire_checkbox" />
+                        			<input type="hidden" name="expire_option" id="expire_option" value="no">
+                        			<label class="form-check-label" for="expire_checkbox">Expire this training</label>
+                            		
+                        		</div>
+                    		</div>		                    		
                     		<div class="col-md-4">                    
                         		<div class='form-group'>
                             		<button class="btn btn-sm btn-info" type="submit"> Update Course</button>
@@ -153,7 +161,7 @@ fetch(`/e_learning?action=${'FETCH-USERS'}`)
                                 $('#depart').val('{{course.department}}');                                
                                 $('#owner').append(text.data);
                                 $('#owner').val('{{course.owner}}');                               
-                            })
+                            });
  function inputValues()
  {
  	$('#title').val('{{course.title}}'); 	
@@ -231,6 +239,29 @@ function deleteFile(link,doc_type)
       		}
       	})
 }
+
+var checkbox = document.querySelector("input[name=expire_checkbox]");
+
+checkbox.addEventListener('change', function() {
+  	if (this.checked) {
+    	Swal.fire({
+        	title: 'Warning!',
+        	text: 'Checking this box means this training will be expired for all trainees, and it cannot be reversed. Would you like to proceed?',        
+        	icon: 'warning',
+        	showCancelButton: true,
+        	confirmButtonColor: '#3085d6',
+        	cancelButtonColor: '#d33',
+        	confirmButtonText: 'Yes, proceed'        	
+      	}).then((result)=>{
+      			if (result.value){
+      				document.getElementById("expire_option").value = "yes";
+      			} else {
+      				document.getElementById("expire_checkbox").checked = false;
+      				document.getElementById("expire_option").value = "no";
+      			}
+      		});
+  	}
+});
 
 
 </script>

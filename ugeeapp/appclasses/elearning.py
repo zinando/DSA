@@ -622,6 +622,33 @@ class MYSCHOOL():
 
 		return {"total":t_completion,"m":m_completion,"a":a_completion,"b":b_completion}
 
+	def expire_training(self, tid):
+		"""assigns 0 score to non-suc trainings and pending to suc trainings"""
+		qualz = db.session.query(MyQualification).filter(MyQualification.training_id==tid).all()
+		if qualz is not None:			
+			for item in qualz:				
+				if item.suc_status == "na":
+					db.session.query(MyQualification).filter(MyQualification.qid==item.qid).update({
+						"score": 0, 'status': 'REPEAT'})
+					db.session.commit()
+
+					# log qualification percent
+					self.log_qualification_percent(item.qid)
+				
+				else:
+					db.session.query(MyQualification).filter(MyQualification.qid==item.qid)\
+						.update({"suc_status": "pending", 'status': 'REPEAT'})
+					
+					if item.score is not None:
+						db.session.query(MyQualification).filter(MyQualification.qid==item.qid)\
+							.update({"score": 0})
+					db.session.commit()
+
+					# log qualification percent
+					self.log_qualification_percent(item.qid)
+						
+		return
+
 	def add_training(self,form,edit=0,files=None):
 
 		#check if title already exists for another training
@@ -646,6 +673,7 @@ class MYSCHOOL():
 		#q_link = form['quiz']
 		pass_mark = form['pasmk']
 		priority = form['prio']
+		expire_option = form['expire_option']
 		suc = 0 
 		if form['suc']:			
 			suc = form['suc']		
@@ -706,7 +734,14 @@ class MYSCHOOL():
 				})
 			db.session.commit()
 
-			return {'status':1, 'message': 'Course was updated successfully.'}
+			message = 'Training was updated successfully.'
+
+			# expire qualifications here			
+			if expire_option == 'yes':
+				self.expire_training(edit)
+				message += " Past qualifications have also been expired for all users."
+
+			return {'status':1, 'message': message}
 
 		#generate training code here with a function
 
@@ -917,17 +952,20 @@ class MYSCHOOL():
 			
 			if difference_in_years <= expiry:
 				result = 'valid'
-		#else:
+		else:
 			result = 'valid'
 
 		return result
 
-	def log_qualification_percent(self,qid):
+	def log_qualification_percent(self, qid):
 		qualz = db.session.query(MyQualification).filter(MyQualification.qid==qid).first()
-		suc_stat = self.check_for_suc(qualz.training_id)
+
 		if qualz is not None:
+			suc_stat = self.check_for_suc(qualz.training_id)
+			# get training expiry
+			training = self.get_training(qualz.training_id)
 			if suc_stat == "not required" :
-				if qualz.status == 'PASSED' and self.check_training_expiry(qualz.training_id,qualz.q_date) !='expired':
+				if qualz.status == 'PASSED' and self.check_training_expiry(training.expiry,qualz.q_date) !='expired':
 					perc = 100
 				else:
 					perc = 0
@@ -976,11 +1014,13 @@ class MYSCHOOL():
 
 		get_tr = Trainings.query.filter(Trainings.tid==data['tid']).first()
 
-		if get_tr.suc < 3 and 'score' in data.keys() and data['score']:
-			if int(data['score']) >= int(get_tr.pass_mark):
-				status = 'PASSED'			
-			else:
-				status = 'REPEAT'
+		# check for score if training is not SUC ONLY
+		if get_tr.suc != 1:
+			if 'score' in data.keys() and data['score']:
+				if int(data['score']) >= int(get_tr.pass_mark):
+					status = 'PASSED'			
+				else:
+					status = 'REPEAT'
 
 		##check if qualification record already exist for this user on this course#
 		qualz = db.session.query(MyQualification).filter(MyQualification.qid==data['quizid']).first()
@@ -1081,7 +1121,7 @@ class MYSCHOOL():
 			get_courses = []
 			for i in self.get_user_trainings(usernow):
 				if i.department == data['value']:
-					get_courses.append(i)
+					get_courses.append(i)		
 		elif data['filter'] == 'user':
 			usernow = data['value']
 			get_courses = self.get_user_trainings(usernow)
@@ -1090,11 +1130,12 @@ class MYSCHOOL():
 
 		else:		
 			get_courses = self.get_user_trainings(usernow)
+		print(f'filter: {data["filter"]}, value: {data["value"]}')
 				
 		if get_courses is not None:
 			html += '<div class="row">'
 			html += '<div class="col-md-12" style="text-align:center">Skill Matrix For: '+fullnamme+'</div>'
-			html += '<div class="col-md-12"><hr style="border: solid 2px #179cd7;"></div>'
+			html += '<di]v class="col-md-12"><hr style="border: solid 2px #179cd7;"></div>'
 			html += '</div>'
 			html += '<table class="table table-bordered table-striped">'
 			html += '<thead><tr>'
@@ -1125,8 +1166,13 @@ class MYSCHOOL():
 
 					html += '<tr>'
 					html += '<td><span style="color:#179cd7">'+course.t_code+'</span></td>'
-					if get_data :
-						html += '<td><span style="color:#179cd7">'+get_data.q_date.strftime("%Y-%m-%d")+'</span></td>'
+					if get_data:
+						html += '<td>'
+						if get_data.q_date:
+							html += '<span style="color:#179cd7; font-size:9px">'+get_data.q_date.strftime("%Y-%m-%d")+'</span>'
+						if get_data.suc_q_date:
+							html += '<br><span style="color:#179cd7; font-size:9px">suc- '+get_data.suc_q_date.strftime("%Y-%m-%d")+'</span>'
+						html += '</td>'
 					else:
 						html += '<td></td>'
 					html += '<td>'+course.title+'</td>'
@@ -1183,14 +1229,25 @@ class MYSCHOOL():
 					bash = db.session.query(MyQualification).all()
 					get_data = db.session.query(MyQualification).filter(MyQualification.userid==session['userid'],MyQualification.training_id==course.tid).first()
 
-					if get_data and get_data.score >= course.pass_mark:	
+					#if get_data and get_data.score >= course.pass_mark:
+					if get_data and get_data.percent == 100:	
 						main = 'tr'
 						titles = course.title.split()
 						for x in titles:
 							main += "_{}".format(x.lower())
 
 						html += '<tr>'
-						html += '<td>'+str(count)+'</td>'
+						#html += '<td>'+str(count)+'</td>'						
+						html += '<td><span style="color:#179cd7">'+course.t_code+'</span></td>'
+						if get_data:
+							html += '<td>'
+							if get_data.q_date:
+								html += '<span style="color:#179cd7; font-size:9px">'+get_data.q_date.strftime("%Y-%m-%d")+'</span>'
+							if get_data.suc_q_date:
+								html += '<br><span style="color:#179cd7; font-size:9px">suc- '+get_data.suc_q_date.strftime("%Y-%m-%d")+'</span>'
+							html += '</td>'
+						else:
+							html += '<td></td>'
 						html += '<td>'+course.title+'</td>'
 						html += '<td>'+course.department+'</td>'
 						html += '<td>'+course.priority+'</td>'
@@ -1244,14 +1301,25 @@ class MYSCHOOL():
 					bash = db.session.query(MyQualification).all()
 					get_data = db.session.query(MyQualification).filter(MyQualification.userid==session['userid'],MyQualification.training_id==course.tid).first()
 
-					if get_data is None or get_data.score < course.pass_mark:	
+					#if get_data is None or get_data.score < course.pass_mark:
+					if get_data is None or get_data.percent < 100:	
 						main = 'tr'
 						titles = course.title.split()
 						for x in titles:
 							main += "_{}".format(x.lower())
 
 						html += '<tr>'
-						html += '<td>'+str(count)+'</td>'
+						# html += '<td>'+str(count)+'</td>'						
+						html += '<td><span style="color:#179cd7">'+course.t_code+'</span></td>'
+						if get_data:
+							html += '<td>'
+							if get_data.q_date:
+								html += '<span style="color:#179cd7; font-size:9px">'+get_data.q_date.strftime("%Y-%m-%d")+'</span>'
+							if get_data.suc_q_date:
+								html += '<br><span style="color:#179cd7; font-size:9px">suc- '+get_data.suc_q_date.strftime("%Y-%m-%d")+'</span>'
+							html += '</td>'
+						else:
+							html += '<td></td>'
 						html += '<td>'+course.title+'</td>'
 						html += '<td>'+course.department+'</td>'
 						html += '<td>'+course.priority+'</td>'
