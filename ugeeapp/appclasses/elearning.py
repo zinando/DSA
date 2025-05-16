@@ -477,8 +477,8 @@ class MYSCHOOL():
 
 		if len(new.get_user_roles(userid)) >0 :
 			for role in new.get_user_roles(userid):
-				print(role.rname)
-				print(role.trainings)
+				#print(role.rname)
+				#print(role.trainings)
 				if role.trainings:
 					trs = json.loads(role.trainings)
 					t_codes.extend(trs)
@@ -652,6 +652,7 @@ class MYSCHOOL():
 	def add_training(self,form,edit=0,files=None):
 
 		#check if title already exists for another training
+		
 		check = db.session.query(Trainings).filter(Trainings.title==form['title'].title(),Trainings.tid != edit).count()
 		if check > 0:
 			return {'status':2, 'message':'This course title already exists for another course.'}
@@ -664,7 +665,8 @@ class MYSCHOOL():
 		other_path = app.config["OTHER_UPLOAD_FOLDER"]
 		main_link = None
 		suc_link = None	
-		other_link = [] 	
+		other_link = []
+
 
 		title = form['title']
 		department = form['depart']
@@ -673,13 +675,17 @@ class MYSCHOOL():
 		#q_link = form['quiz']
 		pass_mark = form['pasmk']
 		priority = form['prio']
-		expire_option = form['expire_option']
+		
+		#return {'status':1, 'message': 'Training was added successfully.'}
+
 		suc = 0 
 		if form['suc']:			
-			suc = form['suc']		
+			suc = form['suc']
+
 		titles = title.split()
 		for x in titles:
 			main += "_{}".format(x.lower())
+
 		if files is not None:
 			if 'main_obj' in files.keys() and files['main_obj'].filename:
 				main_link = self.save_file(main_path,files['main_obj'],main)
@@ -692,6 +698,7 @@ class MYSCHOOL():
 
 		if edit > 0:			
 			#edit course now
+			expire_option = form['expire_option']
 			training = db.session.query(Trainings).filter(Trainings.tid == edit).first()
 			if main_link is not None and main_link != training.doc_link:
 				self.delete_file(training.doc_link)
@@ -935,7 +942,7 @@ class MYSCHOOL():
 	def check_training_expiry(self,expiry,datte):
 		result = 'expired'
 
-		if expiry == 0:
+		if int(expiry) == 0:
 			return 'valid'
 
 		if datte is not None:
@@ -974,7 +981,7 @@ class MYSCHOOL():
 				db.session.commit()
 			
 			elif suc_stat == 'suc only':
-				if  qualz.suc_status == 'completed' and self.check_training_expiry(qualz.training_id,qualz.suc_q_date) !='expired':
+				if  qualz.suc_status == 'completed' and self.check_training_expiry(training.expiry,qualz.suc_q_date) !='expired':
 					perc = 100
 				else:
 					perc = 0
@@ -986,19 +993,20 @@ class MYSCHOOL():
 				#if both passed/completed, check training expiry  
 				if qualz.status == 'PASSED' and qualz.suc_status == 'completed':
 					perc = 0
-					if  self.check_training_expiry(qualz.training_id,qualz.q_date) !='expired':
+					if  self.check_training_expiry(training.expiry,qualz.q_date) !='expired':
 						perc += 50
-					if  self.check_training_expiry(qualz.training_id,qualz.suc_q_date) !='expired':
+					if  self.check_training_expiry(training.expiry,qualz.suc_q_date) !='expired':
+						#print(f'{qualz.title}: {self.check_training_expiry(training.expiry,qualz.suc_q_date)}')
 						perc += 50
 				#if both failed/pending  
 				elif qualz.status == 'REPEAT' and qualz.suc_status == 'pending':
-					per = 0
+					perc = 0
 				#if one is passed while the other is not  
 				else:
 					perc = 0
-					if qualz.status == 'PASSED' and self.check_training_expiry(qualz.training_id,qualz.q_date) !='expired':
+					if qualz.status == 'PASSED' and self.check_training_expiry(training.expiry,qualz.q_date) !='expired':
 						perc += 50
-					elif qualz.suc_status == 'completed' and self.check_training_expiry(qualz.training_id,qualz.suc_q_date) !='expired':
+					elif qualz.suc_status == 'completed' and self.check_training_expiry(training.expiry,qualz.suc_q_date) !='expired':
 						perc += 50
 
 				db.session.query(MyQualification).filter(MyQualification.qid==qid).update({'percent':perc})
@@ -1130,7 +1138,7 @@ class MYSCHOOL():
 
 		else:		
 			get_courses = self.get_user_trainings(usernow)
-		print(f'filter: {data["filter"]}, value: {data["value"]}')
+		#print(f'filter: {data["filter"]}, value: {data["value"]}')
 				
 		if get_courses is not None:
 			html += '<div class="row">'
@@ -1170,7 +1178,8 @@ class MYSCHOOL():
 						html += '<td>'
 						if get_data.q_date:
 							html += '<span style="color:#179cd7; font-size:9px">'+get_data.q_date.strftime("%Y-%m-%d")+'</span>'
-						if get_data.suc_q_date:
+						# check if suc is required for the course and that it has been done
+						if self.check_for_suc(course.tid) !='not required' and get_data.suc_q_date:
 							html += '<br><span style="color:#179cd7; font-size:9px">suc- '+get_data.suc_q_date.strftime("%Y-%m-%d")+'</span>'
 						html += '</td>'
 					else:
@@ -1207,7 +1216,7 @@ class MYSCHOOL():
 							html += '<span style="color:green">'+str(get_data.percent)+'</span><br>'
 						else:
 							html += '<span style="color:red">'+str(get_data.percent)+'</span><br>'						
-						if self.check_file(get_data.certificate_link):
+						if self.check_file(get_data.certificate_link) and self.check_for_suc(course.tid) !='not required':
 							html += '<span><a style="font-size:12px" href="'+get_data.certificate_link+'" target="_blank">certificate</a></span>'
 						html +='</td>'
 
@@ -1243,7 +1252,7 @@ class MYSCHOOL():
 							html += '<td>'
 							if get_data.q_date:
 								html += '<span style="color:#179cd7; font-size:9px">'+get_data.q_date.strftime("%Y-%m-%d")+'</span>'
-							if get_data.suc_q_date:
+							if self.check_for_suc(course.tid) !='not required' and get_data.suc_q_date:
 								html += '<br><span style="color:#179cd7; font-size:9px">suc- '+get_data.suc_q_date.strftime("%Y-%m-%d")+'</span>'
 							html += '</td>'
 						else:
@@ -1280,7 +1289,7 @@ class MYSCHOOL():
 								html += '<span style="color:green">'+str(get_data.percent)+'</span><br>'
 							else:
 								html += '<span style="color:red">'+str(get_data.percent)+'</span><br>'
-							if self.check_file(get_data.certificate_link):
+							if self.check_file(get_data.certificate_link) and self.check_for_suc(course.tid) !='not required':
 								html += '<span><a style="font-size:12px" href="'+get_data.certificate_link+'" target="_blank">certificate</a></span>'
 							html +='</td>'	
 						else:
@@ -1315,7 +1324,7 @@ class MYSCHOOL():
 							html += '<td>'
 							if get_data.q_date:
 								html += '<span style="color:#179cd7; font-size:9px">'+get_data.q_date.strftime("%Y-%m-%d")+'</span>'
-							if get_data.suc_q_date:
+							if self.check_for_suc(course.tid) !='not required' and get_data.suc_q_date:
 								html += '<br><span style="color:#179cd7; font-size:9px">suc- '+get_data.suc_q_date.strftime("%Y-%m-%d")+'</span>'
 							html += '</td>'
 						else:
@@ -1352,7 +1361,7 @@ class MYSCHOOL():
 								html += '<span style="color:green">'+str(get_data.percent)+'</span><br>'
 							else:
 								html += '<span style="color:red">'+str(get_data.percent)+'</span><br>'
-							if self.check_file(get_data.certificate_link):
+							if self.check_file(get_data.certificate_link) and self.check_for_suc(course.tid) !='not required':
 								html += '<span><a style="font-size:12px" href="'+get_data.certificate_link+'" target="_blank">certificate</a></span>'
 							html +='</td>'	
 						else:
@@ -1400,6 +1409,7 @@ class MYSCHOOL():
 				if self.check_training_expiry(tr.expiry,course.suc_q_date) == 'expired':
 					self.log_qualification_percent(course.qid)
 			else:
+				# questionair plus suc
 				if self.check_training_expiry(tr.expiry,course.q_date) == 'expired':
 					self.log_qualification_percent(course.qid)
 				if self.check_training_expiry(tr.expiry,course.suc_q_date) == 'expired':

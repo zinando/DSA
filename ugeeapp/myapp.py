@@ -36,6 +36,7 @@ PLC_4A=["143.28.88.6","143.28.88.3"]
 PLC_4B=["143.28.88.12","143.28.88.14"]
 PLC_L1=["143.28.88.67"]
 PLC_L2=["143.28.88.67"]
+ctrl_rm='143.28.88.40'
 
 def insert_stop():
 	#event1=
@@ -626,7 +627,7 @@ def bos_observation():
 
 	response=''
 
-	bos=request.args.get('type')
+	bos=request.args.get('type') 
 	depart= request.args.get('department')
 
 	if bos == 'SAFETY':
@@ -1612,8 +1613,6 @@ def my_e_learning():
 		template = 'e_learning/add_training.html'
 		form = request.form
 		files = request.files		
-		#flash('Done!',"info")
-		#return render_template(template, resp = "")
 		
 		data = new.add_training(form,0,files)
 
@@ -3778,6 +3777,19 @@ def update():
 		
 		
 	return jsonify({'status':1, 'message':'data','stop':t})
+
+@app.route('/factorytalk', methods=['POST'])
+def talktoplc():
+	response = 'Success'
+	data = request.get_json()
+	with PLC(ctrl_rm) as comm:
+		comm.Timeout = 5000
+		res = comm.Write('B_Density',data['value'])
+		response = res.Status
+		comm.Close()
+
+	return json.dumps({'status': response}), 200
+
 
 def log_msg_event(plc):
 

@@ -303,8 +303,8 @@ class MSG_SAFETYBOSForm(FlaskForm):
             render_kw={"title":"Employee uses detailed QRP for non-routine/non-procedure tasks. Employee performing a maintenance task uses document procedure (SIMTWW/JSP/Job Aid etc)."})    
     point3=  SelectField("Use of Appropriate PPE",coerce=int,choices=[(0,"Select"),(1,"SAFE"),(0,"AT RISK")],validators=[InputRequired("This is required.")],
             render_kw={"title":"Employee performing maintenance task wears appropriate PPE (stipulated by procedure) to execute the task."})    
-    point4=  SelectField("Use of Ear Muffs at level 18",coerce=int,choices=[(0,"Select"),(1,"SAFE"),(0,"AT RISK")],validators=[InputRequired("This is required.")],
-            render_kw={"title":"Employees and contractors wear ear muffs or ear plugs when vibrator is ON at level 18"})    
+    point4=  SelectField("Pumping floor drain covering",coerce=int,choices=[(0,"Select"),(1,"SAFE"),(0,"AT RISK")],validators=[InputRequired("This is required.")],
+            render_kw={"title":"Employee covers the drain at the pumping floor (Level 0)"})    
     point5=  SelectField("Replacement of Flange Covers",coerce=int,choices=[(0,"Select"),(1,"SAFE"),(0,"AT RISK")],validators=[InputRequired("This is required.")],
             render_kw={"title":"Employee replaced flange covers for high pressure slurry lines & corrosive liquid lines after intervention."})         
     comment = TextAreaField('General Comment',render_kw={"placeholder":"Observe and comment on the use of Lifting devices, 5S standard of the area and powder spills. Also, check for the use of Jeweries on the production floor."})

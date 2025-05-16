@@ -56,7 +56,7 @@ class BOSCLASS:
 				 out.append(obs1)
 
 			obs1={}
-			obs1['title']='Employees and contractors wear ear muffs or ear plugs when vibrator is ON at level 18?'
+			obs1['title']='Employee covers the drain at the pumping floor (Level 0)'
 			obs1['value']='AT RISK' if form.point4.data == 0 else 'SAFE'
 			obs.append(obs1)
 			if form.point4.data == 0:
@@ -381,7 +381,7 @@ class BOSCLASS:
 				 out.append(obs1)
 
 			obs1={}
-			obs1['title']='Are all Laboratory excell worksheet  (FP Analytical Sheet, BH Base sheet, DDS worksheets, RM Calculationn sheet, Concentration Calc. software, e.t.c) passworded?,(open any laboratory worksheet and check for password protecton on calculation columns on the worksheet)'
+			obs1['title']='Are all Laboratory excel worksheet  (FP Analytical Sheet, BH Base sheet, DDS worksheets, RM Calculationn sheet, Concentration Calc. software, e.t.c) passworded?,(open any laboratory worksheet and check for password protecton on calculation columns on the worksheet)'
 			obs1['value']='NO' if form.point4.data == 0 else 'YES'
 			obs.append(obs1)
 			if form.point4.data == 0:
