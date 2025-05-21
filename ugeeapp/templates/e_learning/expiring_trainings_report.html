@@ -1,0 +1,244 @@
+{% extends 'public/base.html' %}
+
+{% block content %}
+<div class="container">
+    <div class="row align-items-center justify-content-center">
+        <div class="col-md-12">
+            <div class="login100-form-logo align-items-center justify-content-center">
+                <div class="text-center" style="color:white;background: #179cd7;">
+                    VIEW EXPIRING TRAININGS
+                </div>
+            </div>
+        </div>
+        
+        <div class="row">
+            <div class="col-md-12"> 
+                <label class="alert alert-info">Filter Expiring Trainings</label>
+            </div>
+            
+            <div class="col-md-3">
+                <div class='form-group'>
+                    <label>Time Period</label>
+                    <select class="form-control time-period" id="time-period">
+                        <option value="30">Within 30 days</option>
+                        <option value="60">Within 60 days</option>
+                        <option value="90">Within 90 days</option>
+                        <option value="180">Within 180 days</option>
+                        <option value="expired">Expired Only</option>
+                    </select>
+                </div>
+            </div>
+            
+            <div class="col-md-3">
+                <div class='form-group'>
+                    <label>Department</label>
+                    <select class="form-control depart" id="department">
+                        <option value="all">All Departments</option>
+                        <option value="SAFETY">SAFETY</option>
+                        <option value="QUALITY">QUALITY</option>
+                        <option value="HR">HR</option>
+                        <option value="PSG">PSG</option>
+                        <option value="MSG">MSG</option>
+                        <option value="WHSE">WHSE</option>
+                        <option value="STR_ROOM">STR_ROOM</option>
+                        <option value="IT">IT</option>
+                        <option value="FINANCE">FINANCE</option>
+                    </select>
+                </div>
+            </div>
+            
+            <div class="col-md-3">
+                <div class='form-group'>
+                    <label>Priority</label>
+                    <select class="form-control prio" id="priority">
+                        <option value="all">All Priorities</option>
+                        <option value="M">M</option>
+                        <option value="A">A</option>
+                    </select>
+                </div>
+            </div>
+            <div class="col-md-2">
+                <div class='form-group'>
+                    <label>Scope</label>
+                    <select class="form-control user" id="user">
+                        <option value="all">All Users</option>
+                        {% for user in my_users %}
+                        <option value={{user.userid}}>{{user.sname}} {{user.fname}}</option>
+                        {% endfor %}            	                      		
+                    </select>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-12">
+            <div class="row">
+                <div class="col-md-2">
+                    <button type="button" class="btn btn-sm btn-primary" id="run-report-btn" onclick="runReport()">
+                        <span id="btn-text">Run Report</span>
+                        <span id="btn-spinner" class="spinner-border spinner-border-sm d-none" role="status" aria-hidden="true"></span>
+                    </button>
+                </div>
+                <div class="col-md-2">
+                    <button class="btn btn-sm" id="exportBtn" title="export to excell" type="button" onclick="exportToExcel()" hidden>
+		                <i class="fa fa-file-excel-o" style="font-size:28px;color:green;"></i> Export to excel
+		            </button>
+                </div>
+
+            </div>
+        </div>
+        
+        <div class="col-md-12"><hr style="border: solid 2px #179cd7;"></div>
+        
+        <div class="row">
+            <div class="col-md-12">
+                <div class="alert alert-warning">
+                    Showing trainings expiring within <span class="time-period-display">30</span> days
+                    <span class="pull-right">Total: <span class="total-count">0</span> records</span>
+                </div>
+            </div>
+            
+            <div class="col-md-12" id="expiring-items">
+                <!-- Training items will be loaded here via JavaScript -->
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block tail %}
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+<script type="text/javascript">
+    let export_data = null;
+    let emails = null;
+
+    function runReport() {
+        // Show loading spinner and disable button
+        const btn = $('#run-report-btn');
+        const btnText = $('#btn-text');
+        const spinner = $('#btn-spinner');
+        
+        btn.prop('disabled', true);
+        btnText.text('Running...');
+        spinner.removeClass('d-none');
+        
+        // Get filter values
+        const time_period = $('#time-period').val();
+        const department = $('#department').val();
+        const priority = $('#prio').val();
+        const user = $('#user').val();
+        
+        // Update the displayed time period
+        $('.time-period-display').text(time_period === 'expired' ? 'expired' : time_period);
+        
+        const update = {
+            time_period: time_period,
+            department: department,
+            priority: priority,
+            user: user
+        };
+
+        const options = {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify(update),
+        };
+
+        fetch(`/e_learning?action=${'run_expiry_report'}&report_type=${'html'}`, options)
+            .then(function(response) {
+                return response.json();
+            })
+            .then(function(data) {
+                export_data = data.export_data;
+                emails = data.emails;
+                $('#expiring-items').html(data.html);
+                $('.total-count').text(data.count);
+                $('#exportBtn').prop('hidden', !export_data);
+            })
+            .catch(function(error) {
+                console.error('Error:', error);
+                alert('An error occurred while running the report');
+            })
+            .finally(function() {
+                // Restore button state
+                btn.prop('disabled', false);
+                btnText.text('Run Report');
+                spinner.addClass('d-none');
+            });
+    }
+
+    function exportToExcel() {
+        // Get current filter values
+        const time_period = $('#time-period').val();
+        const department = $('#department').val();
+        const priority = $('#priority').val();
+        const user = $('#user').val();
+
+        // Show loading indicator
+        const btn = $('#exportBtn');
+        btn.prop('disabled', true);
+        btn.html('<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Exporting...');
+
+        const data = {
+            emails: emails,
+            data: export_data
+        };
+
+        fetch(`/e_learning?action=${'run_expiry_report'}&report_type=${'excel'}`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(data)
+        })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+            return response.blob();
+        })
+        .then(blob => {
+            // Create download link
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `training_expiry_report_${getFormattedDateTime()}.xlsx`;
+            document.body.appendChild(a);
+            a.click();
+            window.URL.revokeObjectURL(url);
+            document.body.removeChild(a);
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert(error.message);
+        })
+        .finally(() => {
+            btn.prop('disabled', false);
+            btn.html('<i class="fa fa-file-excel-o" style="font-size:28px;color:green;"></i> Export to Excel');
+        });
+    }
+    
+    function getFormattedDateTime() {
+        const now = new Date();
+        const pad = n => n.toString().padStart(2, '0');
+
+        const year = now.getFullYear();
+        const month = pad(now.getMonth() + 1); // Months are zero-indexed
+        const day = pad(now.getDate());
+        const hours = pad(now.getHours());
+        const minutes = pad(now.getMinutes());
+        const seconds = pad(now.getSeconds());
+
+        return `${year}-${month}-${day}_${hours}:${minutes}:${seconds}`;
+    }
+</script>
+
+<style>
+    .spinner-border {
+        margin-left: 5px;
+        vertical-align: middle;
+    }
+    #run-report-btn {
+        width: 100%;
+        margin-top: 5px;
+    }
+</style>
+{% endblock %}

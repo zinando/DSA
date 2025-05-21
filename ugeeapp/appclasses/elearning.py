@@ -1,25 +1,15 @@
-from flask import Blueprint,Flask,redirect,url_for,request,render_template,session,flash,abort,jsonify,Markup,send_file
-from flask_sqlalchemy  import SQLAlchemy
-from sqlalchemy.sql import func
-from ugeeapp.models import StopEvent,MyQualification,StepupCards,Trainings,StopCode,ReasonOne,ReasonTwo,ReasonTri,ReasonFour,Equipment,User,Production
-import time
+from flask import session,Markup
+from ugeeapp.models import MyQualification,StepupCards,Trainings,User
 import json
 import os
 import datetime
 from datetime import datetime,timedelta
-from flask_login import LoginManager, current_user,login_user,logout_user,login_required
 from werkzeug.utils import secure_filename
-from werkzeug.security import generate_password_hash, check_password_hash
 from ugeeapp import db,app
 from ugeeapp.helpers import myfunctions as myfunc
 from ugeeapp import APP_ROOT
-import hmac,hashlib
-import xlsxwriter
-from io import BytesIO
-import numpy as np
-import pandas as pd
 import calendar
-import shutil
+from dateutil.relativedelta import relativedelta
 
 
 
@@ -939,15 +929,14 @@ class MYSCHOOL():
 
 		return stat
 
-	def check_training_expiry(self,expiry,datte):
+	def check_training_expiry(self,training_expiry,training_date, end_date=datetime.now()):
 		result = 'expired'
 
-		if int(expiry) == 0:
+		if int(training_expiry) == 0:
 			return 'valid'
 
-		if datte is not None:
-			start_date = datte
-			end_date = datetime.now()
+		if training_date is not None:
+			start_date = training_date
 
 			diffyears = end_date.year - start_date.year
 
@@ -957,13 +946,33 @@ class MYSCHOOL():
 
 			difference_in_years = diffyears + (difference.days + difference.seconds/86400.0)/days_in_year
 			
-			if difference_in_years <= expiry:
+			if difference_in_years <= training_expiry:
 				result = 'valid'
 		else:
 			result = 'valid'
 
 		return result
+	
+	def get_training_expiry_date(self, training_expiry, training_date):
+		"""
+		Returns the expiry date of a training as a string (YYYY-MM-DD).
+		If the training has expired, returns 'expired'.
+		"""
+		end_date = datetime.now()
 
+		# If expiry is not set or training_date is missing, treat it as non-expiring
+		if int(training_expiry) == 0 or not training_date:
+			return 'N/A'
+
+		# Calculate expiry date
+		expiry_date = training_date + relativedelta(years=int(training_expiry))
+
+		# Check if it's expired
+		if end_date > expiry_date:
+			return 'expired'
+
+		return expiry_date.strftime('%Y-%m-%d')
+	
 	def log_qualification_percent(self, qid):
 		qualz = db.session.query(MyQualification).filter(MyQualification.qid==qid).first()
 
@@ -1140,7 +1149,7 @@ class MYSCHOOL():
 			get_courses = self.get_user_trainings(usernow)
 		#print(f'filter: {data["filter"]}, value: {data["value"]}')
 				
-		if get_courses is not None:
+		if get_courses:
 			html += '<div class="row">'
 			html += '<div class="col-md-12" style="text-align:center">Skill Matrix For: '+fullnamme+'</div>'
 			html += '<di]v class="col-md-12"><hr style="border: solid 2px #179cd7;"></div>'
@@ -1393,8 +1402,273 @@ class MYSCHOOL():
 		prio_b = self.fetch_priority_b_training_percent(get_courses,usernow)
 
 		return {'status':1, 'data': html,'all':total, 'man':mandatory, 'pa':prio_a, 'pb':prio_b}
+	
+	def fetch_expiring_trainings(self, data):
+		""" This function returns trainings that are expiring/expired based on filters """
+		
+		# Get filter parameters
+		time_period = data.get('time_period', '30')
+		department = data.get('department', 'all')
+		priority = data.get('priority', 'all')
+		filter_type = data.get('filter')
+		
+		# Determine target date
+		target_date = datetime.now()
+		if time_period != 'expired':
+			target_date += timedelta(days=int(time_period))
 
+		# Determine user
+		usernow = data.get('userid') if filter_type == 'report' else session.get('userid')
+
+		# Filter trainings
+		get_courses = [
+			training for training in self.get_user_trainings(usernow)
+			if (priority == 'all' or training.priority == priority) and
+			(department == 'all' or training.department == department)
+		]
+		
+		html = '<div class="table table-responsive">'
+		if get_courses:
+			html += '<table class="table table-bordered table-striped">'
+			html += '<thead><tr>'
+			html += '<th scope="col">Code</th>'
+			html += '<th scope="col">Last Qualified</th>'
+			html += '<th scope="col">To Expire</th>'
+			html += '<th scope="col">Skill Title</th>'
+			html += '<th scope="col">Dept</th>'
+			html += '<th scope="col">Priority</th>'
+			html += '<th scope="col">Owner</th>'
+			html += '<th scope="col">Outline</th>'
+			html += '<th scope="col">Quiz</th>'
+			html += '<th scope="col">Completion (%)</th>'
+			#html += '<th scope="col">Certificate</th>'
+			html += '</tr></thead>'
+			html += '<tbody>'
+
+			count = 1
+			counter = 0
+
+			for course in get_courses:
+				get_data = db.session.query(MyQualification).filter(MyQualification.userid==usernow,MyQualification.training_id==course.tid).first()
+				
+
+				# Filter courses that will expire within time_period
+				if not get_data or self.check_training_expiry(course.expiry, get_data.q_date, target_date) == 'expired' or (course.suc and self.check_training_expiry(course.expiry, get_data.suc_q_date, target_date) == 'expired'):
+					# if not get_data:
+					# 	print(f'{course.title}')
+					counter += 1
+					main = 'tr'
+					titles = course.title.split()
+					for x in titles:
+						main += "_{}".format(x.lower())
+
+					html += '<tr>'
+					html += '<td><span style="color:#179cd7">'+course.t_code+'</span></td>'
+
+					if get_data:
+						q_date = ''
+						exp_date = ''
+						if get_data.q_date:
+							q_date += '<span style="color:#179cd7; font-size:10px">'+get_data.q_date.strftime("%Y-%m-%d")+'</span>'
+							if self.check_training_expiry(course.expiry, get_data.q_date, target_date) == 'expired':
+								exp_date += '<span style="color:#179cd7; font-size:10px">'+ self.get_training_expiry_date(course.expiry, get_data.q_date) +'</span>'
+						# check if suc is required for the course and that it has been done
+						if self.check_for_suc(course.tid) !='not required' and get_data.suc_q_date:
+							q_date += '<br><span style="color:#179cd7; font-size:10px">suc- '+get_data.suc_q_date.strftime("%Y-%m-%d")+'</span>'
+							if self.check_training_expiry(course.expiry, get_data.suc_q_date, target_date) == 'expired':
+								exp_date += '<br><span style="color:#179cd7; font-size:10px">suc- '+ self.get_training_expiry_date(course.expiry, get_data.suc_q_date) +'</span>'
+						
+						# html += '<td>' + self.get_training_expiry_date(course.expiry, get_data.q_date) +'</td>'
+					else:
+						q_date = '<span style="color:#179cd7; font-size:10px">never qualified</span>'
+						exp_date = '<span style="color:#179cd7; font-size:10px">never qualified</span>'
+					
+					html += '<td>' + q_date + '</td>'
+					html += '<td>' + exp_date + '</td>'
+					html += '<td>'+course.title+'</td>'
+					html += '<td>'+course.department+'</td>'
+					html += '<td>'+course.priority+'</td>'
+					html += '<td>'+self.get_course_owner(course.owner)+'</td>'
+					html += '<td>'
+
+					if self.check_file(course.doc_link):
+						html += '<span><a style="font-size:12px" href="'+course.doc_link+'" target="_blank">course outline</a></span><br>'
+					if course.suc and StepupCards.query.filter_by(training_id=course.tid).first():
+						suc_rec = StepupCards.query.filter_by(training_id=course.tid).first()
+						html += '<span><a style="font-size:12px" href="'+suc_rec.suc_link+'" target="_blank">Stepup card</a></span><br>'	
+					if course.extra_resource and len(course.extra_resource) > 0:
+						resource = json.loads(course.extra_resource)
+						for link in resource:							
+							if self.check_file(link):
+								filename = link.split('/')[-1]
+								filename = filename[:-10] if len(filename)<=10 else "{}...".format(filename[:-10])
+								html += '<span><a style="font-size:11px" href="'+link+'" target="_blank">'+filename+'</a></span><br>'						
+					html += '</td>'
+					if get_data :						
+						quizlink = "/templates/e_learning/{}.html".format(main)													
+						if self.check_file(quizlink):
+							html += '<td><a href="/e_learning?action=GET-QUIZ&template=e_learning/'+main+'.html&id='+str(get_data.qid)+'&pass='+str(course.pass_mark)+'&tid='+str(course.tid)+'" target="_blank">qualify</a></td>'
+						elif course.suc !=1:							
+							html += '<td><a href="/e_learning?action=GET-QUIZ&template=e_learning/tr_default.html&id='+str(get_data.qid)+'&pass='+str(course.pass_mark)+'&tid='+str(course.tid)+'" target="_blank">qualify</a></td>'
+						else:
+							html +='<td></td>'
+						html += '<td>'		
+						if get_data.percent == 100:
+							html += '<span style="color:green">'+str(get_data.percent)+'</span><br>'
+						else:
+							html += '<span style="color:red">'+str(get_data.percent)+'</span><br>'						
+						if self.check_file(get_data.certificate_link) and self.check_for_suc(course.tid) !='not required':
+							html += '<span><a style="font-size:12px" href="'+get_data.certificate_link+'" target="_blank">certificate</a></span>'
+						html +='</td>'
+
+					else:
+						quizlink = "/templates/e_learning/{}.html".format(main)
+						if self.check_file(quizlink):
+							html += '<td><a href="/e_learning?action=GET-QUIZ&template=e_learning/'+main+'.html&id='+str(0)+'&pass='+str(course.pass_mark)+'&tid='+str(course.tid)+'" target="_blank">qualify</a></td>'
+						elif course.suc !=1:
+							#html +='<td></td>'
+							html += '<td><a href="/e_learning?action=GET-QUIZ&template=e_learning/tr_default.html&id='+str(0)+'&pass='+str(course.pass_mark)+'&tid='+str(course.tid)+'" target="_blank">qualify</a></td>'
+						else:
+							html +='<td></td>'
+						html += '<td><span style="color:#000">0</span></td>'						
+					count += 1
+					html += '</tr>'
+
+			html += '</tbody>'
+			html += '</table>'
+
+		
+		else:
+			html += "<div class='alert alert-danger'>No results found for your selection.</div>"
+		html += '</div>'
+
+		
+		return {
+			'status': 1,
+			'html': html,
+			'count': counter
+		}
+	
+	def fetch_user_expiring_trainings_data(self, data:dict, user_id:int) -> list:
+		"""This method returns an object of a user with a list of their expiring trainings within the selected time period"""
+		result = []
+		
+		# Get filter parameters
+		time_period = data.get('time_period', '30')
+		department = data.get('department', 'all')
+		priority = data.get('priority', 'all')
+		filter_type = data.get('filter')
+		
+		# Determine target date
+		target_date = datetime.now()
+		if time_period != 'expired':
+			target_date += timedelta(days=int(time_period))
+
+		# Filter trainings
+		get_courses = [
+			training for training in self.get_user_trainings(user_id)
+			if (priority == 'all' or training.priority == priority) and
+			(department == 'all' or training.department == department)
+		]
+
+		if get_courses:
+			for course in get_courses:
+				get_data = db.session.query(MyQualification).filter(MyQualification.userid==user_id,MyQualification.training_id==course.tid).first()
+
+				# Filter courses that will expire within time_period
+				if not get_data or self.check_training_expiry(course.expiry, get_data.q_date, target_date) == 'expired' or (course.suc and self.check_training_expiry(course.expiry, get_data.suc_q_date, target_date) == 'expired'):
+					mr = {}
+					mr['title'] = course.title
+					mr['expiry_date'] = ''
+
+					if get_data:
+						if get_data.q_date:
+							if self.check_training_expiry(course.expiry, get_data.q_date, target_date) == 'expired':
+								mr['expiry_date'] += self.get_training_expiry_date(course.expiry, get_data.q_date)
+						# check if suc is required for the course and that it has been done
+						if self.check_for_suc(course.tid) !='not required' and get_data.suc_q_date:
+							if self.check_training_expiry(course.expiry, get_data.suc_q_date, target_date) == 'expired':
+								mr['expiry_date'] += f'{"" if mr["expiry_date"]== "" else ", "}suc - {self.get_training_expiry_date(course.expiry, get_data.suc_q_date)}'
+					else:
+						mr['expiry_date'] = 'never qualified'
+					
+					result.append(mr)
+					
+		return result
+
+
+	def fetch_expiring_trainings_report(self, data):
+		"""This function runs a report of trainings that will expire within a selected time period"""
+		export_data = []
+		emails = []
+		html = '''
+		<div class="table-responsive">
+			<table class="table table-bordered table-striped">
+				<thead>
+					<tr>
+						<th>S/N</th>
+						<th>Employee Name</th>
+						<th>Expiring Trainings</th>
+					</tr>
+				</thead>
+				<tbody>
+		'''
+		counter = 0
+
+		if data.get('user', 'all') == 'all':
+			users = self.get_user()
+			for user in users:
+				expiring_training_data = self.fetch_user_expiring_trainings_data(data, user.userid)
+				if expiring_training_data:
+					emails.append(user.email)
+					mr = {}
+					mr['user'] = f'{user.fname} {user.sname}'
+					mr['trainings'] = []
+					counter += 1
+					html += f'''
+					<tr>
+					<td>{counter}</td>
+					<td>{user.fname} {user.sname}</td>
+					<td>
+					'''
+					for tr in expiring_training_data:
+						mr['trainings'].append(f'{tr["title"]}-({tr["expiry_date"]});')
+						html += f'<span style="color:#179cd7; font-size:10px">{tr["title"]}-({tr["expiry_date"]});</span>'
+					
+					html += f"</td></tr>"
+					export_data.append(mr)
+		else:
+			user = self.get_user(data.get('user'))
+			expiring_training_data = self.fetch_user_expiring_trainings_data(data, user.userid)
+			if expiring_training_data:
+				emails.append(user.email)
+				mr = {}
+				mr['user'] = f'{user.fname} {user.sname}'
+				mr['trainings'] = []
+				html += f'''
+				<tr>
+				<td>1</td>
+				<td>{user.fname} {user.sname}</td>
+				<td>
+				'''
+				for tr in expiring_training_data:
+					mr['trainings'].append(f'{tr["title"]}-({tr["expiry_date"]});')
+					counter += 1
+					html += f'<span style="color:#179cd7; font-size:10px">{tr["title"]}-({tr["expiry_date"]});</span>'
+				
+				html += f"</td></tr>"
+				export_data.append(mr)
+
+		return {
+			'status': 1,
+			'emails': emails if emails else None,
+			'export_data': export_data if export_data else None,
+			'html': html,
+			'count': counter
+		}
+	
 	def run_expiry_report(self,userid=0):
+		"""This function checks if training records for selected user scope has expired and then updates the database"""
 		if userid == 0:
 			qualifications = MyQualification.query.all()
 		else:

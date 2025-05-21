@@ -1,4 +1,5 @@
 cd OneDrive - SIL Chemicals Limited\PYTHON\DSA
+Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass
 virtual\scripts\activate
 set FLASK_APP=ugeeapp
 flask run --host=0.0.0.0  

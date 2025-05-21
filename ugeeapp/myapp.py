@@ -1,32 +1,32 @@
-from flask import Blueprint,Flask,redirect,url_for,request,render_template,session,flash,abort,jsonify,Markup
-from flask_sqlalchemy  import SQLAlchemy
-from sqlalchemy.sql import func
-from ugeeapp.models import StopEvent,Production,StepupCards,UserRoles,MaterialLoss,SKU,ProcessParams,StopCode,ReasonOne,ReasonTwo,ReasonTri,ReasonFour,Equipment,User,SAFETY_BOS,QA_BOS,OGC_BOS
-from ugeeapp.forms import LoginForm,PSGProductionReportForm,UTILITY_SAFETYBOSForm,LAB_QABOSForm,LAB_SAFETYBOSForm,AddRoles,PSGProductionEntryForm,WHSE_RPMBOSForm,ViewPSGResultForm,PSGProductionForm,SKUEntryForm,EquipmentEntryForm,EditUserForm,ChangePasswordForm,StopsForm,AddUserForm,forgotPasswordForm,OGCBOSForm,QABOSForm,SAFETYBOSForm,ViewBOSForm,LeadershipBOSForm,MSG_OGCBOSForm,MSG_QABOSForm,MSG_SAFETYBOSForm,WHSE_QABOSForm,WHSE_SAFETYBOSForm
+from flask import redirect,url_for,request,render_template,session,flash,abort,jsonify,Markup,send_file
+from ugeeapp.models import (StopEvent,StepupCards,SKU,StopCode,ReasonOne,ReasonTwo,ReasonTri,ReasonFour,Equipment,
+                            User,SAFETY_BOS,QA_BOS,OGC_BOS)
+from ugeeapp.forms import (LoginForm,PSGProductionReportForm,UTILITY_SAFETYBOSForm,LAB_QABOSForm,LAB_SAFETYBOSForm,
+                           AddRoles,PSGProductionEntryForm,WHSE_RPMBOSForm,ViewPSGResultForm,PSGProductionForm,
+                           SKUEntryForm,EquipmentEntryForm,EditUserForm,ChangePasswordForm,StopsForm,AddUserForm,
+                           forgotPasswordForm,OGCBOSForm,QABOSForm,SAFETYBOSForm,ViewBOSForm,LeadershipBOSForm,
+                           MSG_OGCBOSForm,MSG_QABOSForm,MSG_SAFETYBOSForm,WHSE_QABOSForm,WHSE_SAFETYBOSForm)
 from ugeeapp.models import Trainings,MyQualification
-import pycomm3
 import os
 import time 
 import json
 import datetime
 from datetime import datetime,timedelta
 from threading import Thread
-import threading
-from pycomm3 import LogixDriver
 from pylogix import PLC
-from flask_migrate import Migrate
 from ugeeapp import app,db,APP_ROOT,CERTIFICATE_FOLDER
-from flask_login import LoginManager, current_user,login_user,logout_user,login_required
+from flask_login import current_user,logout_user,login_required
 from ugeeapp.appclasses.userclass import USERACCOUNT
 from ugeeapp.appclasses.bosclass import BOSCLASS
 from ugeeapp.appclasses.production import PRODUCTION
 from ugeeapp.appclasses.stopsclass import STOPSEVENT
 from ugeeapp.appclasses.adminclass import AdminRoles
-from ugeeapp.appclasses.globalclass import GLOBALCLASS
 from ugeeapp.appclasses.elearning import MYSCHOOL,MYSCHOOL_REPORT
 from ugeeapp.helpers import myfunctions as myfunc
-import cgi, os
+import os
 import cgitb; cgitb.enable()
+import xlsxwriter
+from io import BytesIO
 
 
 
@@ -432,39 +432,38 @@ def logout():
 @app.route('/adduser',methods=['GET','POST'])
 @login_required
 def adduser():
+	if not current_user.is_authenticated:
+		return redirect('/login')
+	
+	if session['adminlevel'] < 2:
+		return redirect('/')
 
-    if not current_user.is_authenticated:
-        return redirect('/login')
+	new = AdminRoles()
 
-    if session['adminlevel'] < 2:
-    	return redirect('/')
+	form = AddUserForm()
+	form.role.choices = [(x.rid,x.rname) for x in new.get_admin_roles()]
+	form.department.choices = [(x.did,x.abbr) for x in new.get_departments()]
+	form.department.choices.insert(0,('','Select'))
+	response=""
+	if request.method == 'POST':
+		if form.validate_on_submit():
+			loguser=USERACCOUNT()
+			resp=loguser.addnewuser(form)
+			if resp['status'] == 2:
+				response = Markup("<div class='alert alert-danger'>{}</div>".format(resp['message']))
+			else:
+				form = AddUserForm()
+				response = Markup("<div class='alert alert-success'>{}</div>".format(resp['message']))
 
-    new = AdminRoles()
+		else:
+			form_errors=''
+			for x in dict(form.errors.items()):
 
-    form = AddUserForm()
-    form.role.choices = [(x.rid,x.rname) for x in new.get_admin_roles()]
-    form.department.choices = [(x.did,x.abbr) for x in new.get_departments()]
-    form.department.choices.insert(0,('','Select'))
-    response=""
-    if request.method == 'POST':
-    	if form.validate_on_submit():
-    		loguser=USERACCOUNT()
-    		resp=loguser.addnewuser(form)
-    		if resp['status'] == 2:
-    			response = Markup("<div class='alert alert-danger'>{}</div>".format(resp['message']))
-    		else:
-    			form = AddUserForm()
-    			response = Markup("<div class='alert alert-success'>{}</div>".format(resp['message']))
-
-    	else:
-    		form_errors=''
-    		for x in dict(form.errors.items()):
-
-    			form_errors +='<span>'+x+'</span><span> is not valid.</span><br>'
-    		response =Markup("<div class='alert alert-danger'>{}</div>".format(form_errors))	
+				form_errors +='<span>'+x+'</span><span> is not valid.</span><br>'
+			response =Markup("<div class='alert alert-danger'>{}</div>".format(form_errors))	
 
 
-    return render_template('adduser.html',form=form,resp=response)	    
+	return render_template('adduser.html',form=form,resp=response)	    
 
 @app.route('/userview',methods=['GET','POST'])
 @login_required
@@ -1604,6 +1603,101 @@ def my_e_learning():
 			doc_link = 	Markup('<label style="font-size:12px;color:red">'+course.doc_link.split('/')[-1].split('.')[0][0:35]+'<span style="color: #179cd7;" onclick="deleteFile(\''+course.doc_link+'\',\'doc\')">......x</span></label>')
 		
 		return render_template(template, course = course,extra_resource=extra_resource,suc_link=suc_link,doc_link=doc_link)
+
+	elif request.args.get('action') == 'FETCH-EXPIRING-TRAININGS':
+		template = 'e_learning/expiring_trainings.html'
+		if request.method == 'POST':
+			data = request.get_json()
+			mes = new.fetch_expiring_trainings(data)
+			return json.dumps(mes)
+	
+	elif request.args.get('action') == 'run_expiry_report':
+		if session['adminlevel'] < 3:
+			return redirect(url_for('index'))
+		template = 'e_learning/expiring_trainings_report.html'
+		if request.method == 'POST':
+			report_type = request.args.get('report_type', 'html')
+			data = request.get_json()
+
+			if report_type == 'html':
+				response = new.fetch_expiring_trainings_report(data)
+			
+			elif report_type == 'excel':
+				output = BytesIO()
+				workbook = xlsxwriter.Workbook(output)
+				worksheet = workbook.add_worksheet()
+
+				DEFAULT_ROW_HEIGHT = 20
+				worksheet.set_default_row(DEFAULT_ROW_HEIGHT)		
+
+				header_format = workbook.add_format({
+					'bold': True,
+					'bg_color': '#179cd7',
+					'font_color': 'white',
+					'border': 1,
+					'valign': 'vcenter'
+				})
+
+				# Write data with text wrapping where needed
+				cell_format = workbook.add_format({
+					'text_wrap': True,
+					'valign': 'top'  # Align text to top of cell
+				})
+				cell_format_2 = workbook.add_format({
+					'text_wrap': True,
+					'valign': 'vcenter'  # Align text to top of cell
+				})
+
+				# Set column widths
+				worksheet.set_column('A:A', 8)   # S/N
+				worksheet.set_column('B:B', 30)  # User Name
+				worksheet.set_column('C:C', 120)  # Training with Status
+				
+				# Add headers
+				headers = ['S/N', 'Employee Name', 'Expiring Trainings']
+				for col, header in enumerate(headers):
+					worksheet.write(0, col, header, header_format)
+				
+				# Add data
+				row = 1
+				today = datetime.now()
+				
+				for user_data in data.get('data'):
+					user = user_data['user']
+					trainings = user_data['trainings']
+
+					# Estimate row height based on text length
+					text = " ".join(trainings)
+					text_length = len(text)
+					row_height = DEFAULT_ROW_HEIGHT + (text_length // 50 * 5)
+					worksheet.set_row(row, row_height)
+
+					worksheet.write(row, 0, row)  # S/N
+					worksheet.write(row, 1, f"{user}", cell_format_2)
+					worksheet.write(row, 2, text, cell_format)
+					row += 1
+				
+				row += 3
+				emails = ";".join(data.get('emails', []))
+				email_length = len(emails)
+				row_height = DEFAULT_ROW_HEIGHT + (email_length // 50 * 5)
+				worksheet.set_row(row, row_height)
+
+				worksheet.write(row, 0, row)  # S/N
+				worksheet.write(row, 1, "Emails in this report", cell_format_2)
+				worksheet.write(row, 2, emails, cell_format)
+				
+				workbook.close()
+				output.seek(0)
+				
+				filename = f'training_expiry_report_{today.strftime("%d-%m-%Y_%H_%M_%S")}.xlsx'
+				return send_file(
+					output,
+					as_attachment=True,
+					download_name=filename,
+					mimetype='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+				)
+			return json.dumps(response)
 
 
 	if request.method == 'POST' and request.args.get('action') == 'PROCESS-DATA':
