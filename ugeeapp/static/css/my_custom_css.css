@@ -1,23 +1,56 @@
 /*@import url("https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,700;1,200&display=swap"); */
 
-#content-wrapper {
-    margin-left: 25px;
-    padding: 20px;
-    min-height: 100vh;
-    transition: all 0.3s;
-}
-
-/* Mobile view */
-@media (max-width: 768px) {
-    #sidebar {
-        width: 100%;
-        position: relative;
+/* Sidebar styling with proper z-index */
+    #accordionSidebar {
+        position: fixed;
+        width: 250px;
+        height: 150vh;
+        z-index: 1000;
+        overflow-y: auto;
+        transition: all 0.3s;
     }
+
+    /* Main content area */
     #content-wrapper {
-        margin-left: 0;
+        margin-left: 25px;
+        padding: 20px;
+        width: calc(100% - 25px);
+        position: relative;
+        z-index: 1;
+        min-height: 100vh;
+        transition: all 0.3s;
     }
-}
 
+    /* For extra large screens */
+    @media (min-width: 1920px) {
+        #content-wrapper {
+            max-width: 1800px;
+            margin-left: calc((100% - 1800px)/2 + 25px);
+        }
+    }
+
+    /* When sidebar is toggled (collapsed) */
+    .sidebar-toggled #accordionSidebar {
+        width: 6.5rem !important;
+    }
+    .sidebar-toggled #content-wrapper {
+        margin-left: 1.5rem;
+        width: calc(100% - 1.5rem);
+    }
+
+    /* Mobile view */
+    @media (max-width: 768px) {
+        #accordionSidebar {
+            transform: translateX(-100%);
+        }
+        #content-wrapper {
+            margin-left: 0;
+            width: 100%;
+        }
+        .sidebar-toggled #accordionSidebar {
+            transform: translateX(0);
+        }
+    }
 
 #dtHorizontalExample {
 /*  font-family: "Fraunces", serif;
