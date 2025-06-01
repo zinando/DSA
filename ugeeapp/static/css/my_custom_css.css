@@ -1,5 +1,24 @@
 /*@import url("https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,700;1,200&display=swap"); */
 
+#content-wrapper {
+    margin-left: 25px;
+    padding: 20px;
+    min-height: 100vh;
+    transition: all 0.3s;
+}
+
+/* Mobile view */
+@media (max-width: 768px) {
+    #sidebar {
+        width: 100%;
+        position: relative;
+    }
+    #content-wrapper {
+        margin-left: 0;
+    }
+}
+
+
 #dtHorizontalExample {
 /*  font-family: "Fraunces", serif;
   font-size: 125%;    
@@ -150,3 +169,4 @@ caption {
           color: #fff;
           background-color: #179cd7;
 }
+
