@@ -4,7 +4,7 @@
     #accordionSidebar {
         position: fixed;
         width: 250px;
-        height: 150vh;
+        /* height: 150vh; */
         z-index: 1000;
         overflow-y: auto;
         transition: all 0.3s;
